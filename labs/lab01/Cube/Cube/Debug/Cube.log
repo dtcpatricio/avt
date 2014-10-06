@@ -1,0 +1,14 @@
+﻿  exercise1.cpp
+d:\my documents\ist\5º ano\1º semestre\avt\labs\lab01\files\exercise1.cpp(79): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : see declaration of 'fopen'
+d:\my documents\ist\5º ano\1º semestre\avt\labs\lab01\files\exercise1.cpp(498): warning C4101: 'ratio' : unreferenced local variable
+c:\program files (x86)\microsoft visual studio 11.0\vc\include\xutility(2176): warning C4996: 'std::_Copy_impl': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+          c:\program files (x86)\microsoft visual studio 11.0\vc\include\xutility(2157) : see declaration of 'std::_Copy_impl'
+          d:\my documents\ist\5º ano\1º semestre\avt\labs\lab01\files\exercise1.cpp(101) : see reference to function template instantiation '_OutIt std::copy<std::_String_iterator<_Mystr>,char*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=char *,
+              _Mystr=std::_String_val<std::_Simple_types<char>>,
+              _InIt=std::_String_iterator<std::_String_val<std::_Simple_types<char>>>
+          ]
+  Cube.vcxproj -> D:\My Documents\ist\5º ano\1º semestre\AVT\Labs\Lab01\Cube\Debug\Cube.exe

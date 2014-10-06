@@ -1,0 +1,12 @@
+"#version 150 core\n"
+
+"in vec4 in_Position;\n"				
+"uniform mat4 Matrix;\n"
+"out vec4 color;\n"
+
+"void main(void)\n"
+"{\n"
+"	color = in_Position;\n"
+"	gl_Position = Matrix * in_Position;\n"
+
+"}\n"
