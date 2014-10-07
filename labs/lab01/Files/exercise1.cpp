@@ -5,17 +5,7 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <fstream>
-#include <math.h>
-#include <vector>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
 #include "exercise1.h"
-#include "cube.h"
 
 #define CAPTION "Exercise 1"
 
@@ -38,9 +28,9 @@ GLuint UniformId, ProjId;
 GLfloat projMatrix[16];
 GLfloat viewMatrix[16];
 
-static inline float 
-DegToRad(float degrees) 
-{ 
+static inline float
+DegToRad(float degrees)
+{
 	return (float)(degrees * (M_PI / 180.0f));
 };
 
@@ -60,7 +50,7 @@ bool isOpenGLError() {
 
 void checkOpenGLError(std::string error)
 {
-	if(isOpenGLError()) {
+	if (isOpenGLError()) {
 		std::cerr << error << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -73,10 +63,10 @@ char *textFileRead(char *fn)
 	FILE *fp;
 	char *content = NULL;
 
-	int count=0;
+	int count = 0;
 
 	if (fn != NULL) {
-		fp = fopen(fn,"rt");
+		fp = fopen(fn, "rt");
 
 		if (fp != NULL) {
 
@@ -85,8 +75,8 @@ char *textFileRead(char *fn)
 			rewind(fp);
 
 			if (count > 0) {
-				content = (char *)malloc(sizeof(char) * (count+1));
-				count = fread(content,sizeof(char),count,fp);
+				content = (char *)malloc(sizeof(char)* (count + 1));
+				count = fread(content, sizeof(char), count, fp);
 				content[count] = '\0';
 			}
 			fclose(fp);
@@ -128,7 +118,7 @@ const GLchar *VertexShader = //vertexShaderStr =
 {
 	"#version 150 core\n"
 
-	"in vec4 in_Position;\n"				
+	"in vec4 in_Position;\n"
 	"uniform mat4 projMatrix, viewMatrix;\n"
 	"out vec4 color;\n"
 
@@ -173,7 +163,7 @@ void createShaderProgram()
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "viewMatrix");
 	ProjId = glGetUniformLocation(ProgramId, "projMatrix");
-	
+
 	checkOpenGLError("ERROR: Could not create shaders.");
 }
 
@@ -191,7 +181,6 @@ void destroyShaderProgram()
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
-
 
 void createBufferObjects()
 {
@@ -251,22 +240,6 @@ void destroyBufferObjects()
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-typedef GLfloat Matrix[16];
-
-const Matrix I = {
-	1.0f,  0.0f,  0.0f,  0.0f,
-	0.0f,  1.0f,  0.0f,  0.0f,
-	0.0f,  0.0f,  1.0f,  0.0f,
-	0.0f,  0.0f,  0.0f,  1.0f
-}; // Row Major (GLSL is Column Major)
-
-Matrix M = {
-	1.0f,  0.0f,  0.0f, 0.0f,
-	0.0f,  1.0f,  0.0f, 0.0f,
-	0.0f,  0.0f,  1.0f, 0.0f,
-	0.0f,  0.0f,  0.0f, 1.0f
-}; // Row Major (GLSL is Column Major)
-
 void renderScene()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -275,10 +248,10 @@ void renderScene()
 	glUseProgram(ProgramId);
 
 	//translation(.5f, .5f, 0.0f);
-	
+
 	glUniformMatrix4fv(UniformId, 1, false, viewMatrix);
 	glUniformMatrix4fv(ProjId, 1, false, projMatrix);
-	glDrawElements(GL_TRIANGLES, faceCount*3, GL_UNSIGNED_INT, (GLvoid*)0);
+	glDrawElements(GL_TRIANGLES, faceCount * 3, GL_UNSIGNED_INT, (GLvoid*)0);
 
 	glUseProgram(0);
 	glBindVertexArray(0);
@@ -286,57 +259,58 @@ void renderScene()
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
 
-/////////////////////////////////////////////////////////////////////// TRANSFORMATIONS
-
-// res = a cross b;
-void crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
-
-	res[0] = a[1] * b[2]  -  b[1] * a[2];
-	res[1] = a[2] * b[0]  -  b[2] * a[0];
-	res[2] = a[0] * b[1]  -  b[0] * a[1];
-}
-
-
-// returns a . b
-float dotProduct(GLfloat *a, GLfloat *b) {
-
-	float res = a[0] * b[0]  +  a[1] * b[1]  +  a[2] * b[2];
-
-	return res;
-}
-
-void setIdentityMatrix( float *mat, int size) {
-
-	// fill matrix with 0s
-	for (int i = 0; i < size * size; ++i)
-			mat[i] = 0.0f;
-
-	// fill diagonal with 1s
-	for (int i = 0; i < size; ++i)
-		mat[i + i * size] = 1.0f;
-}
+/////////////////////////////////////////////////////////////////////// Auxiliary Math Functions
 
 // Normalize a vec3
 void normalize(float *a) {
 
-	float mag = sqrt(a[0] * a[0]  +  a[1] * a[1]  +  a[2] * a[2]);
+	float mag = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
 
 	a[0] /= mag;
 	a[1] /= mag;
 	a[2] /= mag;
 }
 
+// res = a cross b;
+void crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
+
+	res[0] = a[1] * b[2] - b[1] * a[2];
+	res[1] = a[2] * b[0] - b[2] * a[0];
+	res[2] = a[0] * b[1] - b[0] * a[1];
+}
+
+// returns a . b
+float dotProduct(GLfloat *a, GLfloat *b) {
+
+	float res = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+	return res;
+}
+
+/////////////////////////////////////////////////////////////////////// TRANSFORMATIONS
+
+void setIdentityMatrix(float *mat, int size) {
+
+	// fill matrix with 0s
+	for (int i = 0; i < size * size; ++i)
+		mat[i] = 0.0f;
+
+	// fill diagonal with 1s
+	for (int i = 0; i < size; ++i)
+		mat[i + i * size] = 1.0f;
+}
+
 void matrixMultiplication(Matrix m, Matrix aux)
 {
 	GLfloat res[16];
-	for(int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		for(int j = 0; j < 4; j++)
+		for (int j = 0; j < 4; j++)
 		{
-			res[j*4 + i] = 0.0f;
-			for(int k = 0; k < 4; k++)
+			res[j * 4 + i] = 0.0f;
+			for (int k = 0; k < 4; k++)
 			{
-				res[j*4 + i] += m[k*4 + i] * aux[j*4 + k];  
+				res[j * 4 + i] += m[k * 4 + i] * aux[j * 4 + k];
 			}
 		}
 	}
@@ -351,19 +325,19 @@ void translation(float x, float y, float z)
 	aux[13] = y;
 	aux[14] = z;
 
-	matrixMultiplication(M, aux);
+	matrixMultiplication(viewMatrix, aux);
 }
 
 void scale(float x, float y, float z){
 
 	Matrix aux = {
-		x,  0.0f,  0.0f, 0.0f,
-		0.0f,  y,  0.0f, 0.0f,
-		0.0f,  0.0f,  z, 0.0f,
-		0.0f,  0.0f,  0.0f,  1.0f
+		x, 0.0f, 0.0f, 0.0f,
+		0.0f, y, 0.0f, 0.0f,
+		0.0f, 0.0f, z, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
 	};
 
-	matrixMultiplication(M, aux);
+	matrixMultiplication(viewMatrix, aux);
 }
 
 void rotate(float angle, float x, float y, float z)
@@ -379,78 +353,78 @@ void rotate(float angle, float x, float y, float z)
 	float co = cos(radAngle);
 	float si = sin(radAngle);
 	normalize(v);
-	float x2 = v[0]*v[0];
-	float y2 = v[1]*v[1];
-	float z2 = v[2]*v[2];
+	float x2 = v[0] * v[0];
+	float y2 = v[1] * v[1];
+	float z2 = v[2] * v[2];
 
-//	mat[0] = x2 + (y2 + z2) * co; 
+	//	mat[0] = x2 + (y2 + z2) * co; 
 	mat[0] = co + x2 * (1 - co);// + (y2 + z2) * co; 
 	mat[4] = v[0] * v[1] * (1 - co) - v[2] * si;
 	mat[8] = v[0] * v[2] * (1 - co) + v[1] * si;
-	mat[12]= 0.0f;
-	   
+	mat[12] = 0.0f;
+
 	mat[1] = v[0] * v[1] * (1 - co) + v[2] * si;
-//	mat[5] = y2 + (x2 + z2) * co;
+	//	mat[5] = y2 + (x2 + z2) * co;
 	mat[5] = co + y2 * (1 - co);
 	mat[9] = v[1] * v[2] * (1 - co) - v[0] * si;
-	mat[13]= 0.0f;
-	   
+	mat[13] = 0.0f;
+
 	mat[2] = v[0] * v[2] * (1 - co) - v[1] * si;
 	mat[6] = v[1] * v[2] * (1 - co) + v[0] * si;
-//	mat[10]= z2 + (x2 + y2) * co;
-	mat[10]= co + z2 * (1 - co);
-	mat[14]= 0.0f;
-	   
+	//	mat[10]= z2 + (x2 + y2) * co;
+	mat[10] = co + z2 * (1 - co);
+	mat[14] = 0.0f;
+
 	mat[3] = 0.0f;
 	mat[7] = 0.0f;
-	mat[11]= 0.0f;
-	mat[15]= 1.0f;
+	mat[11] = 0.0f;
+	mat[15] = 1.0f;
 
-	matrixMultiplication(M, mat);
+	matrixMultiplication(viewMatrix, mat);
 }
 
 void lookAt(float xPos, float yPos, float zPos,
-					float xLook, float yLook, float zLook,
-					float xUp, float yUp, float zUp)
+	float xLook, float yLook, float zLook,
+	float xUp, float yUp, float zUp)
 {
 	float dir[3], right[3], up[3];
 
 	up[0] = xUp;	up[1] = yUp;	up[2] = zUp;
 
-	dir[0] =  (xLook - xPos);
-	dir[1] =  (yLook - yPos);
-	dir[2] =  (zLook - zPos);
+	dir[0] = (xLook - xPos);
+	dir[1] = (yLook - yPos);
+	dir[2] = (zLook - zPos);
 	normalize(dir);
 
-	crossProduct(dir,up,right);
+	crossProduct(dir, up, right);
 	normalize(right);
 
-	crossProduct(right,dir,up);
+	crossProduct(right, dir, up);
 	normalize(up);
 
 	GLfloat m2[16];
 
-	viewMatrix[0]  = right[0];
-	viewMatrix[4]  = right[1];
-	viewMatrix[8]  = right[2];
+	viewMatrix[0] = right[0];
+	viewMatrix[4] = right[1];
+	viewMatrix[8] = right[2];
 	viewMatrix[12] = 0.0f;
 
-	viewMatrix[1]  = up[0];
-	viewMatrix[5]  = up[1];
-	viewMatrix[9]  = up[2];
+	viewMatrix[1] = up[0];
+	viewMatrix[5] = up[1];
+	viewMatrix[9] = up[2];
 	viewMatrix[13] = 0.0f;
 
-	viewMatrix[2]  = -dir[0];
-	viewMatrix[6]  = -dir[1];
+	viewMatrix[2] = -dir[0];
+	viewMatrix[6] = -dir[1];
 	viewMatrix[10] = -dir[2];
-	viewMatrix[14] =  0.0f;
+	viewMatrix[14] = 0.0f;
 
-	viewMatrix[3]  = 0.0f;
-	viewMatrix[7]  = 0.0f;
+	viewMatrix[3] = 0.0f;
+	viewMatrix[7] = 0.0f;
 	viewMatrix[11] = 0.0f;
 	viewMatrix[15] = 1.0f;
 
-	setIdentityMatrix(m2,4);
+	setIdentityMatrix(m2, 4);
 	m2[12] = -xPos;
 	m2[13] = -yPos;
 	m2[14] = -zPos;
@@ -460,7 +434,7 @@ void lookAt(float xPos, float yPos, float zPos,
 
 void perspective(float fov, float ratio, float nearp, float farp)
 {
-	float f = 1.0f / tan (fov * (M_PI / 360.0f));
+	float f = 1.0f / tan(fov * (M_PI / 360.0f));
 
 	setIdentityMatrix(projMatrix, 4);
 
@@ -490,7 +464,7 @@ void display()
 
 void idle()
 {
-		glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 void reshape(int w, int h)
@@ -499,7 +473,7 @@ void reshape(int w, int h)
 	WinX = w;
 	WinY = h;
 	glViewport(0, 0, WinX, WinY);
-	
+
 }
 
 void timer(int value)
@@ -515,13 +489,13 @@ void timer(int value)
 
 /////////////////////////////////////////////////////////////////////// SETUP
 
-void setupCallbacks() 
+void setupCallbacks()
 {
 	glutCloseFunc(cleanup);
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
 	glutReshapeFunc(reshape);
-	glutTimerFunc(0,timer,0);
+	glutTimerFunc(0, timer, 0);
 }
 
 void setupOpenGL() {
@@ -539,16 +513,16 @@ void setupOpenGL() {
 
 void setupGLEW() {
 	glewExperimental = GL_TRUE;
-	GLenum result = glewInit() ; 
-	if (result != GLEW_OK) { 
+	GLenum result = glewInit();
+	if (result != GLEW_OK) {
 		std::cerr << "ERROR glewInit: " << glewGetString(result) << std::endl;
 		exit(EXIT_FAILURE);
-	} 
+	}
 	GLenum err_code = glGetError();
-	printf ("Vendor: %s\n", glGetString (GL_VENDOR));
-	printf ("Renderer: %s\n", glGetString (GL_RENDERER));
-	printf ("Version: %s\n", glGetString (GL_VERSION));
-	printf ("GLSL: %s\n", glGetString (GL_SHADING_LANGUAGE_VERSION));
+	printf("Vendor: %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version: %s\n", glGetString(GL_VERSION));
+	printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 }
 
@@ -560,12 +534,12 @@ void setupGLUT(int argc, char* argv[])
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	glutInitWindowSize(WinX, WinY);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	WindowHandle = glutCreateWindow(CAPTION);
-	if(WindowHandle < 1) {
+	if (WindowHandle < 1) {
 		std::cerr << "ERROR: Could not create a new rendering window." << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -586,23 +560,22 @@ int main(int argc, char* argv[])
 	float ratio;
 	init(argc, argv);
 	lookAt(2.0f, 2.0f, 4.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
-	
+
 	ratio = (1.0f * WinX) / WinY;
 	perspective(53.13f, ratio, .1f, -5.0f);
 
 	//setIdentityMatrix(projMatrix, 4);
 	glutMainLoop();
-	
+
 	exit(EXIT_SUCCESS);
 }
 
-// (DEBUG) Prints a matrix
+/////////////////////////////////////////////////////////////////////// (DEBUG) Prints a matrix
 void printMatrix(GLfloat* matrix)
 {
 	for (int i = 0; i < 16;)
 	{
-		std::cout << matrix[i] << " " << matrix[i+1] << " " << matrix[i+2] << " " << matrix[i+3] << std::endl;
+		std::cout << matrix[i] << " " << matrix[i + 1] << " " << matrix[i + 2] << " " << matrix[i + 3] << std::endl;
 		i += 4;
 	}
 }
-///////////////////////////////////////////////////////////////////////
