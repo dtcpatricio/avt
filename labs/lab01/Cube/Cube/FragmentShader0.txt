@@ -1,9 +1,0 @@
-"#version 150 core\n"
-
-	"in vec4 color;\n"
-	"out vec4 out_Color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = color;\n"
-	"}\n"
