@@ -85,64 +85,11 @@ char *textFileRead(char *fn)
 	return content;
 }
 
-char * StringToCharPointer(std::string s)
-{
-	char * pointer = new char[s.size() + 1];
-	std::copy(s.begin(), s.end(), pointer);
-	pointer[s.size()] = '\0';
+char *vertexFilename = "1.vert";
+const GLchar *VertexShader = textFileRead(vertexFilename);
 
-	return pointer;
-}
-
-char* loadVertexShader()
-{
-	std::string vertexShader;
-	std::cin >> vertexShader;
-
-	char* fileName = StringToCharPointer(vertexShader);
-	return textFileRead(fileName);
-
-}
-
-char * loadFragmentShader()
-{
-	std::string fragmentShader;
-	std::cin >> fragmentShader;
-
-	char* fileName = StringToCharPointer(fragmentShader);
-	return textFileRead(fileName);
-}
-
-//const char * vertexShaderStr = loadVertexShader();
-const GLchar *VertexShader = //vertexShaderStr =
-{
-	"#version 150 core\n"
-
-	"in vec4 in_Position;\n"
-	"uniform mat4 projMatrix, viewMatrix;\n"
-	"out vec4 color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	color = in_Position;\n"
-	"	gl_Position = projMatrix * viewMatrix * in_Position;\n"
-
-	"}\n"
-};
-
-//const char * fragmentShaderStr = loadFragmentShader();
-const GLchar *FragmentShader =
-{
-	"#version 150 core\n"
-
-	"in vec4 color;\n"
-	"out vec4 out_Color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = color;\n"
-	"}\n"
-};
+char *fragmentFilename = "1.frag";
+const GLchar *FragmentShader = textFileRead(fragmentFilename);
 
 void createShaderProgram()
 {
