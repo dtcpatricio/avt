@@ -28,11 +28,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="VertexShader0.txt">
+    <None Include="1.frag">
       <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="FragmentShader0.txt">
+    </None>
+    <None Include="1.vert">
       <Filter>Resource Files</Filter>
-    </Text>
+    </None>
   </ItemGroup>
 </Project>
