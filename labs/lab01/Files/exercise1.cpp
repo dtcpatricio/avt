@@ -11,7 +11,10 @@
 
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
+
+const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
+GLfloat currTime = 0, lastTime = 0;
 
 #define VERTEX_COORD_ATTRIB 0
 #define NORMAL_ATTRIB 1
@@ -409,11 +412,6 @@ void display()
 	glutSwapBuffers();
 }
 
-void idle()
-{
-	glutPostRedisplay();
-}
-
 void reshape(int w, int h)
 {
 	float ratio;
@@ -421,6 +419,12 @@ void reshape(int w, int h)
 	WinY = h;
 	glViewport(0, 0, WinX, WinY);
 
+}
+
+void refresh(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(FPS, refresh, 0);
 }
 
 void timer(int value)
@@ -434,15 +438,16 @@ void timer(int value)
 	glutTimerFunc(1000, timer, 0);
 }
 
+
 /////////////////////////////////////////////////////////////////////// SETUP
 
 void setupCallbacks()
 {
 	glutCloseFunc(cleanup);
 	glutDisplayFunc(display);
-	glutIdleFunc(idle);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(0, timer, 0);
+	glutTimerFunc(0, refresh, 0);
 }
 
 void setupOpenGL() {
