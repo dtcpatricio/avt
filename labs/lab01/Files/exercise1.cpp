@@ -14,7 +14,6 @@ int WindowHandle = 0;
 
 const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
-GLfloat currTime = 0, lastTime = 0;
 
 #define VERTEX_COORD_ATTRIB 0
 #define NORMAL_ATTRIB 1
@@ -28,8 +27,7 @@ GLuint VaoId, VboId[4];
 GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLuint UniformId, ProjId;
 
-GLfloat projMatrix[16];
-GLfloat viewMatrix[16];
+GLfloat projMatrix[16], viewMatrix[16];
 
 // Camera Coordinates
 float camX, camY, camZ;
@@ -98,18 +96,14 @@ char *textFileRead(char *fn)
 	return content;
 }
 
-char *vertexFilename = "1.vert";
-const GLchar *VertexShader = textFileRead(vertexFilename);
-
-char *fragmentFilename = "1.frag";
-const GLchar *FragmentShader = textFileRead(fragmentFilename);
-
 void createShaderProgram()
 {
+	const GLchar *VertexShader = textFileRead("1.vert");
 	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
 	glCompileShader(VertexShaderId);
 
+	const GLchar *FragmentShader = textFileRead("1.frag");
 	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
 	glCompileShader(FragmentShaderId);
@@ -122,7 +116,7 @@ void createShaderProgram()
 
 	glLinkProgram(ProgramId);
 	UniformId = glGetUniformLocation(ProgramId, "viewMatrix");
-	ProjId = glGetUniformLocation(ProgramId, "projMatrix");
+	ProjId    = glGetUniformLocation(ProgramId, "projMatrix");
 
 	checkOpenGLError("ERROR: Could not create shaders.");
 }
@@ -188,7 +182,6 @@ void destroyBufferObjects()
 	glDisableVertexAttribArray(NORMAL_ATTRIB);
 	glDisableVertexAttribArray(TEXTURE_COORD_ATTRIB);
 
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -225,17 +218,12 @@ void renderScene()
 
 // Normalize a vec3
 void normalize(float *a) {
-
-	float mag = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-
-	a[0] /= mag;
-	a[1] /= mag;
-	a[2] /= mag;
+	const GLfloat mag = sqrt(pow(a[0], 2) + pow(a[1], 2) + pow(a[2], 2));
+	a[0] /= mag; a[1] /= mag; a[2] /= mag;
 }
 
 // res = a cross b;
 void crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
-
 	res[0] = a[1] * b[2] - b[1] * a[2];
 	res[1] = a[2] * b[0] - b[2] * a[0];
 	res[2] = a[0] * b[1] - b[0] * a[1];
@@ -243,10 +231,7 @@ void crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
 
 // returns a . b
 float dotProduct(GLfloat *a, GLfloat *b) {
-
-	float res = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-
-	return res;
+	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
 /////////////////////////////////////////////////////////////////////// TRANSFORMATIONS
@@ -283,9 +268,7 @@ void translation(float x, float y, float z)
 {
 	Matrix aux;
 	setIdentityMatrix(aux, 4);
-	aux[12] = x;
-	aux[13] = y;
-	aux[14] = z;
+	aux[12] = x; aux[13] = y; aux[14] = z;
 
 	matrixMultiplication(viewMatrix, aux);
 }
@@ -293,9 +276,9 @@ void translation(float x, float y, float z)
 void scale(float x, float y, float z){
 
 	Matrix aux = {
-		x, 0.0f, 0.0f, 0.0f,
-		0.0f, y, 0.0f, 0.0f,
-		0.0f, 0.0f, z, 0.0f,
+		x,    0.0f, 0.0f, 0.0f,
+		0.0f, y,    0.0f, 0.0f,
+		0.0f, 0.0f, z,    0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f
 	};
 
@@ -307,33 +290,29 @@ void rotate(float angle, float x, float y, float z)
 	GLfloat mat[16];
 	float v[3];
 
-	v[0] = x;
-	v[1] = y;
-	v[2] = z;
+	v[0] = x; v[1] = y;	v[2] = z;
 
 	float radAngle = DegToRad(angle);
 	float co = cos(radAngle);
 	float si = sin(radAngle);
+
 	normalize(v);
 	float x2 = v[0] * v[0];
 	float y2 = v[1] * v[1];
 	float z2 = v[2] * v[2];
 
-	//	mat[0] = x2 + (y2 + z2) * co; 
-	mat[0] = co + x2 * (1 - co);// + (y2 + z2) * co; 
+	mat[0] = co + x2 * (1 - co);
 	mat[4] = v[0] * v[1] * (1 - co) - v[2] * si;
 	mat[8] = v[0] * v[2] * (1 - co) + v[1] * si;
 	mat[12] = 0.0f;
 
 	mat[1] = v[0] * v[1] * (1 - co) + v[2] * si;
-	//	mat[5] = y2 + (x2 + z2) * co;
 	mat[5] = co + y2 * (1 - co);
 	mat[9] = v[1] * v[2] * (1 - co) - v[0] * si;
 	mat[13] = 0.0f;
 
 	mat[2] = v[0] * v[2] * (1 - co) - v[1] * si;
 	mat[6] = v[1] * v[2] * (1 - co) + v[0] * si;
-	//	mat[10]= z2 + (x2 + y2) * co;
 	mat[10] = co + z2 * (1 - co);
 	mat[14] = 0.0f;
 
@@ -351,11 +330,9 @@ void lookAt(float xPos, float yPos, float zPos,
 {
 	float dir[3], right[3], up[3];
 
-	up[0] = xUp;	up[1] = yUp;	up[2] = zUp;
+	up[0] = xUp; up[1] = yUp; up[2] = zUp;
 
-	dir[0] = (xLook - xPos);
-	dir[1] = (yLook - yPos);
-	dir[2] = (zLook - zPos);
+	dir[0] = (xLook - xPos); dir[1] = (yLook - yPos); dir[2] = (zLook - zPos);
 	normalize(dir);
 
 	crossProduct(dir, up, right);
@@ -364,32 +341,19 @@ void lookAt(float xPos, float yPos, float zPos,
 	crossProduct(right, dir, up);
 	normalize(up);
 
-	GLfloat m2[16];
+	for (size_t i = 0; i < 3; i++) {
+		viewMatrix[i * 4]     =  right[i];
+		viewMatrix[i * 4 + 1] =  up[i];
+		viewMatrix[i * 4 + 2] = -dir[i];
+		viewMatrix[i * 4 + 3] =  0.0f;
+	}
 
-	viewMatrix[0] = right[0];
-	viewMatrix[4] = right[1];
-	viewMatrix[8] = right[2];
-	viewMatrix[12] = 0.0f;
-
-	viewMatrix[1] = up[0];
-	viewMatrix[5] = up[1];
-	viewMatrix[9] = up[2];
-	viewMatrix[13] = 0.0f;
-
-	viewMatrix[2] = -dir[0];
-	viewMatrix[6] = -dir[1];
-	viewMatrix[10] = -dir[2];
-	viewMatrix[14] = 0.0f;
-
-	viewMatrix[3] = 0.0f;
-	viewMatrix[7] = 0.0f;
-	viewMatrix[11] = 0.0f;
+	viewMatrix[12] = viewMatrix[13] = viewMatrix[14] = 0.0f;
 	viewMatrix[15] = 1.0f;
 
+	GLfloat m2[16];
 	setIdentityMatrix(m2, 4);
-	m2[12] = -xPos;
-	m2[13] = -yPos;
-	m2[14] = -zPos;
+	m2[12] = -xPos;	m2[13] = -yPos;	m2[14] = -zPos;
 
 	matrixMultiplication(viewMatrix, m2);
 }
@@ -469,7 +433,6 @@ void mouseWheel(int wheel, int direction, int x, int y) {
 
 void processMouseMotion(int xx, int yy)
 {
-
 	int deltaX, deltaY;
 	float alphaAux, betaAux;
 	float rAux;
@@ -479,8 +442,6 @@ void processMouseMotion(int xx, int yy)
 
 	// left mouse button: move camera
 	if (tracking == 1) {
-
-
 		alphaAux = alpha + deltaX;
 		betaAux = beta + deltaY;
 
@@ -644,9 +605,9 @@ int main(int argc, char* argv[])
 /////////////////////////////////////////////////////////////////////// (DEBUG) Prints a matrix
 void printMatrix(GLfloat* matrix)
 {
-	for (int i = 0; i < 16;)
+	for (int i = 0; i < 16; i += 4)
 	{
-		std::cout << matrix[i] << " " << matrix[i + 1] << " " << matrix[i + 2] << " " << matrix[i + 3] << std::endl;
-		i += 4;
+		std::cout << matrix[i] << " " << matrix[i + 1] << " "
+				  << matrix[i + 2] << " " << matrix[i + 3] << std::endl;
 	}
 }
