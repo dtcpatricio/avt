@@ -1,2 +1,11 @@
 # ignore .tlog files
 **/*.tlog
+
+# ignore VS files
+**/*.sdf
+**/*.vcxproj
+**/*.ilk
+**/*.pdb
+**/*.suo
+**/*.opensdf
+**/*.idb
