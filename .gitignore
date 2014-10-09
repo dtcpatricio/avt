@@ -1,11 +1,11 @@
-# ignore .tlog files
+# ignore .log files
 **/*.tlog
+**/*.log
 
 # ignore VS files
 **/*.sdf
-**/*.vcxproj
-**/*.ilk
-**/*.pdb
 **/*.suo
 **/*.opensdf
-**/*.idb
+
+# Ignore .exe file (always needs compiling for the local machine state)
+**/*.exe
