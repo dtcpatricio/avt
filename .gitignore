@@ -6,6 +6,8 @@
 **/*.sdf
 **/*.suo
 **/*.opensdf
+**/*.lastbuildstate
 
-# Ignore .exe file (always needs compiling for the local machine state)
+# Ignore .exe and .obj files (always needs compiling for the local machine state)
 **/*.exe
+**/*.obj
