@@ -31,9 +31,11 @@ int faceCount = 12;
 const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
 
-GLfloat projMatrix[16], viewMatrix[16];
+GLfloat projMatrix[16], viewMatrix[16], model[16];
 
-GLuint viewMatrixId, projId;
+GLuint viewMatrixId, projId, modelId;
+
+GLfloat* modelRet;
 
 // Camera Coordinates
 float camX, camY, camZ;
@@ -105,7 +107,7 @@ void destroyShaderProgram()
 
 void createObjects()
 {
-	mySurf.createCube(2.0f);
+	mySurf.createCube(0.5f);
 }
 
 void destroyBufferObjects()
@@ -126,7 +128,7 @@ void translation(float x, float y, float z)
 	calc.setIdentityMatrix(aux, 4);
 	aux[12] = x; aux[13] = y; aux[14] = z;
 
-	calc.matrixMultiplication(viewMatrix, aux);
+	calc.matrixMultiplication(model, aux);
 }
 
 void scale(float x, float y, float z){
@@ -138,7 +140,7 @@ void scale(float x, float y, float z){
 		0.0f, 0.0f, 0.0f, 1.0f
 	};
 
-	calc.matrixMultiplication(viewMatrix, aux);
+	calc.matrixMultiplication(model, aux);
 }
 
 void rotate(float angle, float x, float y, float z)
@@ -177,7 +179,7 @@ void rotate(float angle, float x, float y, float z)
 	mat[11] = 0.0f;
 	mat[15] = 1.0f;
 
-	calc.matrixMultiplication(viewMatrix, mat);
+	calc.matrixMultiplication(model, mat);
 }
 
 void lookAt(float xPos, float yPos, float zPos,
@@ -240,8 +242,21 @@ void renderScene()
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, viewMatrix);
 	glUniformMatrix4fv(projId, 1, false, projMatrix);
+
+	int modelLines = 2;
+	for (int i = -modelLines + 1; i < modelLines; ++i) {
+		for (int j = -modelLines + 1; j < modelLines; ++j) {
+			calc.setIdentityMatrix(model, 4);
+			//calc.pushMatrix(model, 0);
+			translation(i*2.0f, 0.0f, j*2.0f);
+			glUniformMatrix4fv(modelId, 1, false, model);
+			mySurf.simpleRender();
+			//modelRet = calc.popMatrix(0);
+			//memcpy(model, modelRet, sizeof(GLfloat)* 16);
+		}
+	}
 	
-	mySurf.simpleRender();
+	
 
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
@@ -473,6 +488,7 @@ void init(int argc, char* argv[])
 
 	viewMatrixId = glGetUniformLocation(shader.getProgramIndex(), "viewMatrix");
 	projId = glGetUniformLocation(shader.getProgramIndex(), "projMatrix");
+	modelId = glGetUniformLocation(shader.getProgramIndex(), "model");
 	
 }
 

@@ -22,7 +22,6 @@ float OurMathLib::dotProduct(GLfloat *a, GLfloat *b) {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-
 void OurMathLib::setIdentityMatrix(float *mat, int size) {
 
 	// fill matrix with 0s
@@ -49,4 +48,16 @@ void OurMathLib::matrixMultiplication(GLfloat * m, GLfloat * aux)
 		}
 	}
 	memcpy(m, res, 16 * sizeof(GLfloat));
+}
+
+void OurMathLib::pushMatrix(GLfloat * m, int type){
+	mMatrixStack[type].push_back(m);
+}
+
+GLfloat * OurMathLib::popMatrix(int type){
+	GLfloat m[16];
+	memcpy(m, mMatrixStack[type][0], sizeof(GLfloat)* 16);
+	mMatrixStack[type].pop_back();
+	return m;
+
 }
