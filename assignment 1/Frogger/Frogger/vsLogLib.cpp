@@ -15,6 +15,8 @@
  *
  ---------------------------------------------------------------*/
 
+#define _CRT_SECURE_NO_DEPRECATE
+
 #include "vsLogLib.h"
 
 
@@ -36,6 +38,7 @@ VSLogLib::clear() {
 	pLogVector.clear();
 }
 
+
 // adds a message, printf style
 void
 VSLogLib::addMessage(std::string s, ...) {
@@ -50,6 +53,7 @@ VSLogLib::addMessage(std::string s, ...) {
 	else
 		pLogVector.push_back(pAux);
 }
+
 
 // dumps the log contents to a file
 void 

@@ -53,7 +53,7 @@
 #endif
 
 #ifdef _WIN32
-#pragma comment(lib,"glew32.lib")
+#pragma comment(lib,"glew32d.lib")
 #ifdef _VSL_TEXTURE_WITH_DEVIL
 #pragma comment(lib,"devil.lib")
 #endif

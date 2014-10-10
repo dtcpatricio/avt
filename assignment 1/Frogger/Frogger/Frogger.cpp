@@ -10,8 +10,9 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "SimpleGeometryLib.h"
+#include "OurMathLib.h"
 #include "vsShaderLib.h"
+#include "vsResSurfRevLib.h"
 
 #ifdef _WIN32
 #define M_PI       3.14159265358979323846f
@@ -19,19 +20,19 @@
 
 #define CAPTION "Frogger (Assignment 1)"
 
-SimpleGeometryLib sgl;
+OurMathLib calc;
 VSShaderLib shader;
+VSResSurfRevLib mySurf;
 
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
+int faceCount = 12;
 
 const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
 
 GLfloat projMatrix[16], viewMatrix[16];
 
-GLuint VaoId, VboId[4];
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
 GLuint viewMatrixId, projId;
 
 // Camera Coordinates
@@ -74,41 +75,11 @@ void checkOpenGLError(std::string error)
 
 /////////////////////////////////////////////////////////////////////// SHADERs
 
-char *textFileRead(char *fn)
-{
-	FILE *fp;
-	char *content = NULL;
-
-	int count = 0;
-
-	if (fn != NULL) {
-		fp = fopen(fn, "rt");
-
-		if (fp != NULL) {
-
-			fseek(fp, 0, SEEK_END);
-			count = ftell(fp);
-			rewind(fp);
-
-			if (count > 0) {
-				content = (char *)malloc(sizeof(char)* (count + 1));
-				count = fread(content, sizeof(char), count, fp);
-				content[count] = '\0';
-			}
-			fclose(fp);
-		}
-	}
-	return content;
-}
-
 GLuint setupShaders()
 {
 	shader.init();
 	shader.loadShader(VSShaderLib::VERTEX_SHADER, "assign1.vert");
 	shader.loadShader(VSShaderLib::FRAGMENT_SHADER, "assign1.frag");
-
-	viewMatrixId = glGetUniformLocation(shader.getProgramIndex, "viewMatrix");
-	projId = glGetUniformLocation(shader.getProgramIndex, "projMatrix");
 
 	shader.setProgramOutput(0, "outFrag");
 	shader.setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
@@ -120,12 +91,12 @@ GLuint setupShaders()
 void destroyShaderProgram()
 {
 	glUseProgram(0);
-	glDetachShader(ProgramId, VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
+	glDetachShader(shader.getProgramIndex(), shader.getShaderIndex(shader.VERTEX_SHADER));
+	glDetachShader(shader.getProgramIndex(), shader.getShaderIndex(shader.FRAGMENT_SHADER));
 
-	glDeleteShader(FragmentShaderId);
-	glDeleteShader(VertexShaderId);
-	glDeleteProgram(ProgramId);
+	glDeleteShader(shader.getShaderIndex(shader.FRAGMENT_SHADER));
+	glDeleteShader(shader.getShaderIndex(shader.VERTEX_SHADER));
+	glDeleteProgram(shader.getProgramIndex());
 
 	checkOpenGLError("ERROR: Could not destroy shaders.");
 }
@@ -134,7 +105,7 @@ void destroyShaderProgram()
 
 void createObjects()
 {
-	sgl.createCube(2.0f);
+	mySurf.createCube(2.0f);
 }
 
 void destroyBufferObjects()
@@ -144,30 +115,133 @@ void destroyBufferObjects()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	glDeleteBuffers(4, VboId);
-	glDeleteVertexArrays(1, &VaoId);
 	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
 }
+
+/////////////////////////////////////////////////////////////////////// TRANSFORMATIONS
+
+void translation(float x, float y, float z)
+{
+	GLfloat aux[16];
+	calc.setIdentityMatrix(aux, 4);
+	aux[12] = x; aux[13] = y; aux[14] = z;
+
+	calc.matrixMultiplication(viewMatrix, aux);
+}
+
+void scale(float x, float y, float z){
+
+	GLfloat aux[] = {
+		x, 0.0f, 0.0f, 0.0f,
+		0.0f, y, 0.0f, 0.0f,
+		0.0f, 0.0f, z, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+
+	calc.matrixMultiplication(viewMatrix, aux);
+}
+
+void rotate(float angle, float x, float y, float z)
+{
+	GLfloat mat[16];
+	float v[3];
+
+	v[0] = x; v[1] = y;	v[2] = z;
+
+	float radAngle = DegToRad(angle);
+	float co = cos(radAngle);
+	float si = sin(radAngle);
+
+	calc.normalize(v);
+	float x2 = v[0] * v[0];
+	float y2 = v[1] * v[1];
+	float z2 = v[2] * v[2];
+
+	mat[0] = co + x2 * (1 - co);
+	mat[4] = v[0] * v[1] * (1 - co) - v[2] * si;
+	mat[8] = v[0] * v[2] * (1 - co) + v[1] * si;
+	mat[12] = 0.0f;
+
+	mat[1] = v[0] * v[1] * (1 - co) + v[2] * si;
+	mat[5] = co + y2 * (1 - co);
+	mat[9] = v[1] * v[2] * (1 - co) - v[0] * si;
+	mat[13] = 0.0f;
+
+	mat[2] = v[0] * v[2] * (1 - co) - v[1] * si;
+	mat[6] = v[1] * v[2] * (1 - co) + v[0] * si;
+	mat[10] = co + z2 * (1 - co);
+	mat[14] = 0.0f;
+
+	mat[3] = 0.0f;
+	mat[7] = 0.0f;
+	mat[11] = 0.0f;
+	mat[15] = 1.0f;
+
+	calc.matrixMultiplication(viewMatrix, mat);
+}
+
+void lookAt(float xPos, float yPos, float zPos,
+	float xLook, float yLook, float zLook,
+	float xUp, float yUp, float zUp)
+{
+	float dir[3], right[3], up[3];
+
+	up[0] = xUp; up[1] = yUp; up[2] = zUp;
+
+	dir[0] = (xLook - xPos); dir[1] = (yLook - yPos); dir[2] = (zLook - zPos);
+	calc.normalize(dir);
+
+	calc.crossProduct(dir, up, right);
+	calc.normalize(right);
+
+	calc.crossProduct(right, dir, up);
+	calc.normalize(up);
+
+	for (size_t i = 0; i < 3; i++) {
+		viewMatrix[i * 4] = right[i];
+		viewMatrix[i * 4 + 1] = up[i];
+		viewMatrix[i * 4 + 2] = -dir[i];
+		viewMatrix[i * 4 + 3] = 0.0f;
+	}
+
+	viewMatrix[12] = viewMatrix[13] = viewMatrix[14] = 0.0f;
+	viewMatrix[15] = 1.0f;
+
+	GLfloat m2[16];
+	calc.setIdentityMatrix(m2, 4);
+	m2[12] = -xPos;	m2[13] = -yPos;	m2[14] = -zPos;
+
+	calc.matrixMultiplication(viewMatrix, m2);
+}
+
+void perspective(float fov, float ratio, float nearp, float farp)
+{
+	float f = 1.0f / tan(fov * (M_PI / 360.0f));
+
+	calc.setIdentityMatrix(projMatrix, 4);
+
+	projMatrix[0] = f / ratio;
+	projMatrix[1 * 4 + 1] = f;
+	projMatrix[2 * 4 + 2] = (farp + nearp) / (nearp - farp);
+	projMatrix[3 * 4 + 2] = (2.0f * farp * nearp) / (nearp - farp);
+	projMatrix[2 * 4 + 3] = -1.0f;
+	projMatrix[3 * 4 + 3] = 0.0f;
+}
+
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void renderScene()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	lookAt(camX, camY, camZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
+	glUseProgram(shader.getProgramIndex());
 
-	//translation(.5f, .5f, 0.0f);
-
-	glUniformMatrix4fv(UniformId, 1, false, viewMatrix);
-	glUniformMatrix4fv(ProjId, 1, false, projMatrix);
-	glDrawElements(GL_TRIANGLES, faceCount * 3, GL_UNSIGNED_INT, (GLvoid*)0);
-
-	glUseProgram(0);
-	glBindVertexArray(0);
+	glUniformMatrix4fv(viewMatrixId, 1, false, viewMatrix);
+	glUniformMatrix4fv(projId, 1, false, projMatrix);
+	
+	mySurf.simpleRender();
 
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
@@ -319,6 +393,7 @@ void processKeys(unsigned char key, int xx, int yy)
 void setupCallbacks()
 {
 	glutCloseFunc(cleanup);
+	glutIdleFunc(renderScene);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(0, timer, 0);
@@ -369,7 +444,7 @@ void setupGLUT(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
 
-	glutInitContextVersion(3, 2);
+	glutInitContextVersion(3, 1);
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
@@ -389,14 +464,19 @@ void init(int argc, char* argv[])
 	setupGLUT(argc, argv);
 	setupGLEW();
 	setupOpenGL();
+	setupCallbacks();
 
 	if (!setupShaders())
 		exit(1);
 
 	createObjects();
-	setupCallbacks();
+
+	viewMatrixId = glGetUniformLocation(shader.getProgramIndex(), "viewMatrix");
+	projId = glGetUniformLocation(shader.getProgramIndex(), "projMatrix");
+	
 }
 
+/////////////////////////////////////////////////////////////////////// Main
 
 int main(int argc, char* argv[])
 {

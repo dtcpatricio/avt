@@ -78,6 +78,12 @@ VSResSurfRevLib::createTorus(float innerRadius, float outerRadius, int rings, in
 	computeVAO(sides+1, p+2, p, rings, 0.0f);
 }
 
+void
+VSResSurfRevLib::createCube(float size){
+
+	VSResSurfRevLib::createCylinder(size, size, 4);
+
+}
 
 void 
 VSResSurfRevLib::createCylinder(float height, float radius, int sides) {
@@ -373,6 +379,15 @@ VSResSurfRevLib::computeVAO(int numP, float *p, float *points, int sides, float 
 	mMyMesh.mat.shininess = 100.0f;
 }
 
+void
+VSResSurfRevLib::simpleRender(){
+
+	// bind VAO
+	glBindVertexArray(mMyMesh.vao);
+	glDrawElements(mMyMesh.type, mMyMesh.numIndexes, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+}
 
 void 
 VSResSurfRevLib::render () {

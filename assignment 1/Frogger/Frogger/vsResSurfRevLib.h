@@ -50,6 +50,7 @@ public:
 	void create (float *p, int numP, int sides, int closed, float smoothCos);
 	void createSphere(float radius, int divisions);
 	void createTorus(float innerRadius, float outerRadius, int rings, int sides);
+	void createCube(float size);
 	void createCylinder(float height, float radius, int sides);
 	void createCone(float height, float baseRadius, int sides);
 	void createPawn();
@@ -60,6 +61,7 @@ public:
 	*/
 	virtual bool load(std::string filename);
 	/// implementation of the superclass abstract method
+	virtual void VSResSurfRevLib::simpleRender();
 	virtual void render();
 	/// set a color component for all meshes
 	void setColor(VSResourceLib::MaterialSemantics m, float *values);
