@@ -85,6 +85,45 @@ VSResSurfRevLib::createCube(float size){
 
 }
 
+void
+VSResSurfRevLib::createRectangle(float lenght, float height, float width){
+
+	float p[] = {
+		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 0
+		lenght / 2, height / 2, width / 2, 1.0f,	//2, 1
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 2
+		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 3
+
+		lenght / 2, height / 2, width / 2, 1.0f,	//2, 4
+		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 5
+		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 6
+		-lenght / 2, -height / 2, width / 2, 1.0f,	//8, 7
+
+		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 8
+		lenght / 2, height / 2, width / 2, 1.0f,	//2, 9
+		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 10
+		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 11
+
+		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 12
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 13
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 14
+		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 15
+
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 16
+		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 17
+		-lenght / 2, -height / 2, width / 2, 1.0f,	//8, 18
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 19
+
+		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 20
+		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 21
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 22
+		-lenght / 2, -height / 2, width / 2, 1.0f	//8, 23
+
+	};
+
+	computeVAOSquare(p);
+}
+
 void 
 VSResSurfRevLib::createCylinder(float height, float radius, int sides) {
 
@@ -231,6 +270,117 @@ VSResSurfRevLib::create (float *p, int numP, int sides, int closed, float smooth
 	}
 
 	computeVAO(numP, p, points, sides, smoothCos);
+}
+
+void
+VSResSurfRevLib::computeVAOSquare(float* p){
+	GLuint faceIndex[] = {
+		0, 1, 3, 0, 2, 3, 
+		4, 5, 6, 5, 6, 7,
+		8, 9, 10, 9, 10, 11,
+		12, 13, 14, 12, 14, 15,
+		16, 17, 18, 16, 18, 19,
+		20, 21, 22, 21, 22, 23
+	};
+
+	float texCoords[] = {
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+	};
+
+	float normals[] = {
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+
+	};
+
+	glGenVertexArrays(1, &mMyMesh.vao);
+	glBindVertexArray(mMyMesh.vao);
+
+	GLuint buffers[4];
+	glGenBuffers(4, buffers);
+	//vertex coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(p), p, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+
+	//texture coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::TEXTURE_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::TEXTURE_COORD_ATTRIB, 2, GL_FLOAT, 0, 0, 0);
+
+
+	//normals buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 3, GL_FLOAT, 0, 0, 0);
+
+	//index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faceIndex), faceIndex, GL_STATIC_DRAW);
+
+	//Unbind the VAO
+	glBindVertexArray(0);
+
+	mMyMesh.type = GL_TRIANGLES;
 }
 
 void 

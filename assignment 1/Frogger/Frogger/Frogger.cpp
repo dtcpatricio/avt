@@ -13,6 +13,7 @@
 #include "OurMathLib.h"
 #include "vsShaderLib.h"
 #include "vsResSurfRevLib.h"
+#include "ourScene.h"
 
 #ifdef _WIN32
 #define M_PI       3.14159265358979323846f
@@ -23,6 +24,8 @@
 OurMathLib calc;
 VSShaderLib shader;
 VSResSurfRevLib mySurf;
+OurScene scene;
+
 
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
@@ -42,7 +45,7 @@ float camX, camY, camZ;
 
 // Camera Spherical Coordinates
 float alpha = -43.0f, beta = 48.0f;
-float r = 5.25f;
+float r = 50.0f;
 
 // Mouse Tracking Variables
 int startX, startY, tracking = 0;
@@ -104,11 +107,6 @@ void destroyShaderProgram()
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
-
-void createObjects()
-{
-	mySurf.createCube(0.5f);
-}
 
 void destroyBufferObjects()
 {
@@ -233,6 +231,124 @@ void perspective(float fov, float ratio, float nearp, float farp)
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
+void createRiver(){
+
+	mySurf.createCylinder(4.0f, 10.0f, 4);
+	calc.setIdentityMatrix(model, 4);
+	translation(0.0f, 0.0f, -10.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	mySurf.createCylinder(4.0f, 10.0f, 4);
+	calc.setIdentityMatrix(model, 4);
+	translation(10.0f, 0.0f, 0.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	
+}
+
+void createRoad(){
+	mySurf.createCylinder(4.0f, 10.0f, 4);
+	calc.setIdentityMatrix(model, 4);
+	translation(-10.0f, 0.0f, 0.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	mySurf.createCylinder(4.0f, 10.0f, 4);
+	calc.setIdentityMatrix(model, 4);
+	translation(0.0f, 0.0f, 10.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+}
+
+void createTopLogs(){
+
+	//left 
+	mySurf.createCylinder(6.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(0.0f, 3.0f, -15.0f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//middle 
+	mySurf.createCylinder(7.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(7.5f, 3.0f, -7.5f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//right
+	mySurf.createCylinder(4.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(15.0f, 3.0f, 0.0f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+}
+
+void middleRowLogs(){
+
+	//left
+	mySurf.createCylinder(7.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(-2.5f, 3.0f, -12.5f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//middle
+	mySurf.createCylinder(4.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(5.0f, 3.0f, -5.0f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//right
+	mySurf.createCylinder(6.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(11.5f, 3.0f, 1.5f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+}
+
+void bottomRowLogs(){
+
+	//left done
+	mySurf.createCylinder(4.0f, 1.0f, 8);
+	calc.setIdentityMatrix(model, 4);
+	translation(-5.0f, 3.0f, -10.0f);
+	rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//middle
+	mySurf.createCube(1.0f);
+	calc.setIdentityMatrix(model, 4);
+	translation(2.5f, 2.5f, -2.5f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+
+	//right
+	mySurf.createCube(1.0f);
+	calc.setIdentityMatrix(model, 4);
+	translation(5.0f, 2.5f, 0.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+}
+
+void createLogs(){
+
+	createTopLogs();
+	middleRowLogs();
+	bottomRowLogs();
+}
+
 void renderScene()
 {
 
@@ -243,21 +359,18 @@ void renderScene()
 	glUniformMatrix4fv(viewMatrixId, 1, false, viewMatrix);
 	glUniformMatrix4fv(projId, 1, false, projMatrix);
 
-	int modelLines = 2;
-	for (int i = -modelLines + 1; i < modelLines; ++i) {
-		for (int j = -modelLines + 1; j < modelLines; ++j) {
-			calc.setIdentityMatrix(model, 4);
-			//calc.pushMatrix(model, 0);
-			translation(i*2.0f, 0.0f, j*2.0f);
-			glUniformMatrix4fv(modelId, 1, false, model);
-			mySurf.simpleRender();
-			//modelRet = calc.popMatrix(0);
-			//memcpy(model, modelRet, sizeof(GLfloat)* 16);
-		}
-	}
-	
-	
+	createRiver();
 
+	createLogs();
+
+	createRoad();
+
+	mySurf.createCube(1.0f);
+	calc.setIdentityMatrix(model, 4);
+	translation(0.0f, 2.5f, 0.0f);
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender();
+	
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
 
@@ -484,7 +597,7 @@ void init(int argc, char* argv[])
 	if (!setupShaders())
 		exit(1);
 
-	createObjects();
+	//createScene();
 
 	viewMatrixId = glGetUniformLocation(shader.getProgramIndex(), "viewMatrix");
 	projId = glGetUniformLocation(shader.getProgramIndex(), "projMatrix");
