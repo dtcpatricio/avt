@@ -89,35 +89,35 @@ void
 VSResSurfRevLib::createRectangle(float lenght, float height, float width){
 
 	float p[] = {
-		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 0
-		lenght / 2, height / 2, width / 2, 1.0f,	//2, 1
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 2
-		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 3
+		lenght / 2, height / 2, width / 2, 1.0f,	//0, 0
+		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 1
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 2
+		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 3
 
-		lenght / 2, height / 2, width / 2, 1.0f,	//2, 4
-		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 5
-		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 6
-		-lenght / 2, -height / 2, width / 2, 1.0f,	//8, 7
+		lenght / 2, height / 2, width / 2, 1.0f,	//0, 4
+		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 5
+		-lenght / 2, -height / 2, width / 2, 1.0f,	//7, 6
+		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 7
 
-		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 8
-		lenght / 2, height / 2, width / 2, 1.0f,	//2, 9
-		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 10
-		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 11
+		lenght / 2, height / 2, width / 2, 1.0f,	//0, 8
+		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 9
+		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 10
+		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 11
 
 		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 12
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 13
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 14
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 13
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 14
 		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 15
 
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//3, 16
-		lenght / 2, -height / 2, width / 2, 1.0f,	//4, 17
-		-lenght / 2, -height / 2, width / 2, 1.0f,	//8, 18
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 19
+		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 16
+		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 17
+		-lenght / 2, -height / 2, width / 2, 1.0f,	//7, 18
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 19
 
-		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 20
-		-lenght / 2, height / 2, width / 2, 1.0f,	//6, 21
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//7, 22
-		-lenght / 2, -height / 2, width / 2, 1.0f	//8, 23
+		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 20
+		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 21
+		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 22
+		-lenght / 2, -height / 2, width / 2, 1.0f	//7, 23
 
 	};
 
@@ -273,14 +273,15 @@ VSResSurfRevLib::create (float *p, int numP, int sides, int closed, float smooth
 }
 
 void
-VSResSurfRevLib::computeVAOSquare(float* p){
+VSResSurfRevLib::computeVAOSquare(float* p)
+{
 	GLuint faceIndex[] = {
-		0, 1, 3, 0, 2, 3, 
-		4, 5, 6, 5, 6, 7,
-		8, 9, 10, 9, 10, 11,
-		12, 13, 14, 12, 14, 15,
-		16, 17, 18, 16, 18, 19,
-		20, 21, 22, 21, 22, 23
+		0, 1, 2, 0, 2, 3, 
+		4, 5, 7, 5, 6, 7,
+		8, 9, 11, 8, 10, 11,
+		12, 13, 14, 13, 14, 15,
+		16, 17, 19, 17, 18, 19,
+		20, 21, 22, 20, 22, 23
 	};
 
 	float texCoords[] = {
@@ -352,11 +353,12 @@ VSResSurfRevLib::computeVAOSquare(float* p){
 	glGenVertexArrays(1, &mMyMesh.vao);
 	glBindVertexArray(mMyMesh.vao);
 
+	mMyMesh.numIndexes = sizeof(faceIndex);
 	GLuint buffers[4];
 	glGenBuffers(4, buffers);
 	//vertex coordinates buffer
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(p), p, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 4, p, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
 	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
 
@@ -375,7 +377,7 @@ VSResSurfRevLib::computeVAOSquare(float* p){
 
 	//index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(faceIndex), faceIndex, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mMyMesh.numIndexes, faceIndex, GL_STATIC_DRAW);
 
 	//Unbind the VAO
 	glBindVertexArray(0);
