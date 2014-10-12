@@ -86,39 +86,72 @@ VSResSurfRevLib::createCube(float size){
 }
 
 void
-VSResSurfRevLib::createRectangle(float lenght, float height, float width){
+VSResSurfRevLib::createRectangle(float length, float height, float width){
 
+	/*
 	float p[] = {
-		lenght / 2, height / 2, width / 2, 1.0f,	//0, 0
-		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 1
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 2
-		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 3
+		length / 2, height / 2, width / 2, 1.0f,	//0, 0
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 1
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 2
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 3
 
-		lenght / 2, height / 2, width / 2, 1.0f,	//0, 4
-		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 5
-		-lenght / 2, -height / 2, width / 2, 1.0f,	//7, 6
-		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 7
+		length / 2, height / 2, width / 2, 1.0f,	//0, 4
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 5
+		-length / 2, -height / 2, width / 2, 1.0f,	//7, 6
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 7
 
-		lenght / 2, height / 2, width / 2, 1.0f,	//0, 8
-		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 9
-		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 10
-		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 11
+		length / 2, height / 2, width / 2, 1.0f,	//0, 8
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 9
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 10
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 11
 
-		lenght / 2, height / 2, -width / 2, 1.0f,	//1, 12
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 13
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 14
-		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 15
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 12
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 13
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 14
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 15
 
-		lenght / 2, -height / 2, -width / 2, 1.0f,	//2, 16
-		lenght / 2, -height / 2, width / 2, 1.0f,	//3, 17
-		-lenght / 2, -height / 2, width / 2, 1.0f,	//7, 18
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 19
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 16
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 17
+		-length / 2, -height / 2, width / 2, 1.0f,	//7, 18
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 19
 
-		-lenght / 2, height / 2, width / 2, 1.0f,	//4, 20
-		-lenght / 2, height / 2, -width / 2, 1.0f,	//5, 21
-		-lenght / 2, -height / 2, -width / 2, 1.0f,	//6, 22
-		-lenght / 2, -height / 2, width / 2, 1.0f	//7, 23
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 20
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 21
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 22
+		-length / 2, -height / 2, width / 2, 1.0f	//7, 23
 
+	};*/
+	
+	float p[] = {
+		0.0f, height, width, 1.0f,
+		0.0f, 0.0f, width, 1.0f,
+		length, 0.0f, width, 1.0f,
+		length, height, width, 1.0f,
+
+		length, height, 0.0f, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, height, 0.0f, 1.0f,
+
+		length, height, width, 1.0f,
+		length, 0.0f, width, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		length, height, 0.0, 1.0f,
+
+		0.0f, height, 0.0f, 1.0f,
+		0.0f, height, width, 1.0f,
+		length, height, width, 1.0f,
+		length, height, 0.0f, 1.0f,
+
+		0.0f, height, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, width, 1.0f,
+		0.0f, height, width, 1.0f,
+
+		0.0f, 0.0f, width, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		length, 0.0f, width, 1.0f,
 	};
 
 	computeVAOSquare(p);
@@ -276,11 +309,11 @@ void
 VSResSurfRevLib::computeVAOSquare(float* p)
 {
 	GLuint faceIndex[] = {
-		0, 1, 2, 0, 2, 3, 
-		4, 5, 7, 5, 6, 7,
-		8, 9, 11, 8, 10, 11,
-		12, 13, 14, 13, 14, 15,
-		16, 17, 19, 17, 18, 19,
+		0, 1, 2, 0, 2, 3,
+		4, 5, 6, 4, 6, 7,
+		8, 9, 10, 8, 10, 11,
+		12, 13, 14, 12, 14, 15,
+		16, 17, 18, 16, 18, 19,
 		20, 21, 22, 20, 22, 23
 	};
 
@@ -317,37 +350,35 @@ VSResSurfRevLib::computeVAOSquare(float* p)
 	};
 
 	float normals[] = {
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
 
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
 
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
 
-		0.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
 
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, -1.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
 
-		0.0f, -1.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-
-		-1.0f, 0.0f, 0.0f,
-		-1.0f, 0.0f, 0.0f,
-		-1.0f, 0.0f, 0.0f,
-		-1.0f, 0.0f, 0.0f,
-
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
 	};
 
 	glGenVertexArrays(1, &mMyMesh.vao);
@@ -373,7 +404,7 @@ VSResSurfRevLib::computeVAOSquare(float* p)
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
-	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 3, GL_FLOAT, 0, 0, 0);
+	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	//index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);
@@ -381,6 +412,11 @@ VSResSurfRevLib::computeVAOSquare(float* p)
 
 	//Unbind the VAO
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDisableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glDisableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
+	glDisableVertexAttribArray(VSShaderLib::TEXTURE_COORD_ATTRIB);
 
 	mMyMesh.type = GL_TRIANGLES;
 }

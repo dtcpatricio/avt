@@ -19,6 +19,9 @@
 #endif
 
 #define CAPTION "Frogger (Assignment 1)"
+#define ORTHOGONAL 0
+#define PERSPECTIVETOP 1
+#define PERSPECTIVE3RD 2
 
 OurMathLib calc;
 VSShaderLib shader;
@@ -28,6 +31,9 @@ VSResSurfRevLib mySurf;
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
 int faceCount = 12;
+
+// camera type
+int camType = ORTHOGONAL;
 
 const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
@@ -43,10 +49,11 @@ float camX, camY, camZ;
 
 // Camera Spherical Coordinates
 float alpha = -43.0f, beta = 48.0f;
-float r = 20.0f;
+float r = 45.0f;
 
 // Mouse Tracking Variables
 int startX, startY, tracking = 0;
+float eyeX = 0, eyeY = 0, eyeZ = 0;
 
 static inline float
 DegToRad(float degrees)
@@ -226,6 +233,20 @@ void perspective(float fov, float ratio, float nearp, float farp)
 	projMatrix[3 * 4 + 3] = 0.0f;
 }
 
+void ortho(float left, float right,
+	float bottom, float top,
+	float nearp, float farp)
+{
+	calc.setIdentityMatrix(projMatrix, 4);
+
+	projMatrix[0 * 4 + 0] = 2 / (right - left);
+	projMatrix[1 * 4 + 1] = 2 / (top - bottom);
+	projMatrix[2 * 4 + 2] = -2 / (farp - nearp);
+	projMatrix[3 * 4 + 0] = -(right + left) / (right - left);
+	projMatrix[3 * 4 + 1] = -(top + bottom) / (top - bottom);
+	projMatrix[3 * 4 + 2] = -(farp + nearp) / (farp - nearp);
+}
+
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
@@ -386,17 +407,17 @@ void createEdges()
 	createSidewalkEdge();
 }
 
-void createFrog()
+void createFrog(float x, float y, float z)
 {
 	mySurf.createCube(1.0f);
 	calc.setIdentityMatrix(model, 4);
-	translation(-12.5f, 2.5f, 12.5f);
+	translation(x, y, z);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
 
 	mySurf.createSphere(.5f, 16);
 	calc.setIdentityMatrix(model, 4);
-	translation(-12.5f, 3.5f, 12.5f);
+	translation(x, y + 1.0f, z);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
 }
@@ -446,8 +467,25 @@ void createCar()
 
 void renderScene()
 {
+	camX += 1.0f;
+	switch (camType)
+	{
+	case ORTHOGONAL:
+		lookAt(0.0f, 20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
+		break;
 
-	lookAt(camX, camY, camZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	case PERSPECTIVE3RD:
+		lookAt(-15.0f, 4.0f, 15.0f, eyeX, 0.0f, eyeZ, 0.0f, 1.0f, 0.0f);
+		break;
+
+	case PERSPECTIVETOP:
+		lookAt(0.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
+		break;
+
+	default:
+		break;
+	}
+	
 
 	glUseProgram(shader.getProgramIndex());
 
@@ -459,10 +497,11 @@ void renderScene()
 	createLogs();
 	createRoad();
 
-	createFrog();
+	createFrog(-12.5, 2.5, 12.5);
 	createCar();
 
 	mySurf.createCube(1.0f);
+	//mySurf.createRectangle(20.0f, 3.0f, 2.0f);
 	calc.setIdentityMatrix(model, 4);
 	translation(0.0f, 2.5f, 0.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
@@ -495,7 +534,20 @@ void reshape(int w, int h)
 	glViewport(0, 0, WinX, WinY);
 
 	ratio = (1.0f * WinX) / WinY;
-	perspective(53.13f, ratio, .1f, -5.0f);
+	
+	switch (camType) {
+	case ORTHOGONAL:
+		ortho(-30.0f, 30.0f, -20.0f, 20.0f, -30.0f, 30.0f);
+		break;
+
+	case PERSPECTIVETOP:
+		perspective(53.13f, ratio, .1f, -5.0f);
+		break;
+
+	default:
+		perspective(53.13f, ratio, .1f, -5.0f);
+		break;
+	}
 
 }
 
@@ -536,9 +588,14 @@ void processMouseMotion(int xx, int yy)
 	float alphaAux, betaAux;
 	float rAux;
 
-	deltaX =  - xx + startX;
-	deltaY =    yy - startY;
+	deltaX =  -xx + startX;
+	deltaY =   yy - startY;
 
+	if (tracking == 1) {
+		//float catetoOposto = r * sin(acos(deltaX / r)); // deltaX * tan(acos(deltaX / r));
+		eyeX = r * cos(atan(deltaX / r));
+		eyeZ = r * cos(atan(deltaX / r) + M_PI / 2);
+	}
 	// left mouse button: move camera
 	if (tracking == 1) {
 		alphaAux = alpha + deltaX;
@@ -599,7 +656,22 @@ void processKeys(unsigned char key, int xx, int yy)
 {
 	switch(key) {
 
-		case 27:
+	case '1':
+		camType = ORTHOGONAL;
+		reshape(WinX, WinY);
+		break;
+
+	case '2':
+		camType = PERSPECTIVETOP;
+		reshape(WinX, WinY);
+		break;
+
+	case '3':
+		camType = PERSPECTIVE3RD;
+		reshape(WinX, WinY);
+		break;
+
+	case 27:
 			glutLeaveMainLoop();
 			break;
 
