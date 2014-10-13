@@ -405,10 +405,7 @@ void sendToGL(int objId) {
 }
 
 void applyColor(float r, float g, float b){
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	glUniform4fv(colorId, 3, color);
+	glUniform4f(colorId, r, g, b, 1.0);
 }
 
 void applyTransformations(int objId) {
