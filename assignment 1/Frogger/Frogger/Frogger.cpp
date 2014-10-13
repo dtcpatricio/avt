@@ -41,7 +41,7 @@ const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
 
 GLfloat projMatrix[16], viewMatrix[16], model[16];
-GLfloat color[4];
+GLfloat color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 GLuint viewMatrixId, projId, modelId, colorId;
 
@@ -275,7 +275,7 @@ void createTopLogs(){
 	mySurf.setObjId(2);
 	mySurf.createCylinder(6.0f, 0.75f, 8);
 	//translation(2.0f, 2.75f, -15.0f);
-	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
 	
 	//translation(8.5f, 2.75f, -8.5f);
 	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
@@ -286,20 +286,20 @@ void createTopLogs(){
 
 void middleRowLogs(){
 	mySurf.setObjId(3);
-	mySurf.createCylinder(7.0f, 0.75f, 8);
+	mySurf.createCylinder(5.0f, 0.75f, 8);
 	//translation(-2.5f, 2.75f, -12.5f);
 	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 	
-	//translation(5.0f, 2.75f, -5.0f);
+	//translation(4.0f, 2.75f, -6.0f);
 	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 	
-	//translation(11.5f, 2.75f, 1.5f);
+	//translation(10.5f, 2.75f, 0.5f);
 	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void bottomRowLogs(){
 	mySurf.setObjId(4);
-	mySurf.createCylinder(4.0f, 0.75f, 8);
+	mySurf.createCylinder(5.0f, 0.75f, 8);
 	//translation(-2.5f, 2.75f, -9.5f);
 	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 	
@@ -362,7 +362,7 @@ void createFrog(Frog frog)
 	//translation(x, y + 1.0f, z);
 }
 
-void createCar(float x, float y, float z)
+void createCar()
 {
 	mySurf.setObjId(10);
 	// front left wheel
@@ -394,7 +394,7 @@ void createScene() {
 	createRiver();
 	createLogs();
 	createRoad();
-
+	createCar();
 	createFrog(frog);
 }
 
@@ -403,35 +403,152 @@ void sendToGL(int objId) {
 	mySurf.simpleRender(objId);
 	calc.setIdentityMatrix(model, 4);
 }
+
+void applyColor(float r, float g, float b){
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	glUniform4fv(colorId, 3, color);
+}
+
 void applyTransformations(int objId) {
 	switch (objId)
 	{
+		//River
 		case 0:
 			translation(0.0f, 0.0f, -10.0f);
+			applyColor(0.0f, 0.0f, 1.0f);
 			sendToGL(objId);
 			translation(10.0f, 0.0f, 0.0f);
+			applyColor(0.0f, 0.0f, 1.0f);
 			sendToGL(objId);
 			break;
 
+		//Road
 		case 1:
 			translation(-12.0f, 0.0f, 2.0f);
+			applyColor(0.0f, 0.0f, 0.0f);
 			sendToGL(objId);
 			translation(-2.0f, 0.0f, 12.0f);
+			applyColor(0.0f, 0.0f, 0.0f);
 			sendToGL(objId);
 			break;
+
+		//Top Logs
+		case 2:
+			for (int j = 0; j < 3; j++){
+				translation(2.0f + 6.5f*j, 2.75f, -15.0f + 6.5f*j);
+				rotate(90.0f, 1.0f, 0.0f, -1.0f);
+				applyColor(0.6f, 0.4f, 0.12f);
+				sendToGL(objId);
+			}
+			break;
+
+		//Middle Logs
+		case 3:
+			for (int j = 0; j < 3; j++){
+				translation(-2.5f + 6.5f*j, 2.75f, -12.5f + 6.5f*j);
+				rotate(90.0f, 1.0f, 0.0f, -1.0f);
+				applyColor(0.6f, 0.4f, 0.12f);
+				sendToGL(objId);
+			}
+			break;
+
+		//Bottom Logs
+		case 4:
+			for (int j = 0; j < 3; j++){
+				translation(-2.5f + 6.0f*j, 2.75f, -9.5f + 6.0f*j);
+				rotate(90.0f, 1.0f, 0.0f, -1.0f);
+				applyColor(0.6f, 0.4f, 0.12f);
+				sendToGL(objId);
+			}
+			break;
+		
+		// Grass Edge 
+		case 5:
+			translation(11.0f, 0.5f, -11.0f);
+			rotate(90.0f, 1.0f, 0.0f, -1.0f);
+			applyColor(0.0f, 1.0f, 0.0f);
+			sendToGL(objId);
+			break;
+
+		//Street Edge
+		case 6:
+			translation(-1.0f, .5f, 1.0f);
+			rotate(90.0f, 1.0f, 0.0f, -1.0f);
+			applyColor(0.25f, 0.25f, 0.25f);
+			sendToGL(objId);
+			break;
+
+		// Sidewalk Edge
+		case 7:
+			translation(-13.0f, .5f, 13.0f);
+			rotate(90.0f, 1.0f, 0.0f, -1.0f);
+			applyColor(0.98f, 0.625f, 0.12f);
+			sendToGL(objId);
+			break;
+
+		//Frog' Body
+		case 8:
+			translation(frog.getX(), frog.getY(), frog.getZ());
+			applyColor(1.0f, 0.0f, 1.0f);
+			sendToGL(objId);
+			break;
+
+		// Frog's Head
+		case 9:
+			translation(frog.getX(), frog.getY() + 1.0f, frog.getZ());
+			applyColor(1.0f, 0.0f, 0.5f);
+			sendToGL(objId);
+			break;
+
+			//Car's  Note: Bozo Programming
+		case 10:
+			for (int j = 0; j < 4; j++){
+				switch (j){
+				case 0:
+					translation(-7.3f, 2.5f, 6.0f);
+					break;
+
+				case 1:
+					translation(-6.0f, 2.5f, 4.7f);
+					break;
+
+				case 2:
+					translation(-4.7f, 2.5f, 6.0f);
+					break;
+
+				case 3:
+					translation(-6.0f, 2.5f, 7.3f);
+				}
+				rotate(90.0f, 1.0f, 0.0f, 1.0f);
+				applyColor(0.1f, 0.1f, 0.1f);
+				sendToGL(objId);
+			}
+		
+		//Car's Body
+		case 11:
+			translation(-6.0f, 3.0f, 6.0f);
+			rotate(90.0f, 1.0f, 0.0f, -1.0f);
+			applyColor(1.0f, 0.0f, 0.0f);
+			sendToGL(objId);
+			break;
+
+		
 	}
 }
+
 void renderScene()
 {
 	float camAdjust = -.5f;
 	switch (camType)
 	{
 	case ORTHOGONAL:
-		lookAt(0.0f, 20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
+		lookAt(0.0f, 15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
 		break;
 
 	case PERSPECTIVETOP:
-		lookAt(0.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
+		lookAt(-5.0f, 40.0f, 5.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f);
 		break;
 
 	case PERSPECTIVE3RD:
