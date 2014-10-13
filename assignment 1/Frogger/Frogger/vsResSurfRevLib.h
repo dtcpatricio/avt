@@ -55,20 +55,23 @@ public:
 	void createCylinder(float height, float radius, int sides);
 	void createCone(float height, float baseRadius, int sides);
 	void createPawn();
+	void setObjId(int id);
+	int getMyMeshLength();
 
-	virtual void clone(VSResourceLib *res);
+	//virtual void clone(VSResourceLib *res);
 	/** implementation of the superclass abstract method
 	  * \param filename the model's filename
 	*/
 	virtual bool load(std::string filename);
 	/// implementation of the superclass abstract method
-	virtual void VSResSurfRevLib::simpleRender();
+	virtual void VSResSurfRevLib::simpleRender(int objId);
 	virtual void render();
 	/// set a color component for all meshes
 	void setColor(VSResourceLib::MaterialSemantics m, float *values);
 	/// set a color component for a particular mesh
 	void setColor(unsigned int mesh, VSResourceLib::MaterialSemantics m, float *values);
 
+	
 #ifdef _VSL_TEXTURE_WITH_DEVIL
 	/// load and set a texture for the object
 	virtual void addTexture(unsigned int unit, std::string filename);
@@ -96,9 +99,9 @@ protected:
 		struct Material mat;
 	};
 
-	/// the mesh collection
-	struct MyMesh mMyMesh;
-	
+	struct MyMesh mMyMesh[12];
+	int objId=0;
+
 private:
 	void computeVAOSquare(float* p);
 	void computeVAO(int numP, float *p, float *points, int sides, float smoothCos);

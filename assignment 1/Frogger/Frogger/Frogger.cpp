@@ -10,6 +10,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include "Frog.h"
 #include "OurMathLib.h"
 #include "vsShaderLib.h"
 #include "vsResSurfRevLib.h"
@@ -27,6 +28,7 @@ OurMathLib calc;
 VSShaderLib shader;
 VSResSurfRevLib mySurf;
 
+// Mesh array definition
 
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
@@ -39,17 +41,20 @@ const GLfloat FPS = 1000 / 60;
 unsigned int FrameCount = 0;
 
 GLfloat projMatrix[16], viewMatrix[16], model[16];
+GLfloat color[4];
 
-GLuint viewMatrixId, projId, modelId;
+GLuint viewMatrixId, projId, modelId, colorId;
 
 GLfloat* modelRet;
+
+Frog frog;
 
 // Camera Coordinates
 float camX, camY, camZ;
 
 // Camera Spherical Coordinates
 float alpha = -43.0f, beta = 48.0f;
-float r = 45.0f;
+float r = 5.0f;
 
 // Mouse Tracking Variables
 int startX, startY, tracking = 0;
@@ -93,6 +98,7 @@ GLuint setupShaders()
 
 	shader.setProgramOutput(0, "outFrag");
 	shader.setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
+	shader.setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "in_color");
 	shader.prepareProgram();
 
 	return(shader.isProgramValid());
@@ -251,116 +257,57 @@ void ortho(float left, float right,
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void createRiver(){
-
+	mySurf.setObjId(0);
 	mySurf.createCylinder(4.0f, 10.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(0.0f, 0.0f, -10.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	mySurf.createCylinder(4.0f, 10.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(10.0f, 0.0f, 0.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
 	
+	//translation(0.0f, 0.0f, -10.0f); 1st river
+	//translation(10.0f, 0.0f, 0.0f); 2nd river
 }
 
 void createRoad(){
+	mySurf.setObjId(1);
 	mySurf.createCylinder(4.0f, 10.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(-12.0f, 0.0f, 2.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	mySurf.createCylinder(4.0f, 10.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(-2.0f, 0.0f, 12.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(-12.0f, 0.0f, 2.0f);
+	//translation(-2.0f, 0.0f, 12.0f);
 }
 
 void createTopLogs(){
-
-	//left 
+	mySurf.setObjId(2);
 	mySurf.createCylinder(6.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(2.0f, 2.75f, -15.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//middle 
-	mySurf.createCylinder(7.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(8.5f, 2.75f, -8.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//right
-	mySurf.createCylinder(4.0f, .75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(16.0f, 2.75f, -1.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(2.0f, 2.75f, -15.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(8.5f, 2.75f, -8.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(16.0f, 2.75f, -1.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void middleRowLogs(){
-
-	//left
+	mySurf.setObjId(3);
 	mySurf.createCylinder(7.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(-2.5f, 2.75f, -12.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//middle
-	mySurf.createCylinder(4.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(5.0f, 2.75f, -5.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//right
-	mySurf.createCylinder(6.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(11.5f, 2.75f, 1.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(-2.5f, 2.75f, -12.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(5.0f, 2.75f, -5.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(11.5f, 2.75f, 1.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void bottomRowLogs(){
-
-	//left
+	mySurf.setObjId(4);
 	mySurf.createCylinder(4.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(-2.5f, 2.75f, -9.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//middle
-	mySurf.createCylinder(6.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(3.5f, 2.75f, -3.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
-	//right
-	mySurf.createCylinder(7.0f, 0.75f, 8);
-	calc.setIdentityMatrix(model, 4);
-	translation(9.5f, 2.75f, 2.5f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(-2.5f, 2.75f, -9.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(3.5f, 2.75f, -3.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
+	
+	//translation(9.5f, 2.75f, 2.5f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void createLogs(){
@@ -372,32 +319,26 @@ void createLogs(){
 
 void createGrassEdge()
 {
+	mySurf.setObjId(5);
 	mySurf.createCylinder(29.0f, 2.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(11.0f, .5f, -11.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(11.0f, .5f, -11.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void createStreetEdge()
 {
+	mySurf.setObjId(6);
 	mySurf.createCylinder(29.0f, 2.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(-1.0f, .5f, 1.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(-1.0f, .5f, 1.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void createSidewalkEdge()
 {
+	mySurf.setObjId(7);
 	mySurf.createCylinder(29.0f, 2.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-	translation(-13.0f, .5f, 13.0f);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(-13.0f, .5f, 13.0f);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
 void createEdges()
@@ -407,68 +348,82 @@ void createEdges()
 	createSidewalkEdge();
 }
 
-void createFrog(float x, float y, float z)
+void createFrog(Frog frog)
 {
+	float x = frog.getX();
+	float y = frog.getY();
+	float z = frog.getZ();
+	mySurf.setObjId(8);
 	mySurf.createCube(1.0f);
-	calc.setIdentityMatrix(model, 4);
-	translation(x, y, z);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(x, y, z);
+	
+	mySurf.setObjId(9);
 	mySurf.createSphere(.5f, 16);
-	calc.setIdentityMatrix(model, 4);
-	translation(x, y + 1.0f, z);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(x, y + 1.0f, z);
 }
 
 void createCar(float x, float y, float z)
 {
-
+	mySurf.setObjId(10);
 	// front left wheel
 	mySurf.createTorus(0.1f, 0.5f, 16, 16);
-	calc.setIdentityMatrix(model, 4);
-	translation(x-1.3f, 2.5f, z);
-	rotate(90.0f, 1.0f, 0.0f, 1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(x-1.3f, 2.5f, z);
+	//rotate(90.0f, 1.0f, 0.0f, 1.0f);
+	
 	// front right wheel
-	mySurf.createTorus(0.1f, 0.5f, 16, 16);
-	calc.setIdentityMatrix(model, 4);
-	translation(x, y-0.5f, z-1.3f);
-	rotate(90.0f, 1.0f, 0.0f, 1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(x, y-0.5f, z-1.3f);
+	//rotate(90.0f, 1.0f, 0.0f, 1.0f);
+	
 	// rear right wheel
-	mySurf.createTorus(0.1f, 0.5f, 16, 16);
-	calc.setIdentityMatrix(model, 4);
-	translation(x+1.3f, y-0.5, z);
-	rotate(90.0f, 1.0f, 0.0f, 1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(x+1.3f, y-0.5, z);
+	//rotate(90.0f, 1.0f, 0.0f, 1.0f);
+	
 	// rear left wheel
-	mySurf.createTorus(0.1f, 0.5f, 16, 16);
-	calc.setIdentityMatrix(model, 4);
-	translation(x, y-0.5f, z+1.3f);
-	rotate(90.0f, 1.0f, 0.0f, 1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
-
+	//translation(x, y-0.5f, z+1.3f);
+	//rotate(90.0f, 1.0f, 0.0f, 1.0f);
+	
+	// body shop
+	mySurf.setObjId(11);
 	mySurf.createCylinder(2.0f, 1.0f, 4);
-	calc.setIdentityMatrix(model, 4);
-
-	translation(x, y, z);
-	rotate(90.0f, 1.0f, 0.0f, -1.0f);
-	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	//translation(x, y, z);
+	//rotate(90.0f, 1.0f, 0.0f, -1.0f);
 }
 
+void createScene() {
+	createEdges();
+	createRiver();
+	createLogs();
+	createRoad();
+
+	createFrog(frog);
+}
+
+void sendToGL(int objId) {
+	glUniformMatrix4fv(modelId, 1, false, model);
+	mySurf.simpleRender(objId);
+	calc.setIdentityMatrix(model, 4);
+}
+void applyTransformations(int objId) {
+	switch (objId)
+	{
+		case 0:
+			translation(0.0f, 0.0f, -10.0f);
+			sendToGL(objId);
+			translation(10.0f, 0.0f, 0.0f);
+			sendToGL(objId);
+			break;
+
+		case 1:
+			translation(-12.0f, 0.0f, 2.0f);
+			sendToGL(objId);
+			translation(-2.0f, 0.0f, 12.0f);
+			sendToGL(objId);
+			break;
+	}
+}
 void renderScene()
 {
-	camX += 1.0f;
+	float camAdjust = -.5f;
 	switch (camType)
 	{
 	case ORTHOGONAL:
@@ -480,7 +435,10 @@ void renderScene()
 		break;
 
 	case PERSPECTIVE3RD:
-		lookAt(-15.0f, 4.0f, 15.0f, eyeX, 0.0f, eyeZ, 0.0f, 1.0f, 0.0f);
+		lookAt(
+				frog.getX() + camX, frog.getY() + camY - camAdjust, frog.getZ() + camZ,
+				frog.getX(), frog.getY(), frog.getZ(),
+				0.0f, 1.0f, 0.0f);
 		break;
 
 	default:
@@ -492,25 +450,21 @@ void renderScene()
 	glUniformMatrix4fv(viewMatrixId, 1, false, viewMatrix);
 	glUniformMatrix4fv(projId, 1, false, projMatrix);
 
-	createEdges();
-	createRiver();
-	createLogs();
-	createRoad();
-
-	createFrog(-12.5, 2.5, 12.5);
-	
-	//Routine to create Cars
-	for (int i = 2; i < 6; i++){
-		for (int j = -1; j < 2; j++){
-			createCar(-2.0f*i+ j*6, 3.0f, 2.0f*i+j*6);
-		}
+	for (int i = 0; i < mySurf.getMyMeshLength(); i++) {
+		applyTransformations(i);
 	}
+	//Routine to create Cars
+	//for (int i = 2; i < 6; i++){
+	//	for (int j = -1; j < 2; j++){
+	//		createCar(-2.0f*i+ j*6, 3.0f, 2.0f*i+j*6);
+	//	}
+	//}
 
-	mySurf.createCube(1.0f);
+	/*mySurf.createCube(1.0f);
 	calc.setIdentityMatrix(model, 4);
 	translation(0.0f, 2.5f, 0.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
-	mySurf.simpleRender();
+	mySurf.simpleRender();*/
 	
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
@@ -596,11 +550,6 @@ void processMouseMotion(int xx, int yy)
 	deltaX =  -xx + startX;
 	deltaY =   yy - startY;
 
-	if (tracking == 1) {
-		//float catetoOposto = r * sin(acos(deltaX / r)); // deltaX * tan(acos(deltaX / r));
-		eyeX = r * cos(atan(deltaX / r));
-		eyeZ = r * cos(atan(deltaX / r) + M_PI / 2);
-	}
 	// left mouse button: move camera
 	if (tracking == 1) {
 		alphaAux = alpha + deltaX;
@@ -771,8 +720,12 @@ void init(int argc, char* argv[])
 	if (!setupShaders())
 		exit(1);
 
-	//createScene();
+	frog.setX(-12.5f);
+	frog.setY(2.5f);
+	frog.setZ(12.5f);
+	createScene();
 
+	colorId = glGetUniformLocation(shader.getProgramIndex(), "in_color");
 	viewMatrixId = glGetUniformLocation(shader.getProgramIndex(), "viewMatrix");
 	projId = glGetUniformLocation(shader.getProgramIndex(), "projMatrix");
 	modelId = glGetUniformLocation(shader.getProgramIndex(), "model");
