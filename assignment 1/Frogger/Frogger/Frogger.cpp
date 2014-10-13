@@ -586,6 +586,42 @@ void renderScene()
 	checkOpenGLError("ERROR: Could not draw scene.");
 }
 
+/////////////////////////////////////////////////////////////////////// Frog Movement Routines
+
+float frogSpeed = 0.2;
+
+void frogLeft(){
+	float x = frog.getX();
+	float z = frog.getZ();
+
+	frog.setX(x-frogSpeed);
+	frog.setZ(z - frogSpeed);
+}
+
+void frogRight(){
+	float x = frog.getX();
+	float z = frog.getZ();
+
+	frog.setX(x + frogSpeed);
+	frog.setZ(z + frogSpeed);
+}
+
+void frogForward(){
+	float x = frog.getX();
+	float z = frog.getZ();
+
+	frog.setX(x + frogSpeed);
+	frog.setZ(z - frogSpeed);
+}
+
+void frogBackwards(){
+	float x = frog.getX();
+	float z = frog.getZ();
+
+	frog.setX(x - frogSpeed);
+	frog.setZ(z + frogSpeed);
+}
+
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void cleanup()
@@ -742,13 +778,29 @@ void processKeys(unsigned char key, int xx, int yy)
 		reshape(WinX, WinY);
 		break;
 
-	case 27:
-			glutLeaveMainLoop();
-			break;
+	case 'o':
+		frogLeft();
+		break;
 
-		case 'c': 
-			printf("Camera Spherical Coordinates (%f, %f, %f)\n", alpha, beta, r);
-			break;
+	case 'p':
+		frogRight();
+		break;
+
+	case 'q':
+		frogForward();
+		break;
+
+	case 'a':
+		frogBackwards();
+		break;
+
+	case 27:
+		glutLeaveMainLoop();
+		break;
+
+	case 'c': 
+		printf("Camera Spherical Coordinates (%f, %f, %f)\n", alpha, beta, r);
+		break;
 
 	}
 
