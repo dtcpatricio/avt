@@ -422,13 +422,13 @@ void createFrog(float x, float y, float z)
 	mySurf.simpleRender();
 }
 
-void createCar()
+void createCar(float x, float y, float z)
 {
 
 	// front left wheel
 	mySurf.createTorus(0.1f, 0.5f, 16, 16);
 	calc.setIdentityMatrix(model, 4);
-	translation(-11.0f, 2.5f, 10.0f);
+	translation(x-1.3f, 2.5f, z);
 	rotate(90.0f, 1.0f, 0.0f, 1.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
@@ -436,7 +436,7 @@ void createCar()
 	// front right wheel
 	mySurf.createTorus(0.1f, 0.5f, 16, 16);
 	calc.setIdentityMatrix(model, 4);
-	translation(-10.0f, 2.5f, 8.7f);
+	translation(x, y-0.5f, z-1.3f);
 	rotate(90.0f, 1.0f, 0.0f, 1.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
@@ -444,7 +444,7 @@ void createCar()
 	// rear right wheel
 	mySurf.createTorus(0.1f, 0.5f, 16, 16);
 	calc.setIdentityMatrix(model, 4);
-	translation(-8.7f, 2.5f, 10.0f);
+	translation(x+1.3f, y-0.5, z);
 	rotate(90.0f, 1.0f, 0.0f, 1.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
@@ -452,14 +452,15 @@ void createCar()
 	// rear left wheel
 	mySurf.createTorus(0.1f, 0.5f, 16, 16);
 	calc.setIdentityMatrix(model, 4);
-	translation(-10.0f, 2.5f, 11.0f);
+	translation(x, y-0.5f, z+1.3f);
 	rotate(90.0f, 1.0f, 0.0f, 1.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
 
 	mySurf.createCylinder(2.0f, 1.0f, 4);
 	calc.setIdentityMatrix(model, 4);
-	translation(-10.0f, 3.0f, 10.0f);
+
+	translation(x, y, z);
 	rotate(90.0f, 1.0f, 0.0f, -1.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
 	mySurf.simpleRender();
@@ -474,19 +475,18 @@ void renderScene()
 		lookAt(0.0f, 20.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
 		break;
 
-	case PERSPECTIVE3RD:
-		lookAt(-15.0f, 4.0f, 15.0f, eyeX, 0.0f, eyeZ, 0.0f, 1.0f, 0.0f);
-		break;
-
 	case PERSPECTIVETOP:
 		lookAt(0.0f, 50.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f);
+		break;
+
+	case PERSPECTIVE3RD:
+		lookAt(-15.0f, 4.0f, 15.0f, eyeX, 0.0f, eyeZ, 0.0f, 1.0f, 0.0f);
 		break;
 
 	default:
 		break;
 	}
 	
-
 	glUseProgram(shader.getProgramIndex());
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, viewMatrix);
@@ -498,10 +498,15 @@ void renderScene()
 	createRoad();
 
 	createFrog(-12.5, 2.5, 12.5);
-	createCar();
+	
+	//Routine to create Cars
+	for (int i = 2; i < 6; i++){
+		for (int j = -1; j < 2; j++){
+			createCar(-2.0f*i+ j*6, 3.0f, 2.0f*i+j*6);
+		}
+	}
 
 	mySurf.createCube(1.0f);
-	//mySurf.createRectangle(20.0f, 3.0f, 2.0f);
 	calc.setIdentityMatrix(model, 4);
 	translation(0.0f, 2.5f, 0.0f);
 	glUniformMatrix4fv(modelId, 1, false, model);
