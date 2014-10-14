@@ -82,6 +82,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Frog.cpp" />
     <ClCompile Include="Frogger.cpp" />
     <ClCompile Include="ourMathLib.cpp" />
     <ClCompile Include="vsLogLib.cpp" />
@@ -91,6 +92,8 @@
     <ClCompile Include="vsShaderLib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Frog.h" />
+    <ClInclude Include="Frogger.h" />
     <ClInclude Include="OurMathLib.h" />
     <ClInclude Include="vsLogLib.h" />
     <ClInclude Include="vsMathLib.h" />
