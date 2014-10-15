@@ -1,1 +1,2 @@
 void updateFrog();
+void moveCar();

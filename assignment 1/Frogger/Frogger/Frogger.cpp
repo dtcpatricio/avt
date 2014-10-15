@@ -49,6 +49,9 @@ GLfloat projMatrix[16], viewMatrix[16], model[16];
 GLfloat color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 GLfloat mouseWorldP[3];
 
+// car position
+float carX = 1.0f, carZ = 18.0f;
+
 GLuint viewMatrixId, projId, modelId, colorId;
 
 GLfloat* modelRet;
@@ -621,6 +624,7 @@ void applyColor(float r, float g, float b){
 }
 
 void applyTransformations(int objId) {
+	moveCar();
 	switch (objId)
 	{
 		//River
@@ -716,19 +720,19 @@ void applyTransformations(int objId) {
 			for (int j = 0; j < 4; j++){
 				switch (j){
 				case 0:
-					translation(-7.3f, 2.5f, 6.0f);
+					translation(carX - 1.3f, 2.5f, carZ);
 					break;
 
 				case 1:
-					translation(-6.0f, 2.5f, 4.7f);
+					translation(carX, 2.5f, carZ - 1.3f);
 					break;
 
 				case 2:
-					translation(-4.7f, 2.5f, 6.0f);
+					translation(carX + 1.3f, 2.5f, carZ);
 					break;
 
 				case 3:
-					translation(-6.0f, 2.5f, 7.3f);
+					translation(carX, 2.5f, carZ + 1.3f);
 				}
 				rotate(90.0f, 1.0f, 0.0f, 1.0f);
 				applyColor(0.1f, 0.1f, 0.1f);
@@ -737,7 +741,7 @@ void applyTransformations(int objId) {
 		
 		//Car's Body
 		case 11:
-			translation(-6.0f, 3.0f, 6.0f);
+			translation(carX, 3.0f, carZ);
 			rotate(90.0f, 1.0f, 0.0f, -1.0f);
 			applyColor(1.0f, 0.0f, 0.0f);
 			sendToGL(objId);
@@ -798,7 +802,7 @@ void renderScene()
 
 /////////////////////////////////////////////////////////////////////// Frog Movement Routines
 
-float frogSpeed = 0.05 * 1 / 60;
+float frogSpeed = 0.10 * 1 / 60;
 
 void frogLeft(){
 	float x = frog.getX();
@@ -842,6 +846,17 @@ void updateFrog() {
 	if (downPressed == true)
 		frogBackwards();
 }
+
+/////////////////////////////////////////////////////////////////////// CAR MOV ROUTINES
+void moveCar() {
+	float deltaX = 0.0005f, deltaZ = 0.0005f;
+	carX -= deltaX;
+	carZ -= deltaZ;
+	if (carX <= -18.0f && carZ <= 0.0f) {
+		carX = 1.0f;
+		carZ = 18.0f;
+	}
+}
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void cleanup()
@@ -883,10 +898,15 @@ void reshape(int w, int h)
 
 }
 
+void moveObjects(int value) {
+	moveCar();
+}
+
 void refresh(int value)
 {
 	glutPostRedisplay();
 	glutTimerFunc(FPS, refresh, 0);
+	glutTimerFunc(FPS, moveObjects, 0);
 }
 
 void timer(int value)
