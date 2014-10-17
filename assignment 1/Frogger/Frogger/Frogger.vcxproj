@@ -82,9 +82,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cam.cpp" />
     <ClCompile Include="Frog.cpp" />
     <ClCompile Include="Frogger.cpp" />
+    <ClCompile Include="io.cpp" />
     <ClCompile Include="ourMathLib.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="vsLogLib.cpp" />
     <ClCompile Include="vsMathLib.cpp" />
     <ClCompile Include="vsResourceLib.cpp" />
@@ -92,8 +95,12 @@
     <ClCompile Include="vsShaderLib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cam.h" />
     <ClInclude Include="Frog.h" />
     <ClInclude Include="Frogger.h" />
+    <ClInclude Include="io.h" />
+    <ClInclude Include="misc.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="OurMathLib.h" />
     <ClInclude Include="vsLogLib.h" />
     <ClInclude Include="vsMathLib.h" />
