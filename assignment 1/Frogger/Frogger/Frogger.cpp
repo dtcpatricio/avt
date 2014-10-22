@@ -1,75 +1,44 @@
 // Frogger.cpp : Defines the entry point for the console application.
 
 #include "Frogger.h"
-#include "Scene.h"
-#include "io.h"
-#include "Cam.h"
-#include "Frog.h"
-#include "OurMathLib.h"
 
 #define CAPTION "Frogger (Assignment 1)"
 
-VSShaderLib shader;
-Scene scene(shader);
+struct MyWrapper {
+	static void display(void) {
+		manager->display();
+	}
+	static void renderScene(void) {
+		manager->renderScene();
+	}
+	static void reshape(int x, int y) {
+		manager->reshape(x, y);
+	}
+	static void keyPressed(unsigned char key, int xx, int yy) {
+		manager->keyPressed(key, xx, yy);
+	}
+	static void keyUp(unsigned char key, int xx, int yy) {
+		manager->keyUp(key, xx, yy);
+	}
+	static void mouseMotion(int xx, int yy) {
+		manager->mouseMotion(xx, yy);
+	}
+	static void mouseWheel(int wheel, int direction, int x, int y) {
+		manager->mouseWheel(wheel, direction, x, y);
+	}
+	static void mouseButtons(int button, int state, int xx, int yy) {
+		manager->mouseButtons(button, state, xx, yy);
+	}
+	static GameManager *manager;
+};
+
+GameManager* MyWrapper::manager = 0;
+
+GLErrors error;
 
 int WindowHandle = 0;
 
-const GLfloat FPS = 1000 / 60;
-unsigned int FrameCount = 0;
-
 GLfloat color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-/////////////////////////////////////////////////////////////////////// ERRORS
-
-bool isOpenGLError()
-{
-	bool isError = false;
-	GLenum errCode;
-	const GLubyte *errString;
-	while ((errCode = glGetError()) != GL_NO_ERROR) {
-		isError = true;
-		errString = gluErrorString(errCode);
-		std::cerr << "OpenGL ERROR [" << errString << "]." << std::endl;
-	}
-	return isError;
-}
-
-void checkOpenGLError(std::string error)
-{
-	if (isOpenGLError()) {
-		std::cerr << error << std::endl;
-		exit(EXIT_FAILURE);
-	}
-}
-
-/////////////////////////////////////////////////////////////////////// SHADERS
-
-GLuint setupShaders()
-{
-	shader.init();
-	shader.loadShader(VSShaderLib::VERTEX_SHADER,   "assign1.vert");
-	shader.loadShader(VSShaderLib::FRAGMENT_SHADER, "assign1.frag");
-
-	shader.setProgramOutput(0, "outFrag");
-	shader.setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB,  "in_pos");
-	shader.setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "in_color");
-	shader.prepareProgram();
-
-	return(shader.isProgramValid());
-}
-
-void destroyShaderProgram()
-{
-	glUseProgram(0);
-	glDetachShader(shader.getProgramIndex(), shader.getShaderIndex(shader.VERTEX_SHADER));
-	glDetachShader(shader.getProgramIndex(), shader.getShaderIndex(shader.FRAGMENT_SHADER));
-
-	glDeleteShader(shader.getShaderIndex(shader.FRAGMENT_SHADER));
-	glDeleteShader(shader.getShaderIndex(shader.VERTEX_SHADER));
-	glDeleteProgram(shader.getProgramIndex());
-
-	checkOpenGLError("ERROR: Could not destroy shaders.");
-}
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
@@ -79,71 +48,33 @@ void destroyBufferObjects()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
-}
-
-/////////////////////////////////////////////////////////////////////// SCENE
-
-void renderScene()
-{
-	glUseProgram(shader.getProgramIndex());
-
-	scene.update();
-	
-	//checkOpenGLError("ERROR: Could not draw scene.");
+	error.checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
-void mouseWheel(int wheel, int direction, int x, int y) {
-	scene.getIO()->mouseWheel(wheel, direction, x, y);
-}
-void processMouseMotion(int xx, int yy) {
-	scene.getIO()->processMouseMotion(xx, yy);
-}
-void processMouseButtons(int button, int state, int xx, int yy) {
-	scene.getIO()->processMouseButtons(button, state, xx, yy);
-}
-void processKeys(unsigned char key, int xx, int yy) {
-	scene.getIO()->processKeys(key, xx, yy);
-}
-void processUpKeys(unsigned char key, int x, int y) {
-	scene.getIO()->processUpKeys(key, x, y);
-}
-
 void cleanup()
 {
-	destroyShaderProgram();
+	MyWrapper::manager->destroyShaderProgram();
 	destroyBufferObjects();
 }
 
-void display()
-{
-	++FrameCount;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	renderScene();
-	glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-	scene.getIO()->reshape(w, h);
-}
-
-void refresh(int value)
+void
+refresh(int value)
 {
 	glutPostRedisplay();
 	glutTimerFunc(FPS, refresh, 0);
 }
 
-void timer(int value)
+void onTimer(int value)
 {
 	std::ostringstream oss;
-	oss << CAPTION << ": " << FrameCount << " FPS @ (" << WinX << "x" << WinY << ")";
+	oss << CAPTION << ": " << MyWrapper::manager->FrameCount << " FPS @ (" << WinX << "x" << WinY << ")";
 	std::string s = oss.str();
 	glutSetWindow(WindowHandle);
 	glutSetWindowTitle(s.c_str());
-	FrameCount = 0;
-	glutTimerFunc(1000, timer, 0);
+	MyWrapper::manager->FrameCount = 0;
+	glutTimerFunc(1000, onTimer, 0);
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
@@ -151,25 +82,23 @@ void timer(int value)
 void setupCallbacks()
 {
 	glutCloseFunc  (cleanup);
-	glutIdleFunc   (renderScene);
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
+	glutIdleFunc   (MyWrapper::renderScene);
+	glutDisplayFunc(MyWrapper::display);
+	glutReshapeFunc(MyWrapper::reshape);
 	
-	glutTimerFunc  (0, timer, 0);
+	glutTimerFunc  (0, onTimer, 0);
 	glutTimerFunc  (0, refresh, 0);
 
 	// Mouse and Keyboard
-	glutKeyboardFunc  (processKeys);
-	glutKeyboardUpFunc(processUpKeys);
-	glutMouseFunc     (processMouseButtons);
-	glutMotionFunc    (processMouseMotion);
-	glutMouseWheelFunc(mouseWheel);
+	glutKeyboardFunc  (MyWrapper::keyPressed);
+	glutKeyboardUpFunc(MyWrapper::keyUp);
+	glutMouseFunc(MyWrapper::mouseButtons);
+	glutMotionFunc(MyWrapper::mouseMotion);
+	glutMouseWheelFunc(MyWrapper::mouseWheel);
 }
 
 void setupOpenGL()
 {
-	/*	cam.update() */
-
 	std::cerr << "CONTEXT: OpenGL v" << glGetString(GL_VERSION) << std::endl;
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -223,11 +152,6 @@ void init(int argc, char* argv[])
 	setupGLEW();
 	setupOpenGL();
 	setupCallbacks();
-
-	if (!setupShaders())
-		exit(1);
-
-	scene.create();
 }
 
 /////////////////////////////////////////////////////////////////////// Main
@@ -235,6 +159,6 @@ void init(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
 	init(argc, argv);
-	glutMainLoop();
-	exit(EXIT_SUCCESS);
+	MyWrapper::manager = new GameManager();
+	MyWrapper::manager->init();
 }

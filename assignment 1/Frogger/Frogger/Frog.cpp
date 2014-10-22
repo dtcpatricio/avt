@@ -1,45 +1,37 @@
 #include "Frog.h"
-#include "Scene.h"
 
-Frog::Frog(Scene *scene) : _scene(scene) {}
+Frog::Frog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
+	: DynamicObject(mySurf, shader, calc)
+{
+	id[0] = 9;
+	id[1] = 10;
+}
+
 Frog::~Frog() {}
 
-float Frog::getX() { return xPos; }
-float Frog::getY() { return yPos; }
-float Frog::getZ() { return zPos; }
+void
+Frog::create()
+{
+	_mySurf->setObjId(id[0]);
+	_mySurf->createCube(1.0f);
 
-void Frog::setX(float x) { xPos = x; }
-void Frog::setY(float y) { yPos = y; }
-void Frog::setZ(float z) { zPos = z; }
-
-void Frog::setLeft (bool b) { leftPressed  = b; }
-void Frog::setRight(bool b) { rightPressed = b; }
-void Frog::setUp   (bool b) { upPressed    = b; }
-void Frog::setDown (bool b) { downPressed  = b; }
-
-void Frog::draw() {
-	if (leftPressed  == true) goLeft();
-	if (rightPressed == true) goRight();
-	if (upPressed    == true) goForward();
-	if (downPressed  == true) goBackwards();
+	_mySurf->setObjId(id[1]);
+	_mySurf->createSphere(.5f, 16);
 }
 
-void Frog::goLeft(){
-	xPos -= speed;
-	zPos -= speed;
+void
+Frog::draw()
+{
+	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
+	applyColor(0.0f, 1.0f, .3f);
+	sendToGL(id[0]);
+	_calc->translation(_position.getX() + .5f, _position.getY() + 1.5f, _position.getZ() + .5f);
+	applyColor(0.0f, .0f, 1.0f);
+	sendToGL(id[1]);
 }
 
-void Frog::goRight(){
-	xPos += speed;
-	zPos += speed;
-}
+void
+Frog::update(float delta_t)
+{
 
-void Frog::goForward(){
-	xPos += speed;
-	zPos -= speed;
-}
-
-void Frog::goBackwards(){
-	xPos -= speed;
-	zPos += speed;
 }

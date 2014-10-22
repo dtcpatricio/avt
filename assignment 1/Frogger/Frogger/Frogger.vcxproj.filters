@@ -13,6 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\objects">
+      <UniqueIdentifier>{acfcfe2e-3e9c-4f91-a5c3-d3b3055cefc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{2ece3c85-2ae9-42ce-bdd9-34e43c555c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cameras">
+      <UniqueIdentifier>{76894cf4-2a62-4853-9cd5-b66e96ed8ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cameras">
+      <UniqueIdentifier>{85e5d534-f5ef-4ed1-ab45-a287e8c02ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\libs">
+      <UniqueIdentifier>{49ce871d-dc80-44f2-bf4e-a5e386c4d726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\libs">
+      <UniqueIdentifier>{10efca24-aaf0-41e2-b421-bc9121478833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\static">
+      <UniqueIdentifier>{d444c138-25cb-44b3-ab61-5dca4703cdd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\objects\dynamic">
+      <UniqueIdentifier>{08898c56-3d11-405d-9c33-77f03bfee8f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\static">
+      <UniqueIdentifier>{1cb7d02f-3e12-4ba1-97cf-288c02083d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\objects\dynamic">
+      <UniqueIdentifier>{16f636b8-2df5-4246-acf6-38b177052fd4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -21,72 +51,162 @@
     <ClCompile Include="Frogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vsLogLib.cpp">
+    <ClCompile Include="Entity.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicObject.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticObject.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="OrthogonalCamera.cpp">
+      <Filter>Source Files\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="PerspectiveCamera.cpp">
+      <Filter>Source Files\cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="vsLogLib.cpp">
+      <Filter>Source Files\libs</Filter>
     </ClCompile>
     <ClCompile Include="vsMathLib.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\libs</Filter>
     </ClCompile>
     <ClCompile Include="vsResourceLib.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\libs</Filter>
     </ClCompile>
     <ClCompile Include="vsResSurfRevLib.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\libs</Filter>
     </ClCompile>
     <ClCompile Include="vsShaderLib.cpp">
+      <Filter>Source Files\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="MathLib.cpp">
+      <Filter>Source Files\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ourMathLib.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Bus.cpp">
+      <Filter>Source Files\objects\dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>Source Files\objects\dynamic</Filter>
     </ClCompile>
     <ClCompile Include="Frog.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\objects\dynamic</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TimberLog.cpp">
+      <Filter>Source Files\objects\dynamic</Filter>
     </ClCompile>
-    <ClCompile Include="io.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Turtle.cpp">
+      <Filter>Source Files\objects\dynamic</Filter>
     </ClCompile>
-    <ClCompile Include="Cam.cpp">
+    <ClCompile Include="Roadside.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
+    <ClCompile Include="Road.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
+    <ClCompile Include="Riverside.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
+    <ClCompile Include="River.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
+    <ClCompile Include="GLErrors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vsLogLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vsMathLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vsResourceLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vsResSurfRevLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vsShaderLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OurMathLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Frog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Frogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicObject.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticObject.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="OrthogonalCamera.h">
+      <Filter>Header Files\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="PerspectiveCamera.h">
+      <Filter>Header Files\cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="vsShaderLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="vsResSurfRevLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="vsResourceLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="vsMathLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="vsLogLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="MathLib.h">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bus.h">
+      <Filter>Header Files\objects\dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>Header Files\objects\dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="TimberLog.h">
+      <Filter>Header Files\objects\dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Turtle.h">
+      <Filter>Header Files\objects\dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="Frog.h">
+      <Filter>Header Files\objects\dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="River.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
+    <ClInclude Include="Riverside.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
+    <ClInclude Include="Road.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
+    <ClInclude Include="Roadside.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
+    <ClInclude Include="GLErrors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,35 +1,50 @@
-#include "OurMathLib.h"
-#include "Scene.h"
-#include "io.h"
-#include "Cam.h"
-#include "Frog.h"
+#include "MathLib.h"
 
 #define SWAP_ROWS_DOUBLE(a, b) { double *_tmp = a; (a) = (b); (b) = _tmp; }
 #define SWAP_ROWS_FLOAT(a, b)  { float  *_tmp = a; (a) = (b); (b) = _tmp; }
 
 #define MAT(m, r, c) (m)[(c)* 4 + (r)]
 
-OurMathLib::OurMathLib(Scene *scene) : _scene(scene) {}
+MathLib::MathLib() {}
+
+void
+MathLib::print()
+{
+	for (int i = 0; i < 16; i++){
+		std::cout << model[i] << " ";
+	}
+	std::cout << std::endl;
+
+	for (int i = 0; i < 16; i++){
+		std::cout << viewMatrix[i] << " ";
+	}
+	std::cout << std::endl;
+
+	//for (int i = 0; i < 16; i++){
+	//	std::cout << projMatrix[i] << " ";
+	//}
+	std::cout << std::endl;
+}
 
 // Normalize a vec3
-void OurMathLib::normalize(float *a) {
+void MathLib::normalize(float *a) {
 	const GLfloat mag = sqrt(pow(a[0], 2) + pow(a[1], 2) + pow(a[2], 2));
 	a[0] /= mag; a[1] /= mag; a[2] /= mag;
 }
 
 // res = a cross b;
-void OurMathLib::crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
+void MathLib::crossProduct(GLfloat *a, GLfloat *b, GLfloat *res) {
 	res[0] = a[1] * b[2] - b[1] * a[2];
 	res[1] = a[2] * b[0] - b[2] * a[0];
 	res[2] = a[0] * b[1] - b[0] * a[1];
 }
 
 // returns a . b
-float OurMathLib::dotProduct(GLfloat *a, GLfloat *b) {
+float MathLib::dotProduct(GLfloat *a, GLfloat *b) {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-void OurMathLib::setIdentityMatrix(float *mat, int size) {
+void MathLib::setIdentityMatrix(float *mat, int size) {
 
 	// fill matrix with 0s
 	for (int i = 0; i < size * size; ++i)
@@ -40,7 +55,7 @@ void OurMathLib::setIdentityMatrix(float *mat, int size) {
 		mat[i + i * size] = 1.0f;
 }
 
-void OurMathLib::matrixMultiplication(GLfloat * m, GLfloat * aux)
+void MathLib::matrixMultiplication(GLfloat * m, GLfloat * aux)
 {
 	GLfloat res[16];
 	for (int i = 0; i < 4; i++)
@@ -57,11 +72,11 @@ void OurMathLib::matrixMultiplication(GLfloat * m, GLfloat * aux)
 	memcpy(m, res, 16 * sizeof(GLfloat));
 }
 
-void OurMathLib::pushMatrix(GLfloat * m, int type){
+void MathLib::pushMatrix(GLfloat * m, int type){
 	mMatrixStack[type].push_back(m);
 }
 
-GLfloat * OurMathLib::popMatrix(int type){
+GLfloat * MathLib::popMatrix(int type){
 	GLfloat m[16];
 	memcpy(m, mMatrixStack[type][0], sizeof(GLfloat)* 16);
 	mMatrixStack[type].pop_back();
@@ -69,7 +84,7 @@ GLfloat * OurMathLib::popMatrix(int type){
 
 }
 
-void OurMathLib::translation(float x, float y, float z)
+void MathLib::translation(float x, float y, float z)
 {
 	GLfloat aux[16];
 	setIdentityMatrix(aux, 4);
@@ -78,7 +93,7 @@ void OurMathLib::translation(float x, float y, float z)
 	matrixMultiplication(model, aux);
 }
 
-void OurMathLib::scale(float x, float y, float z){
+void MathLib::scale(float x, float y, float z){
 
 	GLfloat aux[] = {
 		x, 0.0f, 0.0f, 0.0f,
@@ -96,7 +111,7 @@ DegToRad(float degrees)
 	return (float)(degrees * (M_PI / 180.0f));
 };
 
-void OurMathLib::rotate(float angle, float x, float y, float z)
+void MathLib::rotate(float angle, float x, float y, float z)
 {
 	GLfloat mat[16];
 	float v[3];
@@ -135,7 +150,7 @@ void OurMathLib::rotate(float angle, float x, float y, float z)
 	matrixMultiplication(model, mat);
 }
 
-void OurMathLib::lookAt(float xPos, float yPos, float zPos,
+void MathLib::lookAt(float xPos, float yPos, float zPos,
 	float xLook, float yLook, float zLook,
 	float xUp, float yUp, float zUp)
 {
@@ -143,6 +158,7 @@ void OurMathLib::lookAt(float xPos, float yPos, float zPos,
 
 	up[0] = xUp; up[1] = yUp; up[2] = zUp;
 
+	setIdentityMatrix(viewMatrix, 4);
 	dir[0] = (xLook - xPos); dir[1] = (yLook - yPos); dir[2] = (zLook - zPos);
 	normalize(dir);
 
@@ -169,7 +185,7 @@ void OurMathLib::lookAt(float xPos, float yPos, float zPos,
 	matrixMultiplication(viewMatrix, m2);
 }
 
-void OurMathLib::perspective(float fov, float ratio, float nearp, float farp)
+void MathLib::perspective(float fov, float ratio, float nearp, float farp)
 {
 	float f = 1.0f / tan(fov * (M_PI / 360.0f));
 
@@ -183,7 +199,7 @@ void OurMathLib::perspective(float fov, float ratio, float nearp, float farp)
 	projMatrix[3 * 4 + 3] = 0.0f;
 }
 
-void OurMathLib::ortho(
+void MathLib::ortho(
 	float left,   float right,
 	float bottom, float top,
 	float nearp,  float farp)
@@ -198,7 +214,7 @@ void OurMathLib::ortho(
 	projMatrix[3 * 4 + 2] = -(farp + nearp) / (farp - nearp);
 }
 
-void OurMathLib::MultiplyMatrixByVector4by4OpenGL_FLOAT(
+void MathLib::MultiplyMatrixByVector4by4OpenGL_FLOAT(
 		float *resultvector, const float *matrix, const float *pvector)
 {
 	resultvector[0] = matrix[0] * pvector[0]
@@ -220,7 +236,7 @@ void OurMathLib::MultiplyMatrixByVector4by4OpenGL_FLOAT(
 }
 
 //This code comes directly from GLU except that it is for float
-int OurMathLib::glhInvertMatrixf2(float *m, float *out)
+int MathLib::glhInvertMatrixf2(float *m, float *out)
 {
 	float wtmp[4][8];
 	float m0, m1, m2, m3, s;
@@ -371,7 +387,7 @@ int OurMathLib::glhInvertMatrixf2(float *m, float *out)
 	return 1;
 }
 
-int OurMathLib::glhUnProjectf(float winx, float winy, float winz, float *modelView, float *projection, int *viewport,
+int MathLib::glhUnProjectf(float winx, float winy, float winz, float *modelView, float *projection, int *viewport,
 	float *posx, float *posy, float *posz)
 {
 	//Transformation matrices
@@ -401,7 +417,8 @@ int OurMathLib::glhUnProjectf(float winx, float winy, float winz, float *modelVi
 	return 1;
 }
 
-void OurMathLib::GetOGLPos(int x, int y)
+Vector3*
+MathLib::GetGLPos(int x, int y)
 {
 	GLint viewport[4];
 	GLfloat winX, winY, winZ;
@@ -414,12 +431,11 @@ void OurMathLib::GetOGLPos(int x, int y)
 	glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
 	glhUnProjectf(winX, winY, winZ, viewMatrix, projMatrix, viewport, &posX, &posY, &posZ);
-	_scene->getIO()->setMouseWorldX(posX);
-	_scene->getIO()->setMouseWorldY(posY);
-	_scene->getIO()->setMouseWorldZ(posZ);
+	Vector3* positions = new Vector3(posX, posY, posZ);
 	std::cout << "Pos: " << posX << " " << posY << " " << posZ << std::endl;
+	return positions;
 }
 
-GLfloat * OurMathLib::getViewMatrix() { return viewMatrix; }
-GLfloat * OurMathLib::getProjMatrix() { return projMatrix; }
-GLfloat * OurMathLib::getModel()      { return model; }
+GLfloat * MathLib::getViewMatrix() { return viewMatrix; }
+GLfloat * MathLib::getProjMatrix() { return projMatrix; }
+GLfloat * MathLib::getModel()      { return model; }

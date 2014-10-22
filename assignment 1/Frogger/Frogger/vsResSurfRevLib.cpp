@@ -79,10 +79,9 @@ VSResSurfRevLib::createTorus(float innerRadius, float outerRadius, int rings, in
 }
 
 void
-VSResSurfRevLib::createCube(float size){
-
-	VSResSurfRevLib::createCylinder(size, size, 4);
-
+VSResSurfRevLib::createCube(float size)
+{
+	VSResSurfRevLib::createRectangle(size, size, size);
 }
 
 void

@@ -1,12 +1,12 @@
 #pragma once
 #include "DynamicObject.h"
 
-class Frog :
+class Bus :
 	public DynamicObject
 {
 public:
-	Frog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc);
-	~Frog();
+	Bus(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc);
+	~Bus();
 
 	void draw();
 	void create();
@@ -15,3 +15,4 @@ public:
 private:
 	int id[2];
 };
+

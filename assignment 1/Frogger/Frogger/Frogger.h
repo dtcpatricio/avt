@@ -1,5 +1,4 @@
-#ifndef __FROGGER_H__
-#define __FROGGER_H__
+#pragma once
 
 #include <iostream>
 #include <sstream>
@@ -11,7 +10,11 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "Scene.h"
+#include "GameManager.h"
 #include "vsShaderLib.h"
+#include "GLErrors.h"
 
-#endif
+#define WinX 640
+#define WinY 480
+
+const GLfloat FPS = 1000 / 60;
