@@ -7,6 +7,9 @@
 **/*.suo
 **/*.opensdf
 **/*.lastbuildstate
+**/*.ilk
+**/*.pdb
+**/*.idb
 
 # Ignore .exe and .obj files (always needs compiling for the local machine state)
 **/*.exe
