@@ -10,12 +10,17 @@ PerspectiveCamera::~PerspectiveCamera()
 {}
 
 void
-PerspectiveCamera::update(float rAux, float alphaAux, float betaAux)
+PerspectiveCamera::updateUp(){
+	_up.set(0.0f, 1.0f, 0.0f);
+}
+
+void
+PerspectiveCamera::updateEye(float rAux, float alphaAux, float betaAux)
 {
 	float x = rAux * sin(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 	float z = rAux * cos(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 	float y = rAux *   						      sin(betaAux * 3.14f / 180.0f);
-	setPosition(x, y, z);
+	setPosition(_position.getX() + x, _position.getY() + y, _position.getZ() + z);
 }
 
 void

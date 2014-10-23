@@ -65,5 +65,10 @@ Car::draw()
 void
 Car::update(float delta_t)
 {
+	float deltaX = _position.getX() - delta_t;
 
+	if (deltaX <= -15.0f)
+		setPosition(13.0f, _position.getY(), _position.getZ());
+	else
+		setPosition(deltaX, _position.getY(), _position.getZ());
 }
