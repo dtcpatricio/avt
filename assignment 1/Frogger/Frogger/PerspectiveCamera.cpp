@@ -10,18 +10,23 @@ PerspectiveCamera::~PerspectiveCamera()
 {}
 
 void
-PerspectiveCamera::update(float rAux, float alphaAux, float betaAux)
+PerspectiveCamera::updateUp(){
+	_up.set(0.0f, 1.0f, 0.0f);
+}
+
+void
+PerspectiveCamera::updateEye(float rAux, float alphaAux, float betaAux, Vector3 *frogp)
 {
 	float x = rAux * sin(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 	float z = rAux * cos(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 	float y = rAux *   						      sin(betaAux * 3.14f / 180.0f);
-	setPosition(x, y, z);
+	setPosition(frogp->getX() + x, frogp->getY() + y, frogp->getZ() + z);
 }
 
 void
-PerspectiveCamera::updateAt(float x, float y, float z)
+PerspectiveCamera::updateAt(Vector3 *v)
 {
-	_at.set(x, y, z);
+	_at.set(v->getX(), v->getY(), v->getZ());
 }
 
 void

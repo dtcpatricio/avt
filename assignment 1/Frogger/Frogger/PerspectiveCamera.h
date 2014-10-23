@@ -8,8 +8,9 @@ public:
 	PerspectiveCamera(float fovy, float aspect, float zNear, float zFar, MathLib* calc);
 	~PerspectiveCamera();
 
-	void update(float rAux, float alphaAux, float betaAux);
-	void updateAt(float x, float y, float z);
+	void updateUp();
+	void updateEye(float rAux, float alphaAux, float betaAux, Vector3 *frogp);
+	void updateAt(Vector3 *v);
 	void computeProjectionMatrix();
 
 private:

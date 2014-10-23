@@ -18,9 +18,9 @@ DynamicObject::update(float delta_t)
 }
 
 void
-DynamicObject::setSpeed(Vector3 speed)
+DynamicObject::setSpeed(Vector3* speed)
 {
-	_speed = speed;
+	_speed.set(speed->getX(), speed->getY(), speed->getZ());
 }
 
 void

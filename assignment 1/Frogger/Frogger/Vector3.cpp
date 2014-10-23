@@ -38,9 +38,9 @@ Vector3::set(float x, float y, float z)
 }
 
 bool
-Vector3::operator=(Vector3 vec)
+Vector3::operator=(Vector3 *vec)
 {
-	if (vec.getX() == _x && vec.getY() == _y && vec.getZ() == _z)
+	if (vec->getX() == _x && vec->getY() == _y && vec->getZ() == _z)
 		return true;
 	
 	return false;
@@ -56,20 +56,20 @@ Vector3::operator*(float scalar)
 }
 
 Vector3*
-Vector3::operator+(Vector3 vec)
+Vector3::operator+(Vector3 *vec)
 {
-	_x += vec.getX();
-	_y += vec.getY();
-	_z += vec.getZ();
+	_x += vec->getX();
+	_y += vec->getY();
+	_z += vec->getZ();
 	return this;
 }
 
 Vector3*
-Vector3::operator-(Vector3 vec)
+Vector3::operator-(Vector3 *vec)
 {
-	_x -= vec.getX();
-	_y -= vec.getY();
-	_z -= vec.getZ();
+	_x -= vec->getX();
+	_y -= vec->getY();
+	_z -= vec->getZ();
 	return this;
 }
 

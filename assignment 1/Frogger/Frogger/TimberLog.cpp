@@ -15,7 +15,7 @@ void
 TimberLog::create()
 {
 	_mySurf->setObjId(id);
-	_mySurf->createCylinder(5.f, 0.75f, 16);
+	_mySurf->createCylinder(4.0f, 0.75f, 16);
 }
 
 void
@@ -37,5 +37,10 @@ TimberLog::draw()
 void
 TimberLog::update(float delta_t)
 {
+	float deltaX = _position.getX() - delta_t;
 
+	if (deltaX <= -12.75f)
+		setPosition(12.75f, _position.getY(), _position.getZ());
+	else
+		setPosition(deltaX , _position.getY(), _position.getZ());
 }

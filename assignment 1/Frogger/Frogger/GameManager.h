@@ -63,6 +63,7 @@ public:
 
 	// Aux functions
 	void applySurfaceTransformations();
+	void incrementSpeed();
 
 	//libs
 
@@ -71,13 +72,20 @@ public:
 	MathLib * _ml;
 
 	// Tracking Variables
-	int startX, startY, tracking = 0;
+	int startX, startY, tracking;
 	// Coefficient constants
-	float r, alpha, beta;
+	float alpha = 0.f, alphaAux = 0.f, betaAux = 20.f, beta = 20.f;
+	float r = 5.25f, rAux = 5.25f;
 
 	Frog * _frog;
-	std::vector<GameObject*> * _game_objects;
 
+	std::vector<GameObject*> * _game_objects;
+	std::vector<TimberLog*> * _logs;
+	std::vector<Bus*> * _bus;
+	std::vector<Car*> * _cars;
+	std::vector<Turtle*> * _turtles;
+
+	float speedIncr = 0.005f;
 	unsigned int FrameCount = 0;
 
 private:
@@ -90,6 +98,7 @@ private:
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, colorId;
 
+	// Create Scene methods
 	void createScene();
 	void createFrog();
 	void createRiver();
@@ -97,8 +106,29 @@ private:
 	void createRoadside();
 	void createRiverside();
 	void createCar();
-	void createTimberlog();
+	void createTopTimberLog();
+	void createMiddleTimberLog();
+	void createBottomTimberLog();
 	void createBus();
-	void createTurtle();
+	void createTopTurtles();
+	void createBottomTurtles();
+
+	//Dynamic Objects methods
+
+	void updateDynamicObj();
+	void updateLogs();
+	void updateBus();
+	void updateCars();
+	void updateTurtles();
+	void updateFrog();
+
+	// frog movement bools
+	bool frogLeft = false;
+	bool frogRight = false;
+	bool frogUp = false;
+	bool frogDown = false;
+
+	// frog movement speed
+	float _frog_speed = 0.005f;
 };
 
