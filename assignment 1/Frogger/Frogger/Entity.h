@@ -11,7 +11,7 @@ public:
 
 	Vector3* getPosition();
 	Vector3* setPosition(float x, float y, float z);
-	Vector3* setPosition(Vector3 p);
+	Vector3* setPosition(Vector3 *p);
 
 protected:
 	Vector3 _position;

@@ -9,7 +9,7 @@ public:
 	~DynamicObject();
 
 	void update(float delta_t);
-	void setSpeed(Vector3 speed);
+	void setSpeed(Vector3* speed);
 	void setSpeed(float x, float y, float z);
 	Vector3 getSpeed();
 	

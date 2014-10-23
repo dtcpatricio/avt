@@ -31,9 +31,6 @@ GameManager::mouseMotion(int xx, int yy) {
 	int deltaX = -xx + startX;
 	int deltaY = yy - startY;
 
-	float alphaAux, betaAux;
-	float rAux;
-
 	// left mouse button: move camera
 	if (tracking == 1) {
 		alphaAux = alpha + deltaX;
@@ -46,15 +43,15 @@ GameManager::mouseMotion(int xx, int yy) {
 		rAux = r;
 	}
 	// right mouse button: zoom
-	else if (tracking == 2) {
+	/*else if (tracking == 2) {
 		alphaAux = alpha;
 		betaAux = beta;
 		rAux = r + (deltaY * 0.01f);
 		if (rAux < 0.1f)
 			rAux = 0.1f;
-	}
+	}*/
 
-	//_tpCam->updateEye(rAux, alphaAux, betaAux);
+	_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
 
 }
 void
@@ -98,8 +95,8 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 			alpha -= xx - startX;
 			beta += yy - startY;
 		}
+		tracking = 0;
 	}
-	tracking = 0;
 	//	else if (tracking == 2) {
 	//		_scene->getFrog()->setUp(false);
 	//		_scene->getFrog()->setDown(false);
@@ -117,8 +114,8 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 }
 void
 GameManager::keyPressed(unsigned char key, int xx, int yy) {
+	Vector3 *dir = new Vector3(0.0f, 0.0f, 0.0f);
 	switch (key) {
-
 	case '1':
 		camType = ORTHOGONAL;
 		reshape(WinX, WinY);
@@ -135,19 +132,23 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		break;
 
 	case 'o':
-		//_frog->setLeft(true);
+		frogLeft = true;
+		dir->set(-1.0f, 0.0f, 0.0f);
 		break;
 
 	case 'p':
-		//_frog->setRight(true);
+		frogRight = true;
+		dir->set(1.0f, 0.0f, 0.0f);
 		break;
 
 	case 'q':
-		//_frog->setUp(true);
+		frogUp = true;
+		dir->set(0.0f, 0.0f, -1.0f);
 		break;
 
 	case 'a':
-		//_frog->setDown(true);
+		frogDown = true;
+		dir->set(1.0f, 0.0f, 1.0f);
 		break;
 
 	case 27:
@@ -159,25 +160,26 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 			, _scene->getCam()->getA(), _scene->getCam()->getB(), _scene->getCam()->getR());*/
 		break;
 	}
+	_frog->setSpeed(_frog->getSpeed().operator+(dir));
 }
 
 void
 GameManager::keyUp(unsigned char key, int xx, int yy) {
 	switch (key) {
 	case 'o':
-		//_scene->getFrog()->setLeft(false);
+		frogLeft = false;
 		break;
 
 	case 'p':
-		//_scene->getFrog()->setRight(false);
+		frogRight = false;
 		break;
 
 	case 'q':
-		//_scene->getFrog()->setUp(false);
+		frogUp = false;
 		break;
 
 	case 'a':
-		//_scene->getFrog()->setDown(false);
+		frogDown = false;
 		break;
 	}
 }
@@ -244,7 +246,7 @@ GameManager::renderScene()
 		_perspCam->computeVisualizationMatrix();
 		break;
 	case PERSPECTIVE3RD:
-		_tpCam->updateAt(_frogX, _frogY, _frogZ);
+		_tpCam->updateAt(_frog->getPosition());
 		_tpCam->computeVisualizationMatrix();
 		break;
 	}
@@ -273,6 +275,44 @@ GameManager::updateDynamicObj(){
 	updateBus();
 	updateCars();
 	updateTurtles();
+	updateFrog();
+}
+
+void
+GameManager::updateFrog()
+{
+	if (frogUp)
+	{
+		_frog->setPosition(
+			_frog->getPosition()->getX(),
+			_frog->getPosition()->getY(),
+			_frog->getPosition()->getZ() - _frog_speed);
+		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+	}
+	if (frogDown)
+	{
+		_frog->setPosition(
+			_frog->getPosition()->getX(),
+			_frog->getPosition()->getY(),
+			_frog->getPosition()->getZ() + _frog_speed);
+		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+	}
+	if (frogLeft)
+	{
+		_frog->setPosition(
+			_frog->getPosition()->getX() - _frog_speed,
+			_frog->getPosition()->getY(),
+			_frog->getPosition()->getZ());
+		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+	}
+	if (frogRight)
+	{
+		_frog->setPosition(
+			_frog->getPosition()->getX() + _frog_speed,
+			_frog->getPosition()->getY(),
+			_frog->getPosition()->getZ());
+		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+	}
 }
 
 void 
@@ -335,9 +375,10 @@ GameManager::createCameras(){
 	_perspCam->update();
 
 	_tpCam = new PerspectiveCamera(53.13f, ratio, 0.1f, -5.0f, _ml);
-	_tpCam->setPosition(_frogX, _frogY + 1.5f, _frogZ + 6.0f);
+	_tpCam->updateEye(r, alpha, beta, _frog->getPosition());
 	_tpCam->updateUp();
-	_tpCam->updateAt(_frogX, _frogY, _frogZ);
+	_tpCam->updateAt(_frog->getPosition());
+	
 
 
 }

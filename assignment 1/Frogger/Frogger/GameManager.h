@@ -72,10 +72,10 @@ public:
 	MathLib * _ml;
 
 	// Tracking Variables
-	int startX, startY, tracking = 0;
+	int startX, startY, tracking;
 	// Coefficient constants
-	float alpha = -43.0f, beta = 48.0f;
-	float r = 5.25f;
+	float alpha = 0.f, alphaAux = 0.f, betaAux = 20.f, beta = 20.f;
+	float r = 5.25f, rAux = 5.25f;
 
 	Frog * _frog;
 
@@ -120,5 +120,15 @@ private:
 	void updateBus();
 	void updateCars();
 	void updateTurtles();
+	void updateFrog();
+
+	// frog movement bools
+	bool frogLeft = false;
+	bool frogRight = false;
+	bool frogUp = false;
+	bool frogDown = false;
+
+	// frog movement speed
+	float _frog_speed = 0.005f;
 };
 

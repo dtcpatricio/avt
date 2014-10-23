@@ -11,10 +11,10 @@ public:
 	float getZ();
 
 	void set(float x, float y, float z);
-	bool operator=(Vector3 vec);
+	bool operator=(Vector3 *vec);
 	Vector3* operator*(float scalar);
-	Vector3* operator+(Vector3 vec);
-	Vector3* operator-(Vector3 vec);
+	Vector3* operator+(Vector3 *vec);
+	Vector3* operator-(Vector3 *vec);
 
 private:
 	float _x;
