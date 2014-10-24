@@ -55,6 +55,7 @@ Vector4::operator-(Vector4 *vec)
 float*
 Vector4::Vec4ToFloat()
 {
-	float lpos[] = { _x, _y, _z, _w };
+	float *lpos = new float[4];
+	lpos[0] = _x; lpos[1] = _y; lpos[2] = _z; lpos[3] = _w;
 	return lpos;
 }

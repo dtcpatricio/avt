@@ -18,8 +18,8 @@ Road::~Road()
 void
 Road::create()
 {
-	applyColor();
 	_mySurf->setObjId(id);
+	applyColor();
 	_mySurf->createRectangle(30.0f, 2.0f, 15.0f);
 }
 

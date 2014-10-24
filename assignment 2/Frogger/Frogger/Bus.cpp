@@ -9,6 +9,7 @@ Bus::Bus(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	diff[0] = .8f; diff[1] = .6f; diff[2] = .4f; diff[3] = 1.f;
 	spec[0] = .8f; spec[1] = .8f; spec[2] = .8f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
+	shininess = new float(100.f);
 }
 
 
@@ -21,10 +22,12 @@ Bus::create()
 {
 	// wheels
 	_mySurf->setObjId(id[0]);
+	applyColor();
 	_mySurf->createTorus(0.1f, 0.5f, 16, 16);
 
 	// body shop
 	_mySurf->setObjId(id[1]);
+	applyColor();
 	_mySurf->createRectangle(3.0f, 2.0f, 2.0f);
 }
 
@@ -32,7 +35,6 @@ void
 Bus::draw()
 {
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
-	applyColor(1.f, 1.f, 0.0f);
 	sendToGL(id[1]);
 
 	for (size_t i = 0; i < 4; i++)
@@ -60,7 +62,6 @@ Bus::draw()
 			break;
 		}
 		_calc->rotate(90.0f, 1.0f, 0.0f, 0.0f);
-		applyColor(1.f, 0.01f, 0.01f);
 		sendToGL(id[0]);
 	}
 }

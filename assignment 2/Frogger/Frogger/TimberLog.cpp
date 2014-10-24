@@ -4,6 +4,11 @@
 TimberLog::TimberLog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: DynamicObject(mySurf, shader, calc)
 {
+	amb[0] = .2f; amb[1] = .15f; amb[2] = .1f; amb[3] = 1.f;
+	diff[0] = .3f; diff[1] = .3f; diff[2] = .3f; diff[3] = 1.f;
+	spec[0] = .1f; spec[1] = .1f; spec[2] = .1f; spec[3] = 1.f;
+	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
+	shininess = new float(180.f);
 }
 
 
@@ -15,6 +20,7 @@ void
 TimberLog::create()
 {
 	_mySurf->setObjId(id);
+	applyColor();
 	_mySurf->createCylinder(4.0f, 0.75f, 16);
 }
 
@@ -30,7 +36,6 @@ TimberLog::draw()
 {
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
 	_calc->rotate(90.0f, 0.0f, 0.0f, 1.0f);
-	applyColor(0.6f, 0.4f, 0.12f);
 	sendToGL(id);
 }
 

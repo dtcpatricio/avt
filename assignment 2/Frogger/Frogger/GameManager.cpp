@@ -259,14 +259,18 @@ GameManager::renderScene()
 	float *lpos = l->getPosition()->Vec4ToFloat();
 	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
 	glUniform4fv(lightId, 1, res);
+	float* amb = l->getAmbient().Vec4ToFloat();
+	float* diff = l->getAmbient().Vec4ToFloat();
+	float* spec = l->getAmbient().Vec4ToFloat();
+	float shininess = l->getShininess();
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.ambient");
-	glUniform4fv(loc, 1, l->getAmbient().Vec4ToFloat());
+	glUniform4fv(loc, 1, amb);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.diffuse");
-	glUniform4fv(loc, 1, l->getDiffuse().Vec4ToFloat());
+	glUniform4fv(loc, 1, diff);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.specular");
-	glUniform4fv(loc, 1, l->getSpecular().Vec4ToFloat());
+	glUniform4fv(loc, 1, spec);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
-	glUniform1f(loc, l->getShininess());
+	glUniform1f(loc, shininess);
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
@@ -402,7 +406,7 @@ void
 GameManager::createLightsources()
 {
 	LightSource *l = new LightSource((GLenum)0);
-	Vector4 *params = new Vector4(.5f, .5f, .5f, .5f);
+	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 1.f);
 	l->setAmbient(params);
 	l->setDiffuse(params);
 	l->setSpecular(params);

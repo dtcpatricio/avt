@@ -6,6 +6,11 @@ Car::Car(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 {
 	id[0] = 7;
 	id[1] = 8;
+	amb[0] = .2f; amb[1] = .15f; amb[2] = .1f; amb[3] = 1.f;
+	diff[0] = .3f; diff[1] = .3f; diff[2] = .3f; diff[3] = 1.f;
+	spec[0] = .1f; spec[1] = .1f; spec[2] = .1f; spec[3] = 1.f;
+	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
+	shininess = new float(180.f);
 }
 
 
@@ -18,10 +23,12 @@ Car::create()
 {
 	// wheels
 	_mySurf->setObjId(id[0]);
+	applyColor();
 	_mySurf->createTorus(0.1f, 0.3f, 16, 16);
 
 	// body shop
 	_mySurf->setObjId(id[1]);
+	applyColor();
 	_mySurf->createRectangle(2.0f, 1.0f, 1.0f);
 }
 
@@ -29,7 +36,6 @@ void
 Car::draw()
 {
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
-	applyColor(1.f, 0.0f, 0.0f);
 	sendToGL(id[1]);
 
 	for (size_t i = 0; i < 4; i++)
@@ -57,7 +63,6 @@ Car::draw()
 			break;
 		}
 		_calc->rotate(90.0f, 1.0f, 0.0f, 0.0f);
-		applyColor(0.0f, 0.0f, 0.0f);
 		sendToGL(id[0]);
 	}
 }

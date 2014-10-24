@@ -782,11 +782,11 @@ VSResSurfRevLib::setObjMaterials(int id, VSShaderLib *_shader)
 {
 	GLint loc;
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.ambient");
-	glUniform4fv(loc, 1, mMyMesh[objId].mat.ambient);
+	glUniform4fv(loc, 1, mMyMesh[id].mat.ambient);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.diffuse");
-	glUniform4fv(loc, 1, mMyMesh[objId].mat.diffuse);
+	glUniform4fv(loc, 1, mMyMesh[id].mat.diffuse);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.specular");
-	glUniform4fv(loc, 1, mMyMesh[objId].mat.specular);
+	glUniform4fv(loc, 1, mMyMesh[id].mat.specular);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.shininess");
-	glUniform1f(loc, mMyMesh[objId].mat.shininess);
+	glUniform1f(loc, mMyMesh[id].mat.shininess);
 }

@@ -18,7 +18,7 @@ void main(void)
 {
 	vec4 pos = viewMatrix * model * in_pos;
 
-	DataOut.normal = normalize(m_normal * normal.xyz);
+	DataOut.normal = normalize(m_normal * normal);
 	DataOut.lightDir = vec3(l_pos - pos);
 	DataOut.eye = vec3(-pos);
 
