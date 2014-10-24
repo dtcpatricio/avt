@@ -1,0 +1,792 @@
+/** ----------------------------------------------------------
+ * \class VSResSurfRevLib
+ *
+ * Lighthouse3D
+ *
+ * VSResSurfRevLib - Very Simple Surfaces of Revolution Model Library
+ *
+ * \version 0.1.0
+ *		Initial Release
+ *
+ * This lib provides an interface to create models
+ * based on surfaces of revolution 
+ *
+ * This lib requires the following classes from VSL:
+ * (http://www.lighthouse3d.com/very-simple-libs)
+ *
+ * VSResourceLib
+ * VSMathLib 
+ * VSLogLib
+ * VSShaderLib
+ *
+ * and the following third party libs:
+ *
+ * GLEW (http://glew.sourceforge.net/),
+ *
+ * Full documentation at 
+ * http://www.lighthouse3d.com/very-simple-libs
+ *
+ ---------------------------------------------------------------*/
+
+#include "vsResSurfRevLib.h"
+
+#include <stdlib.h>
+#include <vector>
+
+
+VSResSurfRevLib::VSResSurfRevLib()
+{
+}
+
+
+VSResSurfRevLib::~VSResSurfRevLib() {
+}
+
+/*
+void
+VSResSurfRevLib::clone(VSResourceLib *res) {
+
+	if (res == NULL)
+		return;
+
+	VSResSurfRevLib *r = (VSResSurfRevLib *)res;
+
+	this->mMyMesh = r->mMyMesh;
+}*/
+
+
+bool
+VSResSurfRevLib::load(std::string filename) {
+
+	return false;
+}
+
+
+void 
+VSResSurfRevLib::createSphere(float radius, int divisions) {
+
+	float *p = circularProfile(-3.14159f/2.0f, 3.14159f/2.0f, radius, divisions);
+	computeVAO(divisions+1, p+2, p, divisions*2, 0.0f);
+}
+
+
+void 
+VSResSurfRevLib::createTorus(float innerRadius, float outerRadius, int rings, int sides) {
+
+	float tubeRadius = (outerRadius - innerRadius) * 0.5f;
+	float *p = circularProfile(-3.14159f, 3.14159f, tubeRadius, sides, innerRadius + tubeRadius);
+	computeVAO(sides+1, p+2, p, rings, 0.0f);
+}
+
+void
+VSResSurfRevLib::createCube(float size)
+{
+	VSResSurfRevLib::createRectangle(size, size, size);
+}
+
+void
+VSResSurfRevLib::createRectangle(float length, float height, float width){
+
+	/*
+	float p[] = {
+		length / 2, height / 2, width / 2, 1.0f,	//0, 0
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 1
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 2
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 3
+
+		length / 2, height / 2, width / 2, 1.0f,	//0, 4
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 5
+		-length / 2, -height / 2, width / 2, 1.0f,	//7, 6
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 7
+
+		length / 2, height / 2, width / 2, 1.0f,	//0, 8
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 9
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 10
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 11
+
+		length / 2, height / 2, -width / 2, 1.0f,	//1, 12
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 13
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 14
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 15
+
+		length / 2, -height / 2, -width / 2, 1.0f,	//2, 16
+		length / 2, -height / 2, width / 2, 1.0f,	//3, 17
+		-length / 2, -height / 2, width / 2, 1.0f,	//7, 18
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 19
+
+		-length / 2, height / 2, width / 2, 1.0f,	//4, 20
+		-length / 2, height / 2, -width / 2, 1.0f,	//5, 21
+		-length / 2, -height / 2, -width / 2, 1.0f,	//6, 22
+		-length / 2, -height / 2, width / 2, 1.0f	//7, 23
+
+	};*/
+	
+	float p[] = {
+		0.0f, height, width, 1.0f,
+		0.0f, 0.0f, width, 1.0f,
+		length, 0.0f, width, 1.0f,
+		length, height, width, 1.0f,
+
+		length, height, 0.0f, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, height, 0.0f, 1.0f,
+
+		length, height, width, 1.0f,
+		length, 0.0f, width, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		length, height, 0.0, 1.0f,
+
+		0.0f, height, 0.0f, 1.0f,
+		0.0f, height, width, 1.0f,
+		length, height, width, 1.0f,
+		length, height, 0.0f, 1.0f,
+
+		0.0f, height, 0.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, width, 1.0f,
+		0.0f, height, width, 1.0f,
+
+		0.0f, 0.0f, width, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f,
+		length, 0.0f, 0.0f, 1.0f,
+		length, 0.0f, width, 1.0f,
+	};
+
+	computeVAOSquare(p);
+}
+
+void 
+VSResSurfRevLib::createCylinder(float height, float radius, int sides) {
+
+	float p[] = {
+			-radius,	-height*0.5f, 
+			0.0f,		-height*0.5f, 
+			radius,		-height*0.5f,  
+			radius,		 height*0.5f,  
+			0.0f,		 height*0.5f,
+			-radius,	 height*0.5f
+	};
+
+	computeVAO(4, p+2, p, sides, 0.0f);
+}
+
+
+void 
+VSResSurfRevLib::createCone(float height, float baseRadius, int sides) {
+
+	float v[2];
+	v[0] = -baseRadius;
+	v[1] = height;
+
+	std::vector<float> p;
+
+	p.push_back(-baseRadius);	p.push_back(0.0f);
+	p.push_back(0.0f);			p.push_back(0.0f);
+	p.push_back(baseRadius);	p.push_back(0.0f);
+	int max = (int)(1 + height/ (baseRadius*2*3.14159 / sides)) ;
+	for (int i = 0; i < max; ++i) {
+	
+		p.push_back(baseRadius - i * baseRadius  / max); p.push_back( i * height  / max);
+	}
+	p.push_back(0.0f);			p.push_back(height);
+	p.push_back(-baseRadius);	p.push_back(height * 2.0f);
+	//float p[(sides+3)*2] = {
+	//		-baseRadius,	0.0, 
+	//		0.0f,			0.0, 
+	//		baseRadius,		0.0f,
+	//		baseRadius + v[0] * 0.1,		v[1] * 0.1,
+	//		baseRadius + v[0] * 0.2,		v[1] * 0.2,
+	//		baseRadius + v[0] * 0.3,		v[1] * 0.3,
+	//		baseRadius + v[0] * 0.4,		v[1] * 0.4,
+	//		baseRadius + v[0] * 0.5,		v[1] * 0.5,
+	//		baseRadius + v[0] * 0.6,		v[1] * 0.6,
+	//		baseRadius + v[0] * 0.7,		v[1] * 0.7,
+	//		baseRadius + v[0] * 0.8,		v[1] * 0.8,
+	//		baseRadius + v[0] * 0.9,		v[1] * 0.9,
+	//		0.0f,			height,  
+	//		-baseRadius,	height*2.0f,
+	//	};
+
+	computeVAO((p.size()-4)/2, &(p[2]), &(p[0]), sides, 0.0f);
+}
+
+
+void
+VSResSurfRevLib::createPawn() {
+
+		float p2[] = {0.0f, 0.0f, 
+					  0.98f, 0.0f, 
+					  0.98f, 0.01f,
+					  0.99f, 0.02f,
+					  1.0f , 0.02f,
+					  1.0f , 0.3f,
+					  0.99f, 0.31f,
+					  0.98f, 0.32f,
+					  0.93f, 0.32f,
+
+					  0.95f, 0.38f,
+					  0.965f, 0.44f,
+					  0.97f, 0.48f,
+					  0.965f, 0.52f,
+					  0.95f, 0.56f,
+					  0.89f, 0.62f,
+					  0.83f, 0.66f,
+					  0.75f, 0.70f,
+					  0.66f, 0.735f,
+					  0.65f, 0.74f,
+
+					  
+					  0.611f, 0.83f,
+					  0.5f,   0.83f,
+
+					  0.35f,  2.0f,
+
+					  0.58f,  2.075f,
+					  0.610f, 2.10f,
+					  0.6225f, 2.1125f,
+					  0.625f, 2.125f,
+					  0.6225f, 2.1375f,
+					  0.610f, 2.15f,
+					  0.58f,  2.175f,
+
+					  0.32f, 2.27f,
+					  0.46f, 2.38f,
+					  0.56f, 2.514f,
+					  0.628f, 2.67f,
+					  0.65f, 2.84f,
+
+					  0.628f, 3.01f,
+					  0.56f, 3.164f,
+					  0.46f, 3.3f,
+					  0.32f, 3.40f,
+					  0.168f, 3.467f,
+					  0.0f, 3.486f
+					 };
+		create(p2, 40, 30, 1, 0.6f);
+}
+
+void 
+VSResSurfRevLib::create (float *p, int numP, int sides, int closed, float smoothCos) {
+
+	int i; 
+	// two extra points are added for normal computation
+
+	float *points = (float *)malloc(sizeof(float) * (numP+2) * 2);
+
+	for(i=2;i<(numP+1)*2;i++) {
+		points[i] = p[i-2];
+	}
+
+	// distinguishes between closed curves and open curves
+	// for normal computation
+	int numPoints = numP + 2;
+
+	if (closed) {
+
+		points[0] = p[(numP-2)*2];
+		points[1] = p[(numP-2)*2+1];
+
+		points[(numPoints-1)*2]     = p[2];
+		points[(numPoints-1)*2 + 1] = p[3];
+	}
+	else {
+
+		points[0] = points[2] + (points[2]-points[4]);
+		points[1] = points[3] + (points[3]-points[5]);
+
+		points[(numPoints-1)*2]     = points[(numPoints-2)*2]     + 
+											(points[(numPoints-2)*2]     - points[(numPoints-3)*2]);
+		points[(numPoints-1)*2 + 1] = points[(numPoints-2)*2 + 1] + 
+											(points[(numPoints-2)*2 + 1] - points[(numPoints-3)*2 + 1]);
+	}
+
+	computeVAO(numP, p, points, sides, smoothCos);
+}
+
+void
+VSResSurfRevLib::computeVAOSquare(float* p)
+{
+	GLuint faceIndex[] = {
+		0, 1, 2, 0, 2, 3,
+		4, 5, 6, 4, 6, 7,
+		8, 9, 10, 8, 10, 11,
+		12, 13, 14, 12, 14, 15,
+		16, 17, 18, 16, 18, 19,
+		20, 21, 22, 20, 22, 23
+	};
+
+	float texCoords[] = {
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+	};
+
+	float normals[] = {
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+	};
+
+	glGenVertexArrays(1, &mMyMesh[objId].vao);
+	glBindVertexArray(mMyMesh[objId].vao);
+
+	mMyMesh[objId].numIndexes = sizeof(faceIndex);
+	GLuint buffers[4];
+	glGenBuffers(4, buffers);
+	//vertex coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * 4, p, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+
+	//texture coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::TEXTURE_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::TEXTURE_COORD_ATTRIB, 2, GL_FLOAT, 0, 0, 0);
+
+
+	//normals buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	//index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mMyMesh[objId].numIndexes, faceIndex, GL_STATIC_DRAW);
+
+	//Unbind the VAO
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDisableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glDisableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
+	glDisableVertexAttribArray(VSShaderLib::TEXTURE_COORD_ATTRIB);
+
+	mMyMesh[objId].type = GL_TRIANGLES;
+}
+
+void 
+VSResSurfRevLib::computeVAO(int numP, float *p, float *points, int sides, float smoothCos) {
+	// Compute and store vertices
+
+	int numSides = sides;
+	int numPoints = numP + 2;
+
+	float *vertex = (float *)malloc(sizeof(float)*numP * 2 * 4 * (numSides+1));
+	float *normal = (float *)malloc(sizeof(float)*numP * 2 * 4 * (numSides+1));
+	float *textco = (float *)malloc(sizeof(float)*numP * 2 * 4 * (numSides+1));
+
+	
+	float inc = 2 * 3.14159f / (numSides);
+	float nx,ny;
+	float delta;
+	int smooth;
+	std::vector<int> smoothness;
+	int k = 0;
+	for(int i=0; i < numP; i++) {
+		revSmoothNormal2(points+(i*2),&nx,&ny, smoothCos, 0);
+		for(int j=0; j<=numSides;j++) {
+
+			if ((i == 0 && p[0] == 0.0f) || ( i == numP-1 && p[(i+1)*2] == 0.0))
+				delta = inc * 0.5f;
+			else
+				delta = 0.0f;
+
+			normal[((k)*(numSides+1) + j)*4]   = nx * cos(j*inc+delta);
+			normal[((k)*(numSides+1) + j)*4+1] = ny;
+			normal[((k)*(numSides+1) + j)*4+2] = nx * sin(-j*inc+delta);
+			normal[((k)*(numSides+1) + j)*4+3] = 0.0f;
+
+			vertex[((k)*(numSides+1) + j)*4]   = p[i*2] * cos(j*inc);
+			vertex[((k)*(numSides+1) + j)*4+1] = p[(i*2)+1];
+			vertex[((k)*(numSides+1) + j)*4+2] = p[i*2] * sin(-j*inc);
+			vertex[((k)*(numSides+1) + j)*4+3] = 1.0f;
+
+			textco[((k)*(numSides+1) + j)*4]   = ((j+0.0f)/numSides);
+			textco[((k)*(numSides+1) + j)*4+1] = (i+0.0f)/(numP-1);
+			textco[((k)*(numSides+1) + j)*4+2] = 0;
+			textco[((k)*(numSides+1) + j)*4+3] = 1.0f;
+		}
+		k++;
+		if (i < numP-1) {
+			smooth = revSmoothNormal2(points+((i+1)*2),&nx,&ny, smoothCos, 1);
+
+			if (!smooth) {
+				smoothness.push_back(1);
+				for(int j=0; j<=numSides;j++) {
+
+				normal[((k)*(numSides+1) + j)*4]   = nx * cos(j*inc);
+				normal[((k)*(numSides+1) + j)*4+1] = ny;
+				normal[((k)*(numSides+1) + j)*4+2] = nx * sin(-j*inc);
+				normal[((k)*(numSides+1) + j)*4+3] = 0.0f;
+
+				vertex[((k)*(numSides+1) + j)*4]   = p[(i+1)*2] * cos(j*inc);
+				vertex[((k)*(numSides+1) + j)*4+1] = p[((i+1)*2)+1];
+				vertex[((k)*(numSides+1) + j)*4+2] = p[(i+1)*2] * sin(-j*inc);
+				vertex[((k)*(numSides+1) + j)*4+3] = 1.0f;
+
+				textco[((k)*(numSides+1) + j)*4]   = ((j+0.0f)/numSides);
+				textco[((k)*(numSides+1) + j)*4+1] = (i+1+0.0f)/(numP-1);
+				textco[((k)*(numSides+1) + j)*4+2] = 0;
+				textco[((k)*(numSides+1) + j)*4+3] = 1.0f;
+				}
+				k++;
+			}
+			else
+				smoothness.push_back(0);
+		}
+	}
+
+	unsigned int *faceIndex = (unsigned int *)malloc(sizeof(unsigned int) * (numP-1) * (numSides+1 ) * 6);
+	unsigned int count = 0;
+	k = 0;
+	for (int i = 0; i < numP-1; ++i) {
+		for (int j = 0; j < numSides; ++j) {
+		
+			/*if (i != 0 || p[0] != 0.0)*/ {
+				faceIndex[count++] = k * (numSides+1) + j;
+				faceIndex[count++] = (k+1) * (numSides+1) + j + 1;
+				faceIndex[count++] = (k+1) * (numSides+1) + j;
+			}
+			/*if (i != numP-2 || p[(numP-1)*2] != 0.0)*/ {
+				faceIndex[count++] = k * (numSides+1) + j;
+				faceIndex[count++] = k * (numSides+1) + j + 1;
+				faceIndex[count++] = (k+1) * (numSides+1) + j + 1;
+			}
+
+		}
+		k++;
+		k += smoothness[i];	
+	}
+
+	int numVertices = numP*2 * (numSides+1);
+	mMyMesh[objId].numIndexes = count;
+
+	glGenVertexArrays(1, &mMyMesh[objId].vao);
+	glBindVertexArray(mMyMesh[objId].vao);
+
+	GLuint buffers[4];
+	glGenBuffers(4, buffers);
+	//vertex coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 4, vertex, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::VERTEX_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::VERTEX_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+
+	//texture coordinates buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 4, textco, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::TEXTURE_COORD_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::TEXTURE_COORD_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+
+	//normals buffer
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 4, normal, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
+	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+
+	//index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mMyMesh[objId].numIndexes, faceIndex , GL_STATIC_DRAW);
+
+	// unbind the VAO
+	glBindVertexArray(0);
+
+	mMyMesh[objId].type = GL_TRIANGLES;
+	mMyMesh[objId].mat.ambient[0] = 0.2f;
+	mMyMesh[objId].mat.ambient[1] = 0.2f;
+	mMyMesh[objId].mat.ambient[2] = 0.2f;
+	mMyMesh[objId].mat.ambient[3] = 1.0f;
+	
+	mMyMesh[objId].mat.diffuse[0] = 0.8f;
+	mMyMesh[objId].mat.diffuse[1] = 0.8f;
+	mMyMesh[objId].mat.diffuse[2] = 0.8f;
+	mMyMesh[objId].mat.diffuse[3] = 1.0f;
+
+	mMyMesh[objId].mat.specular[0] = 0.8f;
+	mMyMesh[objId].mat.specular[1] = 0.8f;
+	mMyMesh[objId].mat.specular[2] = 0.8f;
+	mMyMesh[objId].mat.specular[3] = 1.0f;
+
+	mMyMesh[objId].mat.shininess = 100.0f;
+}
+
+void
+VSResSurfRevLib::simpleRender(int objId){
+
+	// bind VAO
+	glBindVertexArray(mMyMesh[objId].vao);
+	glDrawElements(mMyMesh[objId].type, mMyMesh[objId].numIndexes, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+}
+
+void 
+VSResSurfRevLib::render () {
+
+	// send matrices to shaders
+	mVSML->matricesToGL();
+
+	// set material
+	setMaterial(mMyMesh[objId].mat);
+
+	// bind texture
+	for (unsigned int j = 0; j < VSResourceLib::MAX_TEXTURES; ++j) {
+		if (mMyMesh[objId].texUnits[j] != 0) {
+			glActiveTexture(GL_TEXTURE0 + j);
+			glBindTexture(mMyMesh[objId].texTypes[j], 
+						mMyMesh[objId].texUnits[j]);
+		}
+	}
+	// bind VAO
+	glBindVertexArray(mMyMesh[objId].vao);
+	glDrawElements(mMyMesh[objId].type, mMyMesh[objId].numIndexes, GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	for (unsigned int j = 0; j < VSResourceLib::MAX_TEXTURES; ++j) {
+		if (mMyMesh[objId].texUnits[j] != 0) {
+			glActiveTexture(GL_TEXTURE0 + j);
+			glBindTexture(mMyMesh[objId].texTypes[j], 0);
+		}
+	}
+
+}
+
+
+void
+VSResSurfRevLib::setObjId(int id) {
+	objId = id;
+}
+
+int
+VSResSurfRevLib::getMyMeshLength() {
+	return (int)sizeof(mMyMesh) / sizeof(struct MyMesh);
+}
+
+void 
+VSResSurfRevLib::setColor(VSResourceLib::MaterialSemantics m, float *values) {
+
+	if (m == TEX_COUNT)
+		return;
+
+	switch(m) {
+		case SHININESS:
+			mMyMesh[objId].mat.shininess = *values;
+			break;
+		case DIFFUSE:
+			memcpy(mMyMesh[objId].mat.diffuse, values, sizeof(float)*4);
+			break;
+		case AMBIENT:
+			memcpy(mMyMesh[objId].mat.ambient, values, sizeof(float)*4);
+			break;
+		case SPECULAR:
+			memcpy(mMyMesh[objId].mat.specular, values, sizeof(float)*4);
+			break;
+		case EMISSIVE:
+			memcpy(mMyMesh[objId].mat.emissive, values, sizeof(float)*4);
+			break;
+	}
+}
+
+#ifdef _VSL_TEXTURE_WITH_DEVIL
+
+void 
+VSResSurfRevLib::setTexture(unsigned int unit, unsigned int textureID, GLenum textureType) {
+
+	mMyMesh[objId].texUnits[unit] = textureID;
+	mMyMesh[objId].texTypes[unit] = textureType;
+	mMyMesh[objId].mat.texCount = 1;
+}
+
+
+void 
+VSResSurfRevLib::addTexture(unsigned int unit, std::string filename) {
+
+	int textID = loadRGBATexture(filename, true);
+	mMyMesh[objId].texUnits[unit] = textID;
+	mMyMesh[objId].texTypes[unit] = GL_TEXTURE_2D;
+	mMyMesh[objId].mat.texCount = 1;
+}
+
+
+void 
+VSResSurfRevLib::addCubeMapTexture(unsigned int unit, std::string posX, std::string negX, 
+									std::string posY, std::string negY, 
+									std::string posZ, std::string negZ) {
+
+	int textID = loadCubeMapTexture(posX, negX, posY, negY, posZ, negZ);
+	mMyMesh[objId].texUnits[unit] = textID;
+	mMyMesh[objId].texTypes[unit] = GL_TEXTURE_CUBE_MAP;
+	mMyMesh[objId].mat.texCount = 1;
+}
+
+#endif
+
+int 
+VSResSurfRevLib::revSmoothNormal2(float *p, float *nx, float *ny, float smoothCos, int beginEnd) {
+
+	float v1x,v1y,v2x,v2y,x,y,norm;
+	float auxX, auxY, angle;
+
+	auxX = p[0] - p[2];
+	auxY = p[1] - p[3];
+	v1x = -auxY;
+	v1y = auxX;
+	norm=sqrt((v1x*v1x) + (v1y*v1y));
+	v1x /= norm;
+	v1y /= norm;
+
+	auxX = p[2] - p[4];
+	auxY = p[3] - p[5];
+	v2x = -auxY;
+	v2y = auxX;
+	norm=sqrt((v2x*v2x) + (v2y*v2y));
+	v2x /= norm;
+	v2y /= norm;
+
+	angle = v1x * v2x + v1y * v2y;
+
+ 	if (angle > smoothCos) {
+		x = v1x + v2x;
+		y = v1y + v2y;
+	}
+	else if (beginEnd == 0) {
+		x = v2x;
+		y = v2y;
+	}
+	else  {
+		x = v1x;
+		y = v1y;
+	
+	}
+
+	norm=sqrt(x*x+ y*y);
+
+	assert(norm!=0);
+	x /= norm;
+	y /= norm;
+
+	*nx = x;
+	*ny = y;
+	if (angle > smoothCos)
+		return 1;
+	else
+		return 0;
+}
+
+
+float 
+VSResSurfRevLib::computeTotalSegmentLength(float *p, int numP) {
+
+	float l,aux;
+	int i;
+
+	l = 0;
+	for(i=0;i<numP-1;i++) {
+
+		aux = (p[(i+1)*2]-p[i*2]) * (p[(i+1)*2]-p[i*2]) + (p[(i+1)*2+1]-p[i*2+1]) * (p[(i+1)*2+1]-p[i*2+1]);
+		l += sqrt(aux);
+	}
+	return l;
+
+}
+
+
+float 
+VSResSurfRevLib::computeSegmentLength(float *p) {
+
+	float l,aux;
+
+	aux = (p[2]-p[0]) * (p[2]-p[0]) + (p[3]-p[1]) * (p[3]-p[1]);
+	l = sqrt(aux);
+
+	return l;
+
+}
+
+
+float *
+VSResSurfRevLib::circularProfile(float minAngle, float maxAngle, float radius, int divisions, float transX, float transY ) {
+
+	float *p = (float *)malloc(sizeof(float) * 2 * (divisions+3));
+	float step = (maxAngle - minAngle)/ divisions;
+
+	for (int i = 0, k = -1; i < divisions+3; ++i,++k) {
+	
+		p[i*2]   = radius * cos(minAngle + k * step) + transX;
+		p[i*2+1] = radius * sin(minAngle + k * step) + transY;
+//		printf("%f %f\n", p[i*2], p[i * 2 + 1]);
+	}
+
+
+	return p;
+}
+
+void
+VSResSurfRevLib::setObjMaterials(int id, VSShaderLib *_shader)
+{
+	GLint loc;
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.ambient");
+	glUniform4fv(loc, 1, mMyMesh[objId].mat.ambient);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.diffuse");
+	glUniform4fv(loc, 1, mMyMesh[objId].mat.diffuse);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.specular");
+	glUniform4fv(loc, 1, mMyMesh[objId].mat.specular);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.shininess");
+	glUniform1f(loc, mMyMesh[objId].mat.shininess);
+}
