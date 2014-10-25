@@ -100,6 +100,8 @@ private:
 	float _frogX;
 	float _frogY;
 	float _frogZ;
+	LightSource *l;
+	bool on = true;
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId;
 

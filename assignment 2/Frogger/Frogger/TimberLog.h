@@ -10,7 +10,6 @@ public:
 
 	void draw();
 	void create();
-	void create(float len);
 	void update(float delta_t);
 
 private:

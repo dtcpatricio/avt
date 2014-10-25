@@ -17,6 +17,20 @@ DynamicObject::update(float delta_t)
 
 }
 
+void 
+DynamicObject::setTires(){
+	amb[0] = .0f; amb[1] = .0f; amb[2] = .0f;
+	diff[0] = 0.0f; diff[1] = .0f; diff[2] = .0f;
+	spec[0] = .0f; spec[1] = .0f; spec[2] = .0f;
+}
+
+void
+DynamicObject::setHead(){
+	amb[0] = .1f; amb[1] = .8f; amb[2] = .1f;
+	diff[0] = .2f; diff[1] = .6f; diff[2] = .2f;
+	spec[0] = .2f; spec[1] = .8f; spec[2] = .2f;
+}
+
 void
 DynamicObject::setSpeed(Vector3* speed)
 {

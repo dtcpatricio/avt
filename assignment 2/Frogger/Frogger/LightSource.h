@@ -9,10 +9,7 @@ public:
 	~LightSource();
 
 	bool getState() { return _state; };
-	bool setState(bool state) {	
-		_state = state;
-		return state;
-	};
+	bool setState(bool state);
 	GLenum getNum() { return _num; };
 	void setPosition(Vector4 *pos);
 	Vector4* getPosition() { return &_position; };

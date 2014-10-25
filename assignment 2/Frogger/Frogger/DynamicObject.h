@@ -12,6 +12,8 @@ public:
 	void setSpeed(Vector3* speed);
 	void setSpeed(float x, float y, float z);
 	Vector3 getSpeed();
+	void setTires();
+	void setHead();
 	
 	virtual void create() = 0;
 

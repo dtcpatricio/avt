@@ -151,6 +151,11 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		dir->set(1.0f, 0.0f, 1.0f);
 		break;
 
+	case 'n':
+		on = !on;
+		l->setState(on);
+		break;
+
 	case 27:
 		glutLeaveMainLoop();
 		break;
@@ -405,12 +410,12 @@ GameManager::createCameras(){
 void
 GameManager::createLightsources()
 {
-	LightSource *l = new LightSource((GLenum)0);
+	l = new LightSource((GLenum)0);
 	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 1.f);
 	l->setAmbient(params);
 	l->setDiffuse(params);
 	l->setSpecular(params);
-	l->setPosition(new Vector4(0.f, 20.f, 0.f, 1.f));
+	l->setPosition(new Vector4(0.0f, 100.0f, 0.0f, 1.f));
 	l->setExponent(100.f);
 	_light_sources->push_back(l);
 }

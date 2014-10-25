@@ -39,3 +39,24 @@ LightSource::setPosition(Vector4* v)
 {
 	_position.set(v->getX(), v->getY(), v->getZ(), v->getW());
 }
+
+bool
+LightSource::setState(bool state){
+	
+	_state = state;
+	Vector4 *on = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	Vector4 *off = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	if (state){
+		setAmbient(on);
+		setDiffuse(on);
+		setSpecular(on);
+	}
+	else{
+		setAmbient(off);
+		setDiffuse(off);
+		setSpecular(off);
+	}
+
+	return state;
+}
