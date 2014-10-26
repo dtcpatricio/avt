@@ -1,17 +1,9 @@
 #include "GameManager.h"
 
-#define _DIF			0
-#define _DIF_AMB		1	
-#define _DIF_AMB_SPEC	2
-#define _PER_PIXEL		3
-#define _POINT			4
-#define _SPOT			5
-
-#define _LIGHT 5
+enum LIGHT_TYPE active_light = SPOT_LIGHT;
 
 GameManager::GameManager()
 {}
-
 
 GameManager::~GameManager()
 {}
@@ -160,8 +152,11 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		break;
 
 	case 'n':
-		on = !on;
-		l->setState(on);
+		//on = !on;
+		//l->setState(on);
+		active_light = active_light == SPOT_LIGHT
+			? POINT_LIGHT
+			: SPOT_LIGHT;
 		break;
 
 	case 27:
@@ -266,12 +261,23 @@ GameManager::renderScene()
 	}
 		
 	glUseProgram(_shader->getProgramIndex());
-	
-	LightSource *l = _light_sources->at(0);
 
-#if (_LIGHT == _SPOT)
-	updateLightPos(l);
-#endif
+	LightSource *l;
+	if (active_light == SPOT_LIGHT) {
+		l = _light_sources->at(0);
+		updateLightPos(l);
+		if (frogUp)
+			l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
+		if (frogDown)
+			l->setDirection(new Vector4(0.f, -.5f, -.75f, 0.f));
+		if (frogLeft)
+			l->setDirection(new Vector4(-.5f, .0f, -.75f, 0.f));
+		if (frogRight)
+			l->setDirection(new Vector4(.5f, .0f, -.75f, 0.f));
+	}
+	else {
+		l = _light_sources->at(1);
+	}
 
 	float res[4];
 	float *lpos = l->getPosition()->Vec4ToFloat();
@@ -327,7 +333,7 @@ GameManager::updateLightPos(LightSource* l) {
 	l->setPosition(new Vector4(
 		_frog->getPosition()->getX() +  .5f, // Add half of frog's body width
 		_frog->getPosition()->getY() + 1.0f,
-		_frog->getPosition()->getZ() + -.5f, // Subtract half of frog's head radius
+		_frog->getPosition()->getZ() + -.125f,
 		1.f));
 }
 
@@ -440,60 +446,63 @@ GameManager::createCameras(){
 	_tpCam->updateEye(r, alpha, beta, _frog->getPosition());
 	_tpCam->updateUp();
 	_tpCam->updateAt(_frog->getPosition());
-	
-
-
 }
 
 void
 GameManager::createLightsources()
 {
-#if (_LIGHT == _SPOT)
-	l = new LightSource(SPOT_LIGHT);
-	l->setAmbient(new Vector4(.0f, .0f, .0f, 1.f));
-	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
-	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
-	
-	updateLightPos(l);
-	l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
+		l = new LightSource(SPOT_LIGHT);
+		l->setAmbient(new Vector4(.0f, .0f, .0f, 1.f));
+		l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
+		l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
 
-	l->setExponent(100.f);
-	l->setCutOff(.5f);
+		updateLightPos(l);
+		l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
 
-	_light_sources->push_back(l);
-#else
-	l = new LightSource(POINT_LIGHT);
-	l->setAmbient(new Vector4(.8f, .8f, .8f, 1.f));
-	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
-	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
-	l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
-	l->setExponent(100.f);
-	_light_sources->push_back(l);
-#endif
+		l->setExponent(100.f);
+		l->setCutOff(.5f);
+
+		_light_sources->push_back(l);
+
+		l = new LightSource(POINT_LIGHT);
+		l->setAmbient(new Vector4(.8f, .8f, .8f, 1.f));
+		l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
+		l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
+		l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
+		l->setExponent(100.f);
+
+		_light_sources->push_back(l);
 }
+
 /////////////////////////////////////////////////////////////////////// SHADERS
 
 GLuint
 GameManager::setupShaders()
 {
-	_shader->init();
+	return setupShader(_shader_point, "assign2.vert", "assign2.frag")
+		&& setupShader(_shader_spot, "spotlight.vert", "spotlight.frag");
+}
 
+GLuint
+GameManager::setupShader(VSShaderLib *shader, char *vert_filename, char *frag_filename)
+{
+	shader->init();
 
-#if (_LIGHT == _SPOT)
-	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "spotlight.vert");
-	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "spotlight.frag");
-#else
-	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "assign2.vert");
-	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
-#endif
+	shader->loadShader(VSShaderLib::VERTEX_SHADER, vert_filename);
+	shader->loadShader(VSShaderLib::FRAGMENT_SHADER, frag_filename);
 
-	_shader->setProgramOutput(0, "outFrag");
-	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
-	_shader->setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
-	//_shader->setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "in_color");
-	_shader->prepareProgram();
+	shader->setProgramOutput(0, "outFrag");
+	shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
+	shader->setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
+	shader->prepareProgram();
 
-	return(_shader->isProgramValid());
+	viewMatrixId     = glGetUniformLocation(shader->getProgramIndex(), "viewMatrix");
+	projId           = glGetUniformLocation(shader->getProgramIndex(), "projMatrix");
+	modelId          = glGetUniformLocation(shader->getProgramIndex(), "model");
+	normal_uniformId = glGetUniformLocation(shader->getProgramIndex(), "m_normal");
+	lightId          = glGetUniformLocation(shader->getProgramIndex(), "l_pos");
+
+	return(shader->isProgramValid());
 }
 
 void 
@@ -692,8 +701,9 @@ GameManager::incrementSpeed(){
 void
 GameManager::init()
 {
+	_shader_point = new VSShaderLib();
+	_shader_spot = new VSShaderLib();
 
-	_shader = new VSShaderLib();
 	_mySurf = new VSResSurfRevLib();
 	_ml = new MathLib();
 
@@ -707,11 +717,8 @@ GameManager::init()
 	if (!setupShaders())
 		exit(1);
 
-	viewMatrixId = glGetUniformLocation(_shader->getProgramIndex(), "viewMatrix");
-	projId = glGetUniformLocation(_shader->getProgramIndex(), "projMatrix");
-	modelId = glGetUniformLocation(_shader->getProgramIndex(), "model");
-	normal_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "m_normal");
-	lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
+	// Default shader
+	_shader = _shader_spot;
 
 	createScene();
 	createCameras();
@@ -721,4 +728,3 @@ GameManager::init()
 	glutMainLoop();
 	exit(EXIT_SUCCESS);
 }
-

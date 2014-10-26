@@ -61,6 +61,7 @@ public:
 	CamType camType = ORTHOGONAL;
 
 	// Setup functions
+	GLuint setupShader(VSShaderLib *shader, char *vert_filename, char *frag_filename);
 	GLuint setupShaders();
 	void destroyShaderProgram(); // TODO: to remove to another file
 	void destroyBufferObjects(); // TODO: to remove to another file
@@ -71,7 +72,7 @@ public:
 
 	//libs
 
-	VSShaderLib * _shader;
+	VSShaderLib * _shader, * _shader_point, * _shader_spot;
 	VSResSurfRevLib * _mySurf;
 	MathLib * _ml;
 

@@ -1,6 +1,6 @@
 #version 150 core
 
-out vec4 colorOut;
+out vec4 outFrag;
 
 struct Materials {
 	vec4 diffuse;
@@ -53,5 +53,5 @@ void main(void) {
 	
 	// Creative way of applying ambient component
 	vec4 realAmbient = 2.f * (mat.ambient * light.ambient);
-	colorOut = max(intensity * mat.diffuse + spec, realAmbient);
+	outFrag = max(intensity * mat.diffuse + spec, realAmbient);
 }
