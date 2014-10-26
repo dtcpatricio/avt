@@ -265,15 +265,22 @@ GameManager::renderScene()
 	LightSource *l;
 	if (active_light == SPOT_LIGHT) {
 		l = _light_sources->at(0);
-		updateLightPos(l);
-		if (frogUp)
+		if (frogUp) {
+			updateLightPos(l);
 			l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
-		if (frogDown)
+		}
+		if (frogDown) {
+			updateLightPos(l, .5f, 2.25f, 1.125f);
 			l->setDirection(new Vector4(0.f, -.5f, -.75f, 0.f));
-		if (frogLeft)
+		}
+		if (frogLeft) {
+			updateLightPos(l, -.5f, 2.25f, .0f);
 			l->setDirection(new Vector4(-.5f, .0f, -.75f, 0.f));
-		if (frogRight)
+		}
+		if (frogRight) {
+			updateLightPos(l, 1.5f, 2.25f, .0f);
 			l->setDirection(new Vector4(.5f, .0f, -.75f, 0.f));
+		}
 	}
 	else {
 		l = _light_sources->at(1);
@@ -332,8 +339,18 @@ void
 GameManager::updateLightPos(LightSource* l) {
 	l->setPosition(new Vector4(
 		_frog->getPosition()->getX() +  .5f, // Add half of frog's body width
-		_frog->getPosition()->getY() + 1.0f,
+		_frog->getPosition()->getY() + 2.25f,
 		_frog->getPosition()->getZ() + -.125f,
+		1.f));
+}
+
+void
+GameManager::updateLightPos(LightSource* l,
+		GLfloat deltaX, GLfloat deltaY, GLfloat deltaZ) {
+	l->setPosition(new Vector4(
+		_frog->getPosition()->getX() + deltaX,
+		_frog->getPosition()->getY() + deltaY,
+		_frog->getPosition()->getZ() + deltaZ,
 		1.f));
 }
 
@@ -460,7 +477,7 @@ GameManager::createLightsources()
 		l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
 
 		l->setExponent(100.f);
-		l->setCutOff(.5f);
+		l->setCutOff(.425f);
 
 		_light_sources->push_back(l);
 

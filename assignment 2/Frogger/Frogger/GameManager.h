@@ -132,6 +132,8 @@ private:
 	void updateFrog();
 
 	void updateLightPos(LightSource* l);
+	void updateLightPos(LightSource* l,
+		GLfloat deltaX, GLfloat deltaY, GLfloat deltaZ);
 
 	// frog movement bools
 	bool frogLeft = false;
