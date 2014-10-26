@@ -415,11 +415,11 @@ GameManager::createCameras(){
 void
 GameManager::createLightsources()
 {
-	l = new LightSource((GLenum)0);
+	l = new LightSource(POINT_LIGHT);
 	l->setAmbient (new Vector4(.4f,  .4f, .4f, 1.f));
 	l->setDiffuse (new Vector4(.8f,  .8f, .8f, 1.f));
 	l->setSpecular(new Vector4(1.f,  1.f, 1.f, 1.f));
-	l->setPosition(new Vector4(0.f, 10.f, 0.f, 1.f));
+	l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
 	l->setExponent(100.f);
 	_light_sources->push_back(l);
 }

@@ -1,7 +1,7 @@
 #include "LightSource.h"
 
 
-LightSource::LightSource(GLenum number)
+LightSource::LightSource(enum LIGHT_TYPE number)
 	: _num(number)
 {
 }
@@ -29,15 +29,20 @@ LightSource::setSpecular(Vector4 *spec)
 }
 
 void
-LightSource::draw()
-{
-
-}
-
-void
 LightSource::setPosition(Vector4* v)
 {
 	_position.set(v->getX(), v->getY(), v->getZ(), v->getW());
+}
+
+void
+LightSource::setDirection(Vector3 *dir)
+{
+	memcpy(&_dir, dir, sizeof(Vector3));
+}
+
+void
+LightSource::draw()
+{
 }
 
 bool

@@ -2,38 +2,41 @@
 #include "Vector4.h"
 #include <GL/glut.h>
 
+enum LIGHT_TYPE { POINT_LIGHT, DIR_LIGHT, SPOT_LIGHT };
+
 class LightSource
 {
 public:
-	LightSource(GLenum number);
+	LightSource(enum LIGHT_TYPE number);
 	~LightSource();
+	
+	bool getState() { return _state; }
+	enum LIGHT_TYPE getNum() { return _num; }
 
-	bool getState() { return _state; };
+	Vector4  getAmbient()   { return _amb; }
+	Vector4  getDiffuse()   { return _diff; }
+	Vector4  getSpecular()  { return _spec; }
+	float    getShininess() { return _exponent; }
+	Vector4* getPosition()  { return &_position; }
+
 	bool setState(bool state);
-	GLenum getNum() { return _num; };
-	void setPosition(Vector4 *pos);
-	Vector4* getPosition() { return &_position; };
+
+	void setAmbient  (Vector4 *amb);
+	void setDiffuse  (Vector4 *diff);
+	void setSpecular (Vector4 *spec);
+	void setPosition (Vector4 *pos);
 	void setDirection(Vector3 *dir);
-	void setCutOff(float cut_off) { _cut_off = cut_off;	};
-	void setExponent(float exp) { _exponent = exp; };
-	void setAmbient(Vector4 *amb);
-	void setDiffuse(Vector4 *diff);
-	void setSpecular(Vector4 *spec);
-	Vector4 getAmbient()   { return _amb; };
-	Vector4 getDiffuse()   { return _diff; };
-	Vector4 getSpecular()  { return _spec; };
-	float   getShininess() { return _exponent; };
+	void setExponent (float exp)     { _exponent = exp; }
+	void setCutOff   (float cut_off) { _cut_off  = cut_off; }
+
 	void draw();
 
 private:
-	Vector4 _amb;
-	Vector4 _diff;
-	Vector4 _spec;
-	Vector4 _position;
-	Vector3 _direction;
+	Vector4 _amb, _diff, _spec, _position;
+	Vector3 _dir;
 	float _cut_off;
 	float _exponent;
-	GLenum _num;
+	enum LIGHT_TYPE _num;
 	bool _state;
 };
 
