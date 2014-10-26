@@ -51,5 +51,7 @@ void main(void) {
 		}
 	}
 	
-	colorOut = max(intensity * mat.diffuse + spec, mat.ambient);
+	// Creative way of applying ambient component
+	vec4 realAmbient = 2.f * (mat.ambient * light.ambient);
+	colorOut = max(intensity * mat.diffuse + spec, realAmbient);
 }

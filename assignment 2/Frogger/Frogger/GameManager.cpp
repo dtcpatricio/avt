@@ -269,7 +269,9 @@ GameManager::renderScene()
 	
 	LightSource *l = _light_sources->at(0);
 
+#if (_LIGHT == _SPOT)
 	updateLightPos(l);
+#endif
 
 	float res[4];
 	float *lpos = l->getPosition()->Vec4ToFloat();
@@ -323,9 +325,9 @@ GameManager::renderScene()
 void
 GameManager::updateLightPos(LightSource* l) {
 	l->setPosition(new Vector4(
-		_frog->getPosition()->getX() + .5f, // Add half of frog's width
+		_frog->getPosition()->getX() +  .5f, // Add half of frog's body width
 		_frog->getPosition()->getY() + 1.0f,
-		_frog->getPosition()->getZ(),
+		_frog->getPosition()->getZ() + -.5f, // Subtract half of frog's head radius
 		1.f));
 }
 
@@ -453,15 +455,15 @@ GameManager::createLightsources()
 	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
 	
 	updateLightPos(l);
-	l->setDirection(new Vector4(0.f, 1.f, -1.f, 0.f));
+	l->setDirection(new Vector4(0.f, .5f, -.75f, 0.f));
 
 	l->setExponent(100.f);
-	l->setCutOff(.75f);
+	l->setCutOff(.5f);
 
 	_light_sources->push_back(l);
 #else
 	l = new LightSource(POINT_LIGHT);
-	l->setAmbient(new Vector4(.4f, .4f, .4f, 1.f));
+	l->setAmbient(new Vector4(.8f, .8f, .8f, 1.f));
 	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
 	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
 	l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
