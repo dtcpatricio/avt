@@ -269,6 +269,8 @@ GameManager::renderScene()
 	
 	LightSource *l = _light_sources->at(0);
 
+	updateLightPos(l);
+
 	float res[4];
 	float *lpos = l->getPosition()->Vec4ToFloat();
 	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
@@ -293,7 +295,6 @@ GameManager::renderScene()
 	/* BEGIN Spotlight */
 
 	float* spot_dir = l->getDirection().Vec4ToFloat();
-	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), spot_dir);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.spotDir");
 	glUniform4fv(loc, 1, spot_dir);
 
@@ -317,6 +318,15 @@ GameManager::renderScene()
 
 
 	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+}
+
+void
+GameManager::updateLightPos(LightSource* l) {
+	l->setPosition(new Vector4(
+		_frog->getPosition()->getX() + .5f, // Add half of frog's width
+		_frog->getPosition()->getY() + 1.0f,
+		_frog->getPosition()->getZ(),
+		1.f));
 }
 
 void
@@ -438,13 +448,16 @@ GameManager::createLightsources()
 {
 #if (_LIGHT == _SPOT)
 	l = new LightSource(SPOT_LIGHT);
-	l->setAmbient(new Vector4(.4f, .4f, .4f, 1.f));
+	l->setAmbient(new Vector4(.0f, .0f, .0f, 1.f));
 	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
 	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
-	l->setPosition(new Vector4(0.f, 10.f, 0.f, 1.f));
-	l->setDirection(new Vector4(0.f, -10.f, 0.f, 0.f));
+	
+	updateLightPos(l);
+	l->setDirection(new Vector4(0.f, 1.f, -1.f, 0.f));
+
 	l->setExponent(100.f);
-	l->setCutOff(.8f);
+	l->setCutOff(.75f);
+
 	_light_sources->push_back(l);
 #else
 	l = new LightSource(POINT_LIGHT);

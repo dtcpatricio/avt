@@ -130,6 +130,8 @@ private:
 	void updateTurtles();
 	void updateFrog();
 
+	void updateLightPos(LightSource* l);
+
 	// frog movement bools
 	bool frogLeft = false;
 	bool frogRight = false;
