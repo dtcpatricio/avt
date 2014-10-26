@@ -27,6 +27,7 @@
 #define WinX 640
 #define WinY 480
 
+
 class GameManager
 {
 public:
@@ -100,8 +101,8 @@ private:
 	float _frogX;
 	float _frogY;
 	float _frogZ;
-	LightSource *l;
-	bool on = true;
+	bool onGlobal = true;
+	bool onLamps = false;
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId;
 
@@ -121,6 +122,7 @@ private:
 	void createBottomTurtles();
 
 	void createLightsources();
+	void updateLights();
 
 	//Dynamic Objects methods
 	void updateDynamicObj();

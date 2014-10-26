@@ -19,6 +19,7 @@ struct LightSource {
 	vec4 emissive;
 	float shininess;
 };
+
 uniform LightSource light;
 
 in Data {

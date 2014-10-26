@@ -45,7 +45,7 @@ LightSource::setState(bool state){
 	
 	_state = state;
 	Vector4 *on = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vector4 *off = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+	Vector4 *off = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
 	if (state){
 		setAmbient(on);

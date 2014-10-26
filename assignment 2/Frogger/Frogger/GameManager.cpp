@@ -1,12 +1,12 @@
 #include "GameManager.h"
 
-
 GameManager::GameManager()
 {}
 
 
 GameManager::~GameManager()
 {}
+
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -152,18 +152,22 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		break;
 
 	case 'n':
-		on = !on;
-		l->setState(on);
+		onGlobal = !onGlobal;
+		_light_sources->at(0)->setState(onGlobal);
+		break;
+
+	case 'c':
+		onLamps = !onLamps;
+		for ( int i = 1; i < 7; i++)
+		{
+			_light_sources->at(i)->setState(onLamps);
+		}
 		break;
 
 	case 27:
 		glutLeaveMainLoop();
 		break;
 
-	case 'c':
-		/*printf("Camera Spherical Coordinates (%f, %f, %f)\n"
-			, _scene->getCam()->getA(), _scene->getCam()->getB(), _scene->getCam()->getR());*/
-		break;
 	}
 	_frog->setSpeed(_frog->getSpeed().operator+(dir));
 }
@@ -240,7 +244,7 @@ GameManager::destroyBufferObjects()
 void
 GameManager::renderScene()
 {
-	GLint loc;
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	switch (camType)
@@ -259,23 +263,8 @@ GameManager::renderScene()
 		
 	glUseProgram(_shader->getProgramIndex());
 	
-	LightSource *l = _light_sources->at(0);
-	float res[4];
-	float *lpos = l->getPosition()->Vec4ToFloat();
-	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
-	glUniform4fv(lightId, 1, res);
-	float* amb = l->getAmbient().Vec4ToFloat();
-	float* diff = l->getAmbient().Vec4ToFloat();
-	float* spec = l->getAmbient().Vec4ToFloat();
-	float shininess = l->getShininess();
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.ambient");
-	glUniform4fv(loc, 1, amb);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.diffuse");
-	glUniform4fv(loc, 1, diff);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.specular");
-	glUniform4fv(loc, 1, spec);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
-	glUniform1f(loc, shininess);
+	
+	updateLights();
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
@@ -292,6 +281,10 @@ GameManager::renderScene()
 
 	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 }
+
+
+////////////////////////////////////////////////////////////////////// Object Movement 
+
 
 void
 GameManager::updateDynamicObj(){
@@ -380,6 +373,18 @@ GameManager::updateTurtles()
 }
 
 void
+GameManager::incrementSpeed(){
+
+	int time = glutGet(GLUT_ELAPSED_TIME) / 1000;
+
+	if (time % 10 == 0)
+		speedIncr += 0.000001;
+
+}
+
+/////////////////////////////////////////////////////////////////////// Lights and Camera
+
+void
 GameManager::createCameras(){
 	
 	float winx = WinX;
@@ -410,23 +415,142 @@ GameManager::createCameras(){
 void
 GameManager::createLightsources()
 {
-	l = new LightSource((GLenum)0);
-	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 1.f);
+	LightSource * l = new LightSource((GLenum)0);
+	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 0.f);
 	l->setAmbient(params);
 	l->setDiffuse(params);
 	l->setSpecular(params);
-	l->setPosition(new Vector4(0.0f, 100.0f, 0.0f, 1.f));
 	l->setExponent(100.f);
+	l->setPosition(new Vector4(10.0f, 50.0f, -10.0f, 1.f));
 	_light_sources->push_back(l);
+
+
+	params = new Vector4(0.f, 0.f, 0.f, 1.f);
+	int id = 1;
+	LightSource* lamp;
+	for (int i = 0; i < 3; i++){
+		for (int j = 0; j < 2; j++){
+			lamp = new LightSource((GLenum)id);
+			lamp->setAmbient(params);
+			lamp->setDiffuse(params);
+			lamp->setSpecular(params);
+			lamp->setExponent(100.f);
+			lamp->setCutOff(90.f);
+			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 8.0f, 19.0f - 19.0f*i, 1.f));
+			_light_sources->push_back(lamp);
+
+			id++;
+		}
+	}
 }
+
+void
+GameManager::updateLights(){
+	GLint loc;
+
+	LightSource *l = _light_sources->at(0);
+	float res[4];
+	float *lpos = l->getPosition()->Vec4ToFloat();
+	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
+	float* amb = l->getAmbient().Vec4ToFloat();
+	float* diff = l->getAmbient().Vec4ToFloat();
+	float* spec = l->getAmbient().Vec4ToFloat();
+	float shininess = l->getShininess();
+	float constant = 2.0f;
+	float linear = 1.0f;
+	float quadratic = 0.5;
+
+
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.pos");
+	glUniform4fv(loc, 1, res);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.ambient");
+	glUniform4fv(loc, 1, amb);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.diffuse");
+	glUniform4fv(loc, 1, diff);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.specular");
+	glUniform4fv(loc, 1, spec);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
+	glUniform1f(loc, shininess);
+
+
+
+	char point[30];
+	char aux[30];
+
+	for (int i = 1; i < 7; i++){
+
+		l = _light_sources->at(i);
+		lpos = l->getPosition()->Vec4ToFloat();
+		_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
+
+		amb = l->getAmbient().Vec4ToFloat();
+		diff = l->getAmbient().Vec4ToFloat();
+		spec = l->getAmbient().Vec4ToFloat();
+		shininess = l->getShininess();
+
+		sprintf_s(point, " pointLights[%d].", i-1);
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "pos");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform4fv(loc, 1, res);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "ambient");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform4fv(loc, 1, amb);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "diffuse");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform4fv(loc, 1, diff);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "specular");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform4fv(loc, 1, spec);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "shininess");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform1f(loc, shininess);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "a.Constant");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform1f(loc, constant);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "a.Linear");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform1f(loc, linear);
+
+		memcpy(aux, point, sizeof(point));
+		strcat_s(aux, "a.Exp");
+
+		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
+		glUniform1f(loc, quadratic);
+	}
+
+}
+
 /////////////////////////////////////////////////////////////////////// SHADERS
 
 GLuint
 GameManager::setupShaders()
 {
 	_shader->init();
-	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "assign2.vert");
-	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
+	//_shader->loadShader(VSShaderLib::VERTEX_SHADER, "assign2.vert");
+	//_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
+
+	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "lights.vert");
+	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "lights.frag");
 
 	_shader->setProgramOutput(0, "outFrag");
 	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
@@ -619,16 +743,6 @@ GameManager::createBottomTurtles()
 	}
 }
 
-void
-GameManager::incrementSpeed(){
-
-	int time = glutGet(GLUT_ELAPSED_TIME)/1000;
-
-	if (time % 10 == 0)
-		speedIncr += 0.000001;
-
-}
-
 //////////////////////////////////////////////////////////////////////// GAME INIT LOOP
 void
 GameManager::init()
@@ -652,7 +766,7 @@ GameManager::init()
 	projId = glGetUniformLocation(_shader->getProgramIndex(), "projMatrix");
 	modelId = glGetUniformLocation(_shader->getProgramIndex(), "model");
 	normal_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "m_normal");
-	lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
+	//lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 
 	createScene();
 	createCameras();

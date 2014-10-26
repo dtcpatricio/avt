@@ -13,6 +13,6 @@ public:
 	void update(float delta_t);
 
 private:
-	int id = 11;
+	int id = 10;
 };
 

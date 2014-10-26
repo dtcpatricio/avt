@@ -3,11 +3,11 @@
 River::River(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: StaticObject(mySurf, shader, calc)
 {
-	amb[0] = 0.1f; amb[1] = 0.1f; amb[2] = .9f; amb[3] = 1.f;
-	diff[0] = 0.1f; diff[1] = 0.1f; diff[2] = 3.f; diff[3] = 1.f;
-	spec[0] = 0.1f; spec[1] = 0.1f; spec[2] = 5.f; spec[3] = 1.f;
+	amb[0] = 0.0f; amb[1] = 0.0f; amb[2] = .8f; amb[3] = 1.f;
+	diff[0] = .1f; diff[1] = 0.1f; diff[2] = .9f; diff[3] = 1.f;
+	spec[0] = 0.04f; spec[1] = 0.04f; spec[2] = .9f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
-	shininess = new float(180.f);
+	shininess = new float(100.f);
 }
 
 

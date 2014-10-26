@@ -3,8 +3,8 @@
 Frog::Frog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: DynamicObject(mySurf, shader, calc)
 {
-	id[0] = 9;
-	id[1] = 10;
+	id[0] = 8;
+	id[1] = 9;
 	amb[0] = .1f; amb[1] = 1.0f; amb[2] = 0.1f; amb[3] = 1.f;
 	diff[0] = .3f; diff[1] = .3f; diff[2] = .3f; diff[3] = 1.f;
 	spec[0] = .1f; spec[1] = .1f; spec[2] = .1f; spec[3] = 1.f;

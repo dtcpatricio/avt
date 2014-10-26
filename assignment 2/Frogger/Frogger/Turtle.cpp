@@ -4,8 +4,8 @@
 Turtle::Turtle(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: DynamicObject(mySurf, shader, calc)
 {
-	id[0] = 12;
-	id[1] = 13;
+	id[0] = 11;
+	id[1] = 12;
 
 	amb[0] = 0.5f; amb[1] = 0.3f; amb[2] = 0.1f; amb[3] = 1.f;
 	diff[0] = .1f; diff[1] = .1f; diff[2] = .1f; diff[3] = 1.f;
