@@ -2,7 +2,7 @@
 
 
 LightSource::LightSource(enum LIGHT_TYPE number)
-	: _num(number)
+	: _num(number), _state(true)
 {
 }
 
@@ -47,21 +47,6 @@ LightSource::draw()
 
 bool
 LightSource::setState(bool state){
-	
 	_state = state;
-	Vector4 *on = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	Vector4 *off = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-
-	if (state){
-		setAmbient(on);
-		setDiffuse(on);
-		setSpecular(on);
-	}
-	else{
-		setAmbient(off);
-		setDiffuse(off);
-		setSpecular(off);
-	}
-
 	return state;
 }
