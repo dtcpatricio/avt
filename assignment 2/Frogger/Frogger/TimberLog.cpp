@@ -4,9 +4,9 @@
 TimberLog::TimberLog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: DynamicObject(mySurf, shader, calc)
 {
-	amb[0] = .5f; amb[1] = .3f; amb[2] = .1f; amb[3] = 1.f;
-	diff[0] = 0.5f; diff[1] = .25f; diff[2] = .1f; diff[3] = 1.f;
-	spec[0] = .1f; spec[1] = .1f; spec[2] = .05f; spec[3] = 1.f;
+	diff[0] = .5f;        diff[1] = .3f;        diff[2] = .1f;        diff[3] = 1.f;
+	amb[0]  = .5f * .25f; amb[1]  = .3f * .25f; amb[2]  = .1f * .25f; amb[3]  = 1.f;
+	spec[0] = .1f;        spec[1] = .1f;        spec[2] = .05f;       spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
 	shininess = new float(100.f);
 }

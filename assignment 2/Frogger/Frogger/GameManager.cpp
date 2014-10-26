@@ -260,20 +260,25 @@ GameManager::renderScene()
 	glUseProgram(_shader->getProgramIndex());
 	
 	LightSource *l = _light_sources->at(0);
+
 	float res[4];
 	float *lpos = l->getPosition()->Vec4ToFloat();
 	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
 	glUniform4fv(lightId, 1, res);
+
 	float* amb = l->getAmbient().Vec4ToFloat();
-	float* diff = l->getAmbient().Vec4ToFloat();
-	float* spec = l->getAmbient().Vec4ToFloat();
-	float shininess = l->getShininess();
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.ambient");
 	glUniform4fv(loc, 1, amb);
+
+	float* diff = l->getDiffuse().Vec4ToFloat();
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.diffuse");
 	glUniform4fv(loc, 1, diff);
+
+	float* spec = l->getSpecular().Vec4ToFloat();
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.specular");
 	glUniform4fv(loc, 1, spec);
+
+	float shininess = l->getShininess();
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
 	glUniform1f(loc, shininess);
 
@@ -290,7 +295,7 @@ GameManager::renderScene()
 	}
 
 
-	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 }
 
 void
@@ -411,11 +416,10 @@ void
 GameManager::createLightsources()
 {
 	l = new LightSource((GLenum)0);
-	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 1.f);
-	l->setAmbient(params);
-	l->setDiffuse(params);
-	l->setSpecular(params);
-	l->setPosition(new Vector4(0.0f, 100.0f, 0.0f, 1.f));
+	l->setAmbient (new Vector4(.4f,  .4f, .4f, 1.f));
+	l->setDiffuse (new Vector4(.8f,  .8f, .8f, 1.f));
+	l->setSpecular(new Vector4(1.f,  1.f, 1.f, 1.f));
+	l->setPosition(new Vector4(0.f, 10.f, 0.f, 1.f));
 	l->setExponent(100.f);
 	_light_sources->push_back(l);
 }

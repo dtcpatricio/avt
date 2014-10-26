@@ -19,10 +19,10 @@ public:
 	void setAmbient(Vector4 *amb);
 	void setDiffuse(Vector4 *diff);
 	void setSpecular(Vector4 *spec);
-	Vector4 getAmbient() { return _amb; };
-	Vector4 getDiffuse() { return _diff; };
-	Vector4 getSpecular() { return _spec; };
-	float getShininess() { return _exponent; };
+	Vector4 getAmbient()   { return _amb; };
+	Vector4 getDiffuse()   { return _diff; };
+	Vector4 getSpecular()  { return _spec; };
+	float   getShininess() { return _exponent; };
 	void draw();
 
 private:
