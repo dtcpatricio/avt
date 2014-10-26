@@ -35,9 +35,9 @@ LightSource::setPosition(Vector4* v)
 }
 
 void
-LightSource::setDirection(Vector3 *dir)
+LightSource::setDirection(Vector4 *dir)
 {
-	memcpy(&_dir, dir, sizeof(Vector3));
+	memcpy(&_dir, dir, sizeof(Vector4));
 }
 
 void

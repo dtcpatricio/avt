@@ -103,7 +103,7 @@ private:
 	LightSource *l;
 	bool on = true;
 	GLErrors _gl_errors;
-	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId;
+	GLuint viewMatrixId, projId, modelId, lightId, spotDirId, normal_uniformId;
 
 	// Create Scene methods
 	void createScene();

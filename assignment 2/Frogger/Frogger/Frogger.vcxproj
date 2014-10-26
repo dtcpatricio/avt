@@ -80,6 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="spotlight.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bus.cpp" />
@@ -145,6 +146,7 @@
   <ItemGroup>
     <None Include="assign2.frag" />
     <None Include="assign2.vert" />
+    <None Include="spotlight.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

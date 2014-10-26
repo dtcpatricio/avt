@@ -18,6 +18,8 @@ public:
 	Vector4  getSpecular()  { return _spec; }
 	float    getShininess() { return _exponent; }
 	Vector4* getPosition()  { return &_position; }
+	Vector4  getDirection() { return _dir; }
+	float    getCutOff()    { return _cut_off; }
 
 	bool setState(bool state);
 
@@ -25,7 +27,7 @@ public:
 	void setDiffuse  (Vector4 *diff);
 	void setSpecular (Vector4 *spec);
 	void setPosition (Vector4 *pos);
-	void setDirection(Vector3 *dir);
+	void setDirection(Vector4 *dir);
 	void setExponent (float exp)     { _exponent = exp; }
 	void setCutOff   (float cut_off) { _cut_off  = cut_off; }
 
@@ -33,8 +35,8 @@ public:
 
 private:
 	Vector4 _amb, _diff, _spec, _position;
-	Vector3 _dir;
-	float _cut_off;
+	Vector4 _dir;   // Used in spotlight
+	float _cut_off; // Used in spotlight
 	float _exponent;
 	enum LIGHT_TYPE _num;
 	bool _state;

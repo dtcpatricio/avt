@@ -1,5 +1,13 @@
 #include "GameManager.h"
 
+#define _DIF			0
+#define _DIF_AMB		1	
+#define _DIF_AMB_SPEC	2
+#define _PER_PIXEL		3
+#define _POINT			4
+#define _SPOT			5
+
+#define _LIGHT 5
 
 GameManager::GameManager()
 {}
@@ -282,6 +290,19 @@ GameManager::renderScene()
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
 	glUniform1f(loc, shininess);
 
+	/* BEGIN Spotlight */
+
+	float* spot_dir = l->getDirection().Vec4ToFloat();
+	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), spot_dir);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.spotDir");
+	glUniform4fv(loc, 1, spot_dir);
+
+	float cutoff = l->getCutOff();
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.cutoff");
+	glUniform1f(loc, cutoff);
+
+	/* END Spotlight */
+
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
 
@@ -415,13 +436,25 @@ GameManager::createCameras(){
 void
 GameManager::createLightsources()
 {
+#if (_LIGHT == _SPOT)
+	l = new LightSource(SPOT_LIGHT);
+	l->setAmbient(new Vector4(.4f, .4f, .4f, 1.f));
+	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
+	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
+	l->setPosition(new Vector4(0.f, 10.f, 0.f, 1.f));
+	l->setDirection(new Vector4(0.f, -10.f, 0.f, 0.f));
+	l->setExponent(100.f);
+	l->setCutOff(.8f);
+	_light_sources->push_back(l);
+#else
 	l = new LightSource(POINT_LIGHT);
-	l->setAmbient (new Vector4(.4f,  .4f, .4f, 1.f));
-	l->setDiffuse (new Vector4(.8f,  .8f, .8f, 1.f));
-	l->setSpecular(new Vector4(1.f,  1.f, 1.f, 1.f));
+	l->setAmbient(new Vector4(.4f, .4f, .4f, 1.f));
+	l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
+	l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
 	l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
 	l->setExponent(100.f);
 	_light_sources->push_back(l);
+#endif
 }
 /////////////////////////////////////////////////////////////////////// SHADERS
 
@@ -429,8 +462,15 @@ GLuint
 GameManager::setupShaders()
 {
 	_shader->init();
+
+
+#if (_LIGHT == _SPOT)
+	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "spotlight.vert");
+	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "spotlight.frag");
+#else
 	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "assign2.vert");
 	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
+#endif
 
 	_shader->setProgramOutput(0, "outFrag");
 	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");

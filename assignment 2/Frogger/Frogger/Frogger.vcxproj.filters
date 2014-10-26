@@ -46,6 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="spotlight.frag">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Frogger.cpp">
@@ -227,6 +230,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="assign2.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="spotlight.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
