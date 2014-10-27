@@ -33,9 +33,9 @@ void main(void)
 
 	// Constants and attenuation
 	//float att = 1.0;
-	float a = 2.0;
-	float b = 1.0;
-	float c = 0.5;
+	float a = .8;
+	float b = .2;
+	float c = 0.1;
 
 	// Distance from point light to pos
 	//float d = 0.0;
@@ -72,31 +72,40 @@ void main(void)
 
 	///////////////////////////////////////
 	// Point Light
-
+	
 	vec3 l_pt = vec3(0.0);
 	vec3 h_pt = vec3(0.0);
 	vec4 spec_pt = vec4(0.0);
 	vec4 l_dif_pt = vec4(0.0);
 	float intensity_pt = 0.0;
 	float intSpec_pt = 0.0;
+	float d = 0.0;
+
 	if(DataIn.stateLamp == 1.0) {
 		
 		for(int i = 0; i < 6; i++) {
-			float d = length(DataIn.lamps[i]);
+			d = length(DataIn.lamps[i]);
 			l_pt = normalize(DataIn.lamps[i]);
 			intensity_pt = max(dot(n, l_pt), 0.0);
+			
 			if(intensity_pt > 0.0) {
 				l_dif_pt = intensity_pt * mat.diffuse;
+			
 				h_pt = normalize(l_pt + e);
+			
 				intSpec_pt = max(dot(h_pt, n), 0.0);
 				spec_pt = mat.specular * pow(intSpec_pt, mat.shininess);
 			
-				float att = a + b * d + c * pow(d, 2);
-				pointLight += (l_dif + spec) / att;
+				float bd = b * d;
+				pointLight += (l_dif_pt + spec_pt) / (a + bd + c * pow(d,2));
 			}
 		}
 	}
-
+	/*
+	if(pointLight == vec4(0.0))
+	{
+		pointLight = vec4(1.0);
+	}*/
 
 	outFrag = max(dirLight + pointLight, mat.ambient);
 }

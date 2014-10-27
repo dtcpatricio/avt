@@ -423,7 +423,7 @@ GameManager::createLightsources()
 	l->setDiffuse(params);
 	l->setSpecular(params);
 	l->setExponent(100.f);
-	l->setPosition(new Vector4(0.0f, 4.0f, 1.0f, 0.f));
+	l->setPosition(new Vector4(0.0f, 4.0f, 0.0f, 0.f));
 	_light_sources->push_back(l);
 
 
@@ -438,7 +438,7 @@ GameManager::createLightsources()
 			lamp->setSpecular(params);
 			lamp->setExponent(100.f);
 			lamp->setCutOff(90.f);
-			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 8.0f, 19.0f - 19.0f*i, 1.f));
+			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 4.0f, 19.0f - 19.0f*i, 1.f));
 			_light_sources->push_back(lamp);
 
 			id++;
