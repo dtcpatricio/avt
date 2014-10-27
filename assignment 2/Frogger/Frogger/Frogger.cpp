@@ -145,11 +145,27 @@ void setupGLUT(int argc, char* argv[])
 	}
 }
 
+void setupDevIL() {
+	if ((ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
+		|| (iluGetInteger(ILU_VERSION_NUM) < ILU_VERSION)
+		|| (ilutGetInteger(ILUT_VERSION_NUM) < ILUT_VERSION)) {
+		printf("DevIL version is different... exiting!\n");
+		exit(EXIT_FAILURE);
+	}
+
+	ilInit();
+	iluInit();
+	ilutInit();
+
+	//error_check_devIL("ilInit");
+}
+
 void init(int argc, char* argv[])
 {
 	setupGLUT(argc, argv);
 	setupGLEW();
 	setupOpenGL();
+	setupDevIL();
 	setupCallbacks();
 }
 

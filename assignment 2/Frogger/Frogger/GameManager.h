@@ -24,6 +24,11 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#define ILUT_USE_OPENGL
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <IL/ilut.h>
+
 #define WinX 640
 #define WinY 480
 
@@ -93,6 +98,9 @@ public:
 
 	float speedIncr = 0.005f;
 	unsigned int FrameCount = 0;
+
+	void load_image(ILuint &id, const std::string &path);
+	void error_check_devIL(const std::string &location);
 
 private:
 	OrthogonalCamera *_orthoCam;

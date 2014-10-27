@@ -500,6 +500,39 @@ GameManager::createLightsources()
 		_light_sources->push_back(l);
 }
 
+/////////////////////////////////////////////////////////////////////// DEVIL
+
+void
+GameManager::load_image(ILuint &id, const std::string &path) {
+	ilGenImages(1, &id);
+	ilBindImage(id);
+
+	// Windows sure is weird
+	std::wstring widestr = std::wstring(path.begin(), path.end());
+	ilLoadImage(widestr.c_str());
+
+	// TODO: This fix is dumb
+	iluFlipImage();
+
+	error_check_devIL("ilLoadImage");
+
+	ilutRenderer(ILUT_OPENGL);
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+	error_check_devIL("ilLoadImage");
+}
+
+void
+GameManager::error_check_devIL(const std::string &location) {
+	ILuint devilError = ilGetError();
+	if (devilError != IL_NO_ERROR) {
+		printf("Devil Error (%s): %s\n"
+			, location.c_str()
+			, iluErrorString(devilError));
+		exit(2);
+	}
+}
+
 /////////////////////////////////////////////////////////////////////// SHADERS
 
 GLuint

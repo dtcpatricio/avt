@@ -10,6 +10,11 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#define ILUT_USE_OPENGL
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <IL/ilut.h>
+
 #include "GameManager.h"
 #include "vsShaderLib.h"
 #include "GLErrors.h"
