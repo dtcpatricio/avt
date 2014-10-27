@@ -229,5 +229,11 @@
     <None Include="assign2.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="lights.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="lights.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

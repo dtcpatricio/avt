@@ -91,7 +91,7 @@ public:
 	std::vector<Car*> * _cars;
 	std::vector<Turtle*> * _turtles;
 
-	float speedIncr = 0.005f;
+	float speedIncr = 0.05f;
 	unsigned int FrameCount = 0;
 
 private:
@@ -105,6 +105,7 @@ private:
 	bool onLamps = false;
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, globalId, lampId;
+	GLuint pointsIds[6];
 
 	// Create Scene methods
 	void createScene();
@@ -139,6 +140,6 @@ private:
 	bool frogDown = false;
 
 	// frog movement speed
-	float _frog_speed = 0.005f;
+	float _frog_speed = 0.1f;
 };
 

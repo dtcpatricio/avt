@@ -380,7 +380,7 @@ GameManager::incrementSpeed(){
 	int time = glutGet(GLUT_ELAPSED_TIME) / 1000;
 
 	if (time % 10 == 0)
-		speedIncr += 0.000001;
+		speedIncr += 0.00001;
 
 }
 
@@ -418,12 +418,12 @@ void
 GameManager::createLightsources()
 {
 	LightSource * l = new LightSource((GLenum)0);
-	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 0.f);
+	Vector4 *params = new Vector4(1.f, 1.f, 1.f, 1.f);
 	l->setAmbient(params);
 	l->setDiffuse(params);
 	l->setSpecular(params);
 	l->setExponent(100.f);
-	l->setPosition(new Vector4(0.0f, 50.0f, 10.0f, 1.f));
+	l->setPosition(new Vector4(0.0f, 4.0f, 1.0f, 0.f));
 	_light_sources->push_back(l);
 
 
@@ -472,23 +472,17 @@ GameManager::updateLights(){
 	else
 		state = 0.0f;
 
-	char point[30];
-	char aux[30];
 
 	glUniform1f(lampId, state);
 
 
-	/*for (int i = 1; i < 7; i++){
+	for (int i = 1; i < 7; i++){
 		l = _light_sources->at(i);
 		lpos = l->getPosition()->Vec4ToFloat();
 		_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
 
-		sprintf_s(point, "point[%d]", i - 1);
-		memcpy(aux, point, sizeof(point));
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform4fv(loc, 1, res);
-	}*/
+		glUniform4fv(pointsIds[i-1], 1, res);
+	}
 
 }
 
@@ -549,7 +543,7 @@ void
 GameManager::createRiver()
 {
 	River * river = new River(_mySurf, _shader, _ml);
-	river->setPosition(-15.0f, 0.0f, -15.0f);
+	river->setPosition(0.0f, .5f, -7.5f);
 	river->create();
 	_game_objects->push_back(river);
 }
@@ -567,7 +561,7 @@ void
 GameManager::createRoad()
 {
 	Road * road = new Road(_mySurf, _shader, _ml);
-	road->setPosition(-15.0f, 0.0f, 4.0f);
+	road->setPosition(0.0f, .5f, 9.5f);
 	road->create();
 	_game_objects->push_back(road);
 }
@@ -576,7 +570,7 @@ void
 GameManager::createRoadside()
 {
 	Roadside * roadside = new Roadside(_mySurf, _shader, _ml);
-	roadside->setPosition(-15.0f, 0.0f, 19.0f);
+	roadside->setPosition(0.0f, 1.f, 19.f);
 	roadside->create();
 	_game_objects->push_back(roadside);
 }
@@ -585,12 +579,12 @@ void
 GameManager::createRiverside()
 {
 	Riverside * riverside = new Riverside(_mySurf, _shader, _ml);
-	riverside->setPosition(-15.0f, 0.0f, 0.0f);
+	riverside->setPosition(0.0f, 1.0f, 1.0f);
 	riverside->create();
 	_game_objects->push_back(riverside);
 
 	Riverside * riverside2 = new Riverside(_mySurf, _shader, _ml);
-	riverside2->setPosition(-15.0f, 0.0f, -19.0f);
+	riverside2->setPosition(0.0f, 1.0f, -16.0f);
 	_game_objects->push_back(riverside2);
 }
 
@@ -601,7 +595,7 @@ GameManager::createBus()
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 3; j++){
 			bus = new Bus(_mySurf, _shader, _ml);
-			bus->setPosition(-10.0f + 7.0f*j, 2.0f, 5.0f + 10.0f*i);
+			bus->setPosition(-10.0f + 7.0f*j, 2.0f, 4.5f + 10.0f*i);
 			bus->create();
 			_game_objects->push_back(bus);
 			_bus->push_back(bus);
@@ -631,7 +625,7 @@ GameManager::createTopTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-9.0f + 10.0f * i, 2.0f, -13.0f);
+		tl->setPosition(-9.0f + 10.0f * i, 1.0f, -13.0f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -644,7 +638,7 @@ GameManager::createMiddleTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-11.0f + 9.0f * i, 2.0f, -7.0f);
+		tl->setPosition(-11.0f + 9.0f * i, 1.0f, -7.5f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -658,7 +652,7 @@ GameManager::createBottomTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-8.0f + 8.0f * i, 2.0f, -5.0f);
+		tl->setPosition(-8.0f + 8.0f * i, 1.0f, -5.0f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -669,10 +663,10 @@ void
 GameManager::createTopTurtles()
 {
 	Turtle * tl;
-	for (int i = 0; i < 4; i++){
+	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			tl = new Turtle(_mySurf, _shader, _ml);
-			tl->setPosition(-8.0f + 1.3f*j + 6.0f*i, 2.0f, -10.0f);
+			tl->setPosition(-10.0f + 3.4f*j + 10.4f*i, 1.0f, -10.0f);
 			tl->create();
 			_game_objects->push_back(tl);
 			_turtles->push_back(tl);
@@ -684,10 +678,10 @@ void
 GameManager::createBottomTurtles()
 {
 	Turtle * tl;
-	for (int i = 0; i < 3; i++){
+	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 3; j++){
 			tl = new Turtle(_mySurf, _shader, _ml);
-			tl->setPosition(-10.0f + 1.3f*j + 10.0f*i, 2.0f, -2.0f);
+			tl->setPosition(-10.0f + 3.4f*j + 12.1f*i, 1.0f, -2.0f);
 			tl->create();
 			_game_objects->push_back(tl);
 			_turtles->push_back(tl);
@@ -699,7 +693,6 @@ GameManager::createBottomTurtles()
 void
 GameManager::init()
 {
-
 	_shader = new VSShaderLib();
 	_mySurf = new VSResSurfRevLib();
 	_ml = new MathLib();
@@ -720,6 +713,14 @@ GameManager::init()
 	normal_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "m_normal");
 	globalId = glGetUniformLocation(_shader->getProgramIndex(), "stateGbl");
 	lampId = glGetUniformLocation(_shader->getProgramIndex(), "stateL");
+
+	pointsIds[0] = glGetUniformLocation(_shader->getProgramIndex(), "lamp1");
+	pointsIds[1] = glGetUniformLocation(_shader->getProgramIndex(), "lamp2");
+	pointsIds[2] = glGetUniformLocation(_shader->getProgramIndex(), "lamp3");
+	pointsIds[3] = glGetUniformLocation(_shader->getProgramIndex(), "lamp4");
+	pointsIds[4] = glGetUniformLocation(_shader->getProgramIndex(), "lamp5");
+	pointsIds[5] = glGetUniformLocation(_shader->getProgramIndex(), "lamp6");
+
 	//lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 
 	createScene();

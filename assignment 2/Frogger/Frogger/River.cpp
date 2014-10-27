@@ -20,8 +20,8 @@ void
 River::create()
 {
 	_mySurf->setObjId(id);
+	_mySurf->createCylinder(30.0f, 5.f, 4);
 	applyColor();
-	_mySurf->createRectangle(30.0f, 2.0f, 15.0f);
 }
 
 void
@@ -30,6 +30,9 @@ River::draw()
 	_mySurf->setObjMaterials(id, _shader);
 	_calc->setIdentityMatrix(_calc->getModel(), 4);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
+	_calc->scale(1.0f, .2f, 2.1f);
+	_calc->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	_calc->rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	sendToGL(id);
 }
 

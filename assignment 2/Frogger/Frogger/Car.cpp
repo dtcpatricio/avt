@@ -23,7 +23,7 @@ Car::create()
 {
 	// body shop
 	_mySurf->setObjId(id[1]);
-	_mySurf->createRectangle(2.0f, 1.0f, 1.0f);
+	_mySurf->createCylinder(2.f, 1.f, 4);
 	applyColor();
 
 	setTires();
@@ -39,6 +39,9 @@ Car::draw()
 {
 	_mySurf->setObjMaterials(id[1], _shader);
 	_calc->translation(_position.getX(), _position.getY() + 0.3f, _position.getZ());
+	_calc->scale(1.f, 1.0f, 1.f);
+	_calc->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	_calc->rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	sendToGL(id[1]);
 
 	for (size_t i = 0; i < 4; i++)
@@ -47,22 +50,22 @@ Car::draw()
 		{
 			// front left wheel
 		case 0:
-			_calc->translation(_position.getX() + .5f, _position.getY() + 0.5f, _position.getZ() + 1.1f);
+			_calc->translation(_position.getX() - .5f, _position.getY() - .2f, _position.getZ() + .8f);
 			break;
 
 			// rear left wheel
 		case 1:
-			_calc->translation(_position.getX() + 1.5f, _position.getY() + 0.5f, _position.getZ() + 1.1f);
+			_calc->translation(_position.getX() + .5f, _position.getY() - 0.2f, _position.getZ() + .8f);
 			break;
 
 			// front right wheel
 		case 2:
-			_calc->translation(_position.getX() + .5f, _position.getY() + 0.5f, _position.getZ() - .1f);
+			_calc->translation(_position.getX() - .5f, _position.getY() - 0.2f, _position.getZ() - .8f);
 			break;
 
 			// rar right wheel
 		case 3:
-			_calc->translation(_position.getX() + 1.5f, _position.getY() + 0.5f, _position.getZ() - .1f);
+			_calc->translation(_position.getX() + .5f, _position.getY() - .2f, _position.getZ() - .8f);
 			break;
 		}
 		

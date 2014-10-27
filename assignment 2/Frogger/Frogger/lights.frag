@@ -17,43 +17,86 @@ in Data {
 	float stateLamp;
 	vec3 normal;
 	vec3 lightDir;
-	//vec3 point[6];
+	vec3 lamps[6];
 	vec3 eye;
 } DataIn;
 
 void main(void)
 {
 	vec4 dirLight = vec4(0.0); 
-
-	vec4 spec = vec4(0.0);
-	vec4 l_dif = vec4(0.0);
+	vec4 pointLight = vec4(0.0);
 
 	vec3 n = vec3(0.0);
-	vec3 l = vec3(0.0);
+	//vec3 l = vec3(0.0);
 	vec3 e = vec3(0.0);
-	vec3 h = vec3(0.0);
+	//vec3 h = vec3(0.0);
 
-	float intensity = 0.0;
-	float intSpec = 0.0;
+	// Constants and attenuation
+	//float att = 1.0;
+	float a = 2.0;
+	float b = 1.0;
+	float c = 0.5;
 
+	// Distance from point light to pos
+	//float d = 0.0;
+
+	n = normalize(DataIn.normal);
+	e = normalize(DataIn.eye);
+
+
+	////////////////////////////////////////
+	// Directional Light
+
+	vec3 l_dir = vec3(0.0);
+	vec3 h_dir = vec3(0.0);
+	vec4 spec_dir = vec4(0.0);
+	vec4 l_dif_dir = vec4(0.0);
+	float intensity_dir = 0.0;
+	float intSpec_dir = 0.0;
 	if(DataIn.stateGlobal == 1.0){
 
-		n = normalize(DataIn.normal);
-		l = normalize(DataIn.lightDir);
-		e = normalize(DataIn.eye);
+		l_dir = normalize(DataIn.lightDir);		
 
-		intensity = max(dot(n,l), 0.0);
+		intensity_dir = max(dot(n,l_dir), 0.0);
 	
-		if (intensity > 0.0) {
-			l_dif = intensity * mat.diffuse;
+		if (intensity_dir > 0.0) {
+			l_dif_dir = intensity_dir * mat.diffuse;
 
-			h = normalize(l + e);
-			intSpec = max(dot(h,n), 0.0);
-			spec = mat.specular * pow(intSpec, mat.shininess);
+			h_dir = normalize(l_dir + e);
+			intSpec_dir = max(dot(h_dir,n), 0.0);
+			spec_dir = mat.specular * pow(intSpec_dir, mat.shininess);
 		}
 
-		dirLight = spec + l_dif; 
+		dirLight = spec_dir + l_dif_dir; 
 	}
 
-	outFrag = dirLight, mat.ambient;
+	///////////////////////////////////////
+	// Point Light
+
+	vec3 l_pt = vec3(0.0);
+	vec3 h_pt = vec3(0.0);
+	vec4 spec_pt = vec4(0.0);
+	vec4 l_dif_pt = vec4(0.0);
+	float intensity_pt = 0.0;
+	float intSpec_pt = 0.0;
+	if(DataIn.stateLamp == 1.0) {
+		
+		for(int i = 0; i < 6; i++) {
+			float d = length(DataIn.lamps[i]);
+			l_pt = normalize(DataIn.lamps[i]);
+			intensity_pt = max(dot(n, l_pt), 0.0);
+			if(intensity_pt > 0.0) {
+				l_dif_pt = intensity_pt * mat.diffuse;
+				h_pt = normalize(l_pt + e);
+				intSpec_pt = max(dot(h_pt, n), 0.0);
+				spec_pt = mat.specular * pow(intSpec_pt, mat.shininess);
+			
+				float att = a + b * d + c * pow(d, 2);
+				pointLight += (l_dif + spec) / att;
+			}
+		}
+	}
+
+
+	outFrag = max(dirLight + pointLight, mat.ambient);
 }

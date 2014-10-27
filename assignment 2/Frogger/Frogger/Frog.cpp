@@ -19,11 +19,11 @@ void
 Frog::create()
 {
 	_mySurf->setObjId(id[0]);
-	_mySurf->createCube(1.0f);
+	_mySurf->createCylinder(.5f, .75f, 4);
 	applyColor();
 
 	_mySurf->setObjId(id[1]);
-	_mySurf->createSphere(.5f, 20);
+	_mySurf->createSphere(.25f, 64);
 	applyColor();
 }
 
@@ -32,10 +32,13 @@ Frog::draw()
 {
 	_mySurf->setObjMaterials(id[0], _shader);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
+	_calc->scale(1.5f, .9f, .6f);
+	_calc->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	_calc->rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	sendToGL(id[0]);
 
 	_mySurf->setObjMaterials(id[1], _shader);
-	_calc->translation(_position.getX() + .5f, _position.getY() + 1.5f, _position.getZ() + .5f);
+	_calc->translation(_position.getX(), _position.getY(), _position.getZ() - .45f);
 	sendToGL(id[1]);
 }
 

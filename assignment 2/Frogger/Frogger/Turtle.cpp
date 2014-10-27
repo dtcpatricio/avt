@@ -24,14 +24,14 @@ Turtle::create()
 {
 	// body and paws
 	_mySurf->setObjId(id[1]);
-	_mySurf->createRectangle(.7f, .5f, 1.0f);
+	_mySurf->createSphere(1.1f, 64);
 	applyColor();
 
 	setHead();
 
 	// head
 	_mySurf->setObjId(id[0]);
-	_mySurf->createSphere(.3f, 16);
+	_mySurf->createSphere(.6f, 64);
 	applyColor();
 
 }
@@ -41,10 +41,11 @@ Turtle::draw()
 {
 	_mySurf->setObjMaterials(id[1], _shader);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
+	_calc->scale(1.1f, 1.0f, .9f);
 	sendToGL(id[1]);
 
 	_mySurf->setObjMaterials(id[0], _shader);
-	_calc->translation(_position.getX() - .3f, _position.getY(), _position.getZ()+0.4f);
+	_calc->translation(_position.getX() - 1.55f, _position.getY(), _position.getZ());
 	sendToGL(id[0]);
 
 }
