@@ -3,13 +3,13 @@
 
 Bus::Bus(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	: DynamicObject(mySurf, shader, calc)
-{
+{					
 	id[0] = 4;	id[1] = 5;
-	amb[0] = 1.f; amb[1] = .8f; amb[2] = .1f; amb[3] = 1.f;
-	diff[0] = .75f; diff[1] = .6f; diff[2] = .2f; diff[3] = 1.f;
-	spec[0] = .6f; spec[1] = .6f; spec[2] = .4f; spec[3] = 1.f;
+	amb[0] = 0.24725f; amb[1] = 0.1995f; amb[2] = 0.0745f; amb[3] = 1.f;
+	diff[0] = 0.75164f; diff[1] = 0.60648; diff[2] = 0.22648f; diff[3] = 1.f;
+	spec[0] = 0.628281f; spec[1] = 0.555802f; spec[2] = 0.366065f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
-	shininess = new float(180.f);
+	shininess = new float(52.f);
 }
 
 

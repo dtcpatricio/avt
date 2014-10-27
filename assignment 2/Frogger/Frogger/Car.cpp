@@ -6,11 +6,11 @@ Car::Car(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 {
 	id[0] = 6;
 	id[1] = 7;
-	amb[0] = .8f; amb[1] = .2f; amb[2] = .1f; amb[3] = 1.f;
-	diff[0] = .8f; diff[1] = .1f; diff[2] = .1f; diff[3] = 1.f;
-	spec[0] = 1.0f; spec[1] = .2f; spec[2] = .2f; spec[3] = 1.f;
+	amb[0] = 0.1745f; amb[1] = 0.01175f; amb[2] = 0.01175f; amb[3] = 1.f;
+	diff[0] = 0.61424f; diff[1] = 0.04136f; diff[2] = 0.04136f; diff[3] = 1.f;
+	spec[0] = 0.727811f; spec[1] = 0.626959f; spec[2] = 0.626959f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
-	shininess = new float(100.0f);
+	shininess = new float(80.0f);
 }
 
 

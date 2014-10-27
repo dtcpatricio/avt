@@ -104,7 +104,7 @@ private:
 	bool onGlobal = true;
 	bool onLamps = false;
 	GLErrors _gl_errors;
-	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId;
+	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, globalId, lampId;
 
 	// Create Scene methods
 	void createScene();

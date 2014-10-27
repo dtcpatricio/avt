@@ -235,6 +235,21 @@ void MathLib::MultiplyMatrixByVector4by4OpenGL_FLOAT(
 			+ matrix[15] * pvector[3];
 }
 
+// Compute res = M * point
+void 
+MathLib::matrixByVector(GLfloat *vector, float *res) {
+
+	for (int i = 0; i < 4; ++i) {
+
+		res[i] = 0.0f;
+
+		for (int j = 0; j < 4; j++) {
+
+			res[i] += vector[j] * viewMatrix[j * 4 + i];
+		}
+	}
+}
+
 //This code comes directly from GLU except that it is for float
 int MathLib::glhInvertMatrixf2(float *m, float *out)
 {

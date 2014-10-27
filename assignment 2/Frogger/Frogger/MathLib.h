@@ -40,6 +40,8 @@ public:
 
 	void pushMatrix(GLfloat * m, int type);
 
+	void matrixByVector(GLfloat* vector, float* res);
+
 	GLfloat* popMatrix(int type);
 
 	void MathLib::translation(float x, float y, float z);

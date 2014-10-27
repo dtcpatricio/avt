@@ -26,8 +26,8 @@ DynamicObject::setTires(){
 
 void
 DynamicObject::setHead(){
-	amb[0] = .1f; amb[1] = .8f; amb[2] = .1f;
-	diff[0] = .2f; diff[1] = .6f; diff[2] = .2f;
+	amb[0] = .1f; amb[1] = .5f; amb[2] = .1f;
+	diff[0] = .2f; diff[1] = .9f; diff[2] = .2f;
 	spec[0] = .2f; spec[1] = .8f; spec[2] = .2f;
 }
 

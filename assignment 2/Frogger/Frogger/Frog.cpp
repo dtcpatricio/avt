@@ -5,11 +5,12 @@ Frog::Frog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 {
 	id[0] = 8;
 	id[1] = 9;
-	amb[0] = .1f; amb[1] = 1.0f; amb[2] = 0.1f; amb[3] = 1.f;
-	diff[0] = .3f; diff[1] = .3f; diff[2] = .3f; diff[3] = 1.f;
-	spec[0] = .1f; spec[1] = .1f; spec[2] = .1f; spec[3] = 1.f;
+
+	amb[0] = .0f; amb[1] = .7f; amb[2] = 0.0f; amb[3] = 1.f;
+	diff[0] = .1f; diff[1] = .9f; diff[2] = .1f; diff[3] = 1.f;
+	spec[0] = .04f; spec[1] = .9f; spec[2] = .04f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
-	shininess = new float(100.f);
+	shininess = new float(180.f);
 }
 
 Frog::~Frog() {}
@@ -18,8 +19,8 @@ void
 Frog::create()
 {
 	_mySurf->setObjId(id[0]);
-	applyColor();
 	_mySurf->createCube(1.0f);
+	applyColor();
 
 	_mySurf->setObjId(id[1]);
 	_mySurf->createSphere(.5f, 20);
@@ -29,7 +30,6 @@ Frog::create()
 void
 Frog::draw()
 {
-	applyColor();
 	_mySurf->setObjMaterials(id[0], _shader);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
 	sendToGL(id[0]);

@@ -280,6 +280,8 @@ GameManager::renderScene()
 
 
 	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+
+	glutSwapBuffers();
 }
 
 
@@ -421,7 +423,7 @@ GameManager::createLightsources()
 	l->setDiffuse(params);
 	l->setSpecular(params);
 	l->setExponent(100.f);
-	l->setPosition(new Vector4(10.0f, 50.0f, -10.0f, 1.f));
+	l->setPosition(new Vector4(0.0f, 50.0f, 10.0f, 1.f));
 	_light_sources->push_back(l);
 
 
@@ -452,91 +454,41 @@ GameManager::updateLights(){
 	float res[4];
 	float *lpos = l->getPosition()->Vec4ToFloat();
 	_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
-	float* amb = l->getAmbient().Vec4ToFloat();
-	float* diff = l->getAmbient().Vec4ToFloat();
-	float* spec = l->getAmbient().Vec4ToFloat();
-	float shininess = l->getShininess();
-	float constant = 2.0f;
-	float linear = 1.0f;
-	float quadratic = 0.5;
 
-
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.pos");
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 	glUniform4fv(loc, 1, res);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.ambient");
-	glUniform4fv(loc, 1, amb);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.diffuse");
-	glUniform4fv(loc, 1, diff);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.specular");
-	glUniform4fv(loc, 1, spec);
-	loc = glGetUniformLocation(_shader->getProgramIndex(), "light.shininess");
-	glUniform1f(loc, shininess);
 
+	float state;
 
+	if (onGlobal)
+		state = 1.0f;
+	else
+		state = 0.0f;
+
+	glUniform1f(globalId, state);
+
+	if (onLamps)
+		state = 1.0f;
+	else
+		state = 0.0f;
 
 	char point[30];
 	char aux[30];
 
-	for (int i = 1; i < 7; i++){
+	glUniform1f(lampId, state);
 
+
+	/*for (int i = 1; i < 7; i++){
 		l = _light_sources->at(i);
 		lpos = l->getPosition()->Vec4ToFloat();
 		_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
 
-		amb = l->getAmbient().Vec4ToFloat();
-		diff = l->getAmbient().Vec4ToFloat();
-		spec = l->getAmbient().Vec4ToFloat();
-		shininess = l->getShininess();
-
-		sprintf_s(point, " pointLights[%d].", i-1);
+		sprintf_s(point, "point[%d]", i - 1);
 		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "pos");
 
 		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
 		glUniform4fv(loc, 1, res);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "ambient");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform4fv(loc, 1, amb);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "diffuse");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform4fv(loc, 1, diff);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "specular");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform4fv(loc, 1, spec);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "shininess");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform1f(loc, shininess);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "a.Constant");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform1f(loc, constant);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "a.Linear");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform1f(loc, linear);
-
-		memcpy(aux, point, sizeof(point));
-		strcat_s(aux, "a.Exp");
-
-		loc = glGetUniformLocation(_shader->getProgramIndex(), aux);
-		glUniform1f(loc, quadratic);
-	}
+	}*/
 
 }
 
@@ -766,6 +718,8 @@ GameManager::init()
 	projId = glGetUniformLocation(_shader->getProgramIndex(), "projMatrix");
 	modelId = glGetUniformLocation(_shader->getProgramIndex(), "model");
 	normal_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "m_normal");
+	globalId = glGetUniformLocation(_shader->getProgramIndex(), "stateGbl");
+	lampId = glGetUniformLocation(_shader->getProgramIndex(), "stateL");
 	//lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 
 	createScene();
