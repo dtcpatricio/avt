@@ -155,7 +155,7 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		//on = !on;
 		//l->setState(on);
 		active_light = active_light == SPOT_LIGHT
-			? POINT_LIGHT
+			? DIR_LIGHT
 			: SPOT_LIGHT;
 		break;
 
@@ -283,7 +283,7 @@ GameManager::renderScene()
 		}
 	}
 	else {
-		l = _light_sources->at(1);
+		l = _light_sources->at(2);
 	}
 
 	float res[4];
@@ -486,6 +486,15 @@ GameManager::createLightsources()
 		l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
 		l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
 		l->setPosition(new Vector4(0.f, 40.f, 0.f, 1.f));
+		l->setExponent(100.f);
+
+		_light_sources->push_back(l);
+
+		l = new LightSource(DIR_LIGHT);
+		l->setAmbient(new Vector4(.2f, .2f, .2f, 1.f));
+		l->setDiffuse(new Vector4(.8f, .8f, .8f, 1.f));
+		l->setSpecular(new Vector4(1.f, 1.f, 1.f, 1.f));
+		l->setPosition(new Vector4(-5.f, 20.f, 2.f, 0.f));
 		l->setExponent(100.f);
 
 		_light_sources->push_back(l);
