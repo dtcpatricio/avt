@@ -237,10 +237,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\..\..\..\Downloads\asphalt.png">
+    <Image Include="asphalt.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\..\..\..\Downloads\water.png">
+    <Image Include="water.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

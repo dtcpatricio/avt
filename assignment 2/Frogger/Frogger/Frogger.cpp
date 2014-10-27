@@ -145,6 +145,16 @@ void setupGLUT(int argc, char* argv[])
 	}
 }
 
+void error_check_devIL(const std::string &location) {
+	ILuint devilError = ilGetError();
+	if (devilError != IL_NO_ERROR) {
+		printf("Devil Error (%s): %s\n"
+			, location.c_str()
+			, iluErrorString(devilError));
+		exit(2);
+	}
+}
+
 void setupDevIL() {
 	if ((ilGetInteger(IL_VERSION_NUM) < IL_VERSION)
 		|| (iluGetInteger(ILU_VERSION_NUM) < ILU_VERSION)
@@ -157,7 +167,9 @@ void setupDevIL() {
 	iluInit();
 	ilutInit();
 
-	//error_check_devIL("ilInit");
+	error_check_devIL("ilInit");
+
+	std::cout << "WOW DevIL is alive good job mate" << std::endl;
 }
 
 void init(int argc, char* argv[])

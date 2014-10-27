@@ -14,7 +14,6 @@
 #include "TimberLog.h"
 #include "Turtle.h"
 
-
 // Include LightSource object
 #include "LightSource.h"
 
@@ -23,6 +22,9 @@
 #include "GLErrors.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+
+// Don't even get me started...
+#undef _UNICODE
 
 #define ILUT_USE_OPENGL
 #include <IL/il.h>
@@ -99,8 +101,10 @@ public:
 	float speedIncr = 0.005f;
 	unsigned int FrameCount = 0;
 
+	// Textures
 	void load_image(ILuint &id, const std::string &path);
 	void error_check_devIL(const std::string &location);
+	void prepare_texture(GLuint &tex_id, int w, int h, unsigned char* data);
 
 private:
 	OrthogonalCamera *_orthoCam;
@@ -113,6 +117,10 @@ private:
 	bool on = true;
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, spotDirId, normal_uniformId;
+
+	// Textures
+	GLuint tex_road_id,   tex_river_id;
+	ILuint devil_road_id, devil_river_id;
 
 	// Create Scene methods
 	void createScene();

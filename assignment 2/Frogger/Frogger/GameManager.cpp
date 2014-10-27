@@ -503,20 +503,32 @@ GameManager::createLightsources()
 /////////////////////////////////////////////////////////////////////// DEVIL
 
 void
+GameManager::prepare_texture(GLuint &tex_id, int w, int h, unsigned char* data) {
+
+	/* Create and load texture to OpenGL */
+	glGenTextures(1, &tex_id); /* Texture name generation */
+	glBindTexture(GL_TEXTURE_2D, tex_id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+		w, h,
+		0, GL_RGBA, GL_UNSIGNED_BYTE,
+		data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void
 GameManager::load_image(ILuint &id, const std::string &path) {
 	ilGenImages(1, &id);
 	ilBindImage(id);
 
-	// Windows sure is weird
-	std::wstring widestr = std::wstring(path.begin(), path.end());
-	ilLoadImage(widestr.c_str());
+	// Match image origin to OpenGL’s
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 
-	// TODO: This fix is dumb
-	iluFlipImage();
+	ilLoadImage(path.c_str());
 
 	error_check_devIL("ilLoadImage");
 
-	ilutRenderer(ILUT_OPENGL);
+	//ilutRenderer(ILUT_OPENGL);
 	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 
 	error_check_devIL("ilLoadImage");
@@ -760,6 +772,21 @@ GameManager::incrementSpeed(){
 void
 GameManager::init()
 {
+	load_image(devil_road_id, "asphalt.png");
+	load_image(devil_river_id, "water.png");
+	ilBindImage(devil_road_id);
+	prepare_texture(
+			tex_road_id,
+			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetData());
+	ilBindImage(devil_river_id);
+	prepare_texture(
+			tex_road_id,
+			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetData());
+
 	_shader_point = new VSShaderLib();
 	_shader_spot = new VSShaderLib();
 

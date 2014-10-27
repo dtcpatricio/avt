@@ -149,8 +149,8 @@
     <None Include="spotlight.vert" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\..\..\..\Downloads\asphalt.png" />
-    <Image Include="..\..\..\..\..\..\..\..\Downloads\water.png" />
+    <Image Include="asphalt.png" />
+    <Image Include="water.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
