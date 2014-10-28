@@ -539,11 +539,20 @@ GameManager::prepare_texture(GLuint &tex_id, int w, int h, unsigned char* data) 
 	/* Create and load texture to OpenGL */
 	glGenTextures(1, &tex_id); /* Texture name generation */
 	glBindTexture(GL_TEXTURE_2D, tex_id);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 		w, h,
 		0, GL_RGBA, GL_UNSIGNED_BYTE,
 		data);
+
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void
