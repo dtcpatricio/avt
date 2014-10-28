@@ -1,5 +1,8 @@
 #version 150 core
 
+in vec2 texCoordV;
+uniform sampler2D texmap_road, texmap_river;
+
 out vec4 outFrag;
 
 struct Materials {
@@ -25,6 +28,7 @@ in Data {
 	vec3 normal;
 	vec3 eye;
 	vec3 lightDir;
+    vec2 texCoordV;
 } DataIn;
 
 void main(void)
@@ -45,5 +49,13 @@ void main(void)
 		float intSpec = max(dot(h,n), 0.0);
 		spec = light.specular * mat.specular * pow(intSpec, mat.shininess);
 	}
-	outFrag = max(mat.ambient * light.ambient, spec + l_dif);
+
+	vec4 matOutFrag = max(mat.ambient * light.ambient, spec + l_dif);
+	vec4 texel = texture(texmap_river, DataIn.texCoordV);
+	
+	// Teacher's way:
+	// outFrag = max(matOutFrag, 0.1*texel);
+
+	// My way:
+	outFrag = (0.5 * matOutFrag) + 0.5 * texel;
 }

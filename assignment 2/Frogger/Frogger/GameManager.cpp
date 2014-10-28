@@ -2,6 +2,8 @@
 
 enum LIGHT_TYPE active_light = SPOT_LIGHT;
 
+GLint tex_loc_road, tex_loc_river;
+
 GameManager::GameManager()
 {}
 
@@ -322,6 +324,22 @@ GameManager::renderScene()
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
 
+	/* BEGIN Textures */
+
+	//Associar os Texture Units aos Objects Texture
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex_road_id);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex_river_id);
+
+	//Indicar aos 2 samplers do GLSL quais os Texture Units a serem usados
+	glUniform1i(tex_loc_road, 0);
+	glUniform1i(tex_loc_river, 1);
+
+	/* END Textures */
+
 	incrementSpeed();
 	updateDynamicObj();
 
@@ -565,6 +583,7 @@ GameManager::setupShader(VSShaderLib *shader, char *vert_filename, char *frag_fi
 	shader->setProgramOutput(0, "outFrag");
 	shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
 	shader->setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
+	shader->setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "texCoord");
 	shader->prepareProgram();
 
 	viewMatrixId     = glGetUniformLocation(shader->getProgramIndex(), "viewMatrix");
@@ -778,13 +797,13 @@ GameManager::init()
 	prepare_texture(
 			tex_road_id,
 			ilGetInteger(IL_IMAGE_WIDTH),
-			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetInteger(IL_IMAGE_HEIGHT),
 			ilGetData());
 	ilBindImage(devil_river_id);
 	prepare_texture(
-			tex_road_id,
+			tex_river_id,
 			ilGetInteger(IL_IMAGE_WIDTH),
-			ilGetInteger(IL_IMAGE_WIDTH),
+			ilGetInteger(IL_IMAGE_HEIGHT),
 			ilGetData());
 
 	_shader_point = new VSShaderLib();
@@ -806,9 +825,16 @@ GameManager::init()
 	// Default shader
 	_shader = _shader_spot;
 
+	// Same for all shaders, so we just do this once
+	tex_loc_road  = glGetUniformLocation(_shader->getProgramIndex(), "texmap_road");
+	tex_loc_river = glGetUniformLocation(_shader->getProgramIndex(), "texmap_river");
+
 	createScene();
 	createCameras();
 	createLightsources();
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_MULTISAMPLE);
 	
 	// final main loop
 	glutMainLoop();
