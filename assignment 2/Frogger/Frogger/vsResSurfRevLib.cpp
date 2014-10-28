@@ -514,6 +514,7 @@ VSResSurfRevLib::computeVAO(int numP, float *p, float *points, int sides, float 
 	glBindVertexArray(0);
 
 	mMyMesh[objId].type = GL_TRIANGLES;
+	mMyMesh[objId].mat.texCount = 0;
 }
 
 void
@@ -739,4 +740,6 @@ VSResSurfRevLib::setObjMaterials(int id, VSShaderLib *_shader)
 	glUniform4fv(loc, 1, mMyMesh[id].mat.specular);
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.shininess");
 	glUniform1f(loc, mMyMesh[id].mat.shininess);
+	loc = glGetUniformLocation(_shader->getProgramIndex(), "mat.texCount");
+	glUniform1i(loc, mMyMesh[id].mat.texCount);
 }

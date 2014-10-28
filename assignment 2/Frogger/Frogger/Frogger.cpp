@@ -81,7 +81,7 @@ void onTimer(int value)
 void setupCallbacks()
 {
 	glutCloseFunc  (cleanup);
-	glutIdleFunc   (MyWrapper::renderScene);
+	//glutIdleFunc   (MyWrapper::renderScene);
 	glutDisplayFunc(MyWrapper::display);
 	glutReshapeFunc(MyWrapper::reshape);
 	
@@ -108,6 +108,7 @@ void setupOpenGL()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
+	glEnable(GL_MULTISAMPLE);
 }
 
 void setupGLEW()
@@ -130,8 +131,8 @@ void setupGLUT(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
 
-	glutInitContextVersion(3, 1);
-	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextVersion(3, 3);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);

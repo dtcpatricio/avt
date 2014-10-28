@@ -1,4 +1,10 @@
-#version 150 core
+#version 330
+
+uniform sampler2D texmap;
+uniform sampler2D texmap1;
+uniform sampler2D texmap2;
+uniform sampler2D texmap3;
+uniform int texMode;
 
 out vec4 outFrag;
 
@@ -13,23 +19,23 @@ struct Materials {
 uniform Materials mat;
 
 in Data {
-	float stateGlobal;
-	float stateLamp;
+	int stateGlobal;
+	int stateLamp;
 	vec3 normal;
 	vec3 lightDir;
 	vec3 lamps[6];
 	vec3 eye;
+	vec2 tex_coord;
 } DataIn;
 
 void main(void)
 {
 	vec4 dirLight = vec4(0.0); 
 	vec4 pointLight = vec4(0.0);
+	vec4 texel;
 
 	vec3 n = vec3(0.0);
-	//vec3 l = vec3(0.0);
 	vec3 e = vec3(0.0);
-	//vec3 h = vec3(0.0);
 
 	// Constants for attenuation
 	float a = .1;
@@ -49,7 +55,7 @@ void main(void)
 	vec4 l_dif_dir = vec4(0.0);
 	float intensity_dir = 0.0;
 	float intSpec_dir = 0.0;
-	if(DataIn.stateGlobal == 1.0){
+	if(DataIn.stateGlobal == 1){
 
 		l_dir = normalize(DataIn.lightDir);		
 
@@ -77,7 +83,7 @@ void main(void)
 	float intSpec_pt = 0.0;
 	float d = 0.0;
 
-	if(DataIn.stateLamp == 1.0) {
+	if(DataIn.stateLamp == 1) {
 		
 		for(int i = 0; i < 6; i++) {
 			d = length(DataIn.lamps[i]);
@@ -102,6 +108,18 @@ void main(void)
 	{
 		pointLight = vec4(1.0);
 	}*/
-
-	outFrag = max(dirLight + pointLight, mat.ambient);
+	if(texMode == 1)
+	{
+		texel = texture(texmap1, DataIn.tex_coord);
+		outFrag = texel; //max(dirLight*texel + pointLight, .1*texel);
+	}
+	if(texMode == 2)
+	{
+		texel = texture(texmap3, DataIn.tex_coord);
+		outFrag = max(dirLight + pointLight, mat.ambient)*texel;
+	}
+	else
+	{
+		outFrag = max(dirLight + pointLight, mat.ambient);
+	}
 }

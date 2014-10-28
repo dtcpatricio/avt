@@ -24,6 +24,7 @@
 #include "GLErrors.h"
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "TGA.h"
 
 #define WinX 640
 #define WinY 480
@@ -110,6 +111,9 @@ private:
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, globalId, lampId;
 	GLuint pointsIds[6];
+	GLuint TextureArray[4];
+	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3;
+	GLint texMode_uniformId;
 	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
 
 	// Create Scene methods

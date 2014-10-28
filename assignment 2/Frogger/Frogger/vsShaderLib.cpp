@@ -123,8 +123,8 @@ void
 VSShaderLib::prepareProgram() {
 
 	glLinkProgram(pProgram);
-	addUniforms();
-	addBlocks();
+	//addUniforms();
+	//addBlocks();
 }
 
 

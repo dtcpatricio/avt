@@ -3,10 +3,8 @@
 GameManager::GameManager()
 {}
 
-
 GameManager::~GameManager()
 {}
-
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -254,7 +252,26 @@ GameManager::renderScene()
 		
 	glUseProgram(_shader->getProgramIndex());
 	
-	
+	//Associar os Texture Units aos Objects Texture
+	//stone.tga loaded in TU0; checker.tga loaded in TU1;  lightwood.tga loaded in TU2
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[0]);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[1]);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[2]);
+
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[3]);
+
+	//Indicar aos tres samplers do GLSL quais os Texture Units a serem usados
+	glUniform1i(tex_loc, 0);
+	glUniform1i(tex_loc1, 1);
+	glUniform1i(tex_loc2, 2);
+	glUniform1i(tex_loc3, 3);
+
 	updateLights();
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
@@ -267,7 +284,15 @@ GameManager::renderScene()
 	std::vector<GameObject*>::iterator it_obj;
 	for (it_obj = _game_objects->begin(); it_obj != _game_objects->end(); it_obj++)
 	{
+		// TEMPORARY LOCATION:
+		if (dynamic_cast<Road*>(*it_obj))
+			glUniform1i(texMode_uniformId, 1);
+		if (dynamic_cast<River*>(*it_obj))
+			glUniform1i(texMode_uniformId, 2);
+
 		(*it_obj)->draw();
+		
+		glUniform1i(texMode_uniformId, 0);
 		// Do AABB colliding tests
 		if (dynamic_cast<DynamicObject*>(*it_obj) && !dynamic_cast<Frog*>(*it_obj))
 		{
@@ -290,6 +315,7 @@ GameManager::renderScene()
 		_frog->setPosition(initialPos);
 
 	isOver = false;
+	glBindTexture(GL_TEXTURE_2D, 0);
 	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 
 	glutSwapBuffers();
@@ -468,22 +494,22 @@ GameManager::updateLights(){
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 	glUniform4fv(loc, 1, res);
 
-	float state;
+	int state;
 
 	if (onGlobal)
-		state = 1.0f;
+		state = 1;
 	else
-		state = 0.0f;
+		state = 0;
 
-	glUniform1f(globalId, state);
+	glUniform1i(globalId, state);
 
 	if (onLamps)
-		state = 1.0f;
+		state = 1;
 	else
-		state = 0.0f;
+		state = 0;
 
 
-	glUniform1f(lampId, state);
+	glUniform1i(lampId, state);
 
 
 	for (int i = 1; i < 7; i++){
@@ -511,7 +537,7 @@ GameManager::setupShaders()
 	_shader->setProgramOutput(0, "outFrag");
 	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
 	_shader->setVertexAttribName(VSShaderLib::NORMAL_ATTRIB, "normal");
-	//_shader->setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "in_color");
+	_shader->setVertexAttribName(VSShaderLib::TEXTURE_COORD_ATTRIB, "texCoord");
 	_shader->prepareProgram();
 
 	return(_shader->isProgramValid());
@@ -744,7 +770,19 @@ GameManager::init()
 	pointsIds[4] = glGetUniformLocation(_shader->getProgramIndex(), "lamp5");
 	pointsIds[5] = glGetUniformLocation(_shader->getProgramIndex(), "lamp6");
 
+	texMode_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "texMode");
+	tex_loc = glGetUniformLocation(_shader->getProgramIndex(), "texmap");
+	tex_loc1 = glGetUniformLocation(_shader->getProgramIndex(), "texmap1");
+	tex_loc2 = glGetUniformLocation(_shader->getProgramIndex(), "texmap2");
+	tex_loc3 = glGetUniformLocation(_shader->getProgramIndex(), "texmap3");
 	//lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
+	
+	//Texture Object definition
+	glGenTextures(4, TextureArray);
+	TGA_Texture(TextureArray, "stone.tga", 0);
+	TGA_Texture(TextureArray, "road.tga", 1);
+	TGA_Texture(TextureArray, "lightwood.tga", 2);
+	TGA_Texture(TextureArray, "river.tga", 3);
 
 	createScene();
 	createCameras();

@@ -1,4 +1,4 @@
-#version 150 core
+#version 330
 
 uniform mat4 projMatrix, viewMatrix, model;
 uniform mat3 m_normal;
@@ -12,19 +12,21 @@ uniform vec4 lamp4;
 uniform vec4 lamp5;
 uniform vec4 lamp6;
 
-uniform float stateGbl;
-uniform float stateL;
+uniform int stateGbl;
+uniform int stateL;
 
 in vec4 in_pos;
 in vec4 normal;
+in vec4 texCoord;
 
 out Data {
-	float stateGlobal;
-	float stateLamp;
+	int stateGlobal;
+	int stateLamp;
 	vec3 normal;
 	vec3 lightDir;
 	vec3 lamps[6];
 	vec3 eye;
+	vec2 tex_coord;
 } DataOut;
 
 void main(void)
@@ -44,6 +46,6 @@ void main(void)
 	DataOut.lamps[5]= lamp6.xyz - pos.xyz;
 	
 	DataOut.eye = vec3(-pos);
-
+	DataOut.tex_coord = texCoord.st;
 	gl_Position = projMatrix * viewMatrix * model * in_pos;
 }
