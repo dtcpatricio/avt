@@ -132,6 +132,12 @@
     <ClCompile Include="Vector4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Lamp.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Frogger.h">
@@ -220,6 +226,12 @@
     </ClInclude>
     <ClInclude Include="Vector4.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Lamp.h">
+      <Filter>Header Files\objects\static</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

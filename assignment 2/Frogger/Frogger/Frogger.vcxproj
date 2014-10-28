@@ -82,6 +82,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Bus.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Car.cpp" />
@@ -92,6 +93,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GLErrors.cpp" />
+    <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="LightSource.cpp" />
     <ClCompile Include="MathLib.cpp" />
     <ClCompile Include="OrthogonalCamera.cpp" />
@@ -112,6 +114,7 @@
     <ClCompile Include="vsShaderLib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Bus.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Car.h" />
@@ -122,6 +125,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GLErrors.h" />
+    <ClInclude Include="Lamp.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="OrthogonalCamera.h" />

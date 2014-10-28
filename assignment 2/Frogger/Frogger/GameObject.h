@@ -1,5 +1,7 @@
 #pragma once
+#include <typeinfo>
 #include "Entity.h"
+#include "BoundingBox.h"
 #include "vsResSurfRevLib.h"
 
 class GameObject :
@@ -15,6 +17,10 @@ public:
 
 	virtual void draw() = 0;
 	virtual void create() = 0;
+
+	float _obj_length, _obj_width;
+
+	BoundingBox *_boundingBox;
 
 protected:
 	VSResSurfRevLib * _mySurf;

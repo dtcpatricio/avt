@@ -3,7 +3,9 @@
 
 GameObject::GameObject(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib *calc)
 : _mySurf(mySurf), _shader(shader), _calc(calc)
-{}
+{
+	_boundingBox = new BoundingBox();
+}
 
 
 GameObject::~GameObject()

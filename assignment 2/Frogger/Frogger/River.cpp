@@ -8,7 +8,11 @@ River::River(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	diff[0] = .1f; diff[1] = 0.1f; diff[2] = .9f; diff[3] = 1.f;
 	spec[0] = 0.04f; spec[1] = 0.04f; spec[2] = .9f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
-	shininess = new float(12.f);
+	shininess = new float(12.f * 128.f);
+
+	_obj_length = 30.f;
+	_obj_width = 13.6f;
+	_boundingBox->setParams(_obj_length, _obj_width);
 }
 
 

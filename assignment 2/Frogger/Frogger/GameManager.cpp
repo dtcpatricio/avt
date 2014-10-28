@@ -13,16 +13,7 @@ GameManager::~GameManager()
 /////////////////////////////////////////////////////////////////////// INPUT
 void
 GameManager::mouseWheel(int wheel, int direction, int x, int y) {
-	//Cam *cam = _scene->getCam();
-
-	//float r = cam->getR();
-	//r += direction * 0.1f;
-	//if (r < 0.1f) {
-	//	r = 0.1f;
-	//}
-
-	//cam->setR(r);
-	//cam->update(cam->getR(), cam->getA(), cam->getB());
+	
 }
 
 void
@@ -272,13 +263,33 @@ GameManager::renderScene()
 	incrementSpeed();
 	updateDynamicObj();
 
+	BoundingBox *frogbb = _frog->_boundingBox;
 	std::vector<GameObject*>::iterator it_obj;
 	for (it_obj = _game_objects->begin(); it_obj != _game_objects->end(); it_obj++)
 	{
 		(*it_obj)->draw();
+		// Do AABB colliding tests
+		if (dynamic_cast<DynamicObject*>(*it_obj) && !dynamic_cast<Frog*>(*it_obj))
+		{
+			BoundingBox *b1 = (*it_obj)->_boundingBox;
+			b1->setLimits((*it_obj)->getPosition());
+			frogbb->setLimits(_frog->getPosition());
+			if (dynamic_cast<Car*>(*it_obj) || dynamic_cast<Bus*>(*it_obj))
+				if (b1->is_colliding(frogbb))
+					_frog->setPosition(initialPos);
+				
+			if (dynamic_cast<TimberLog*>(*it_obj) || dynamic_cast<Turtle*>(*it_obj))
+				if (b1->is_colliding(frogbb))
+					isOver = true;
+		}
 	}
+	// Finally, check if the frog is on the water
+	Vector3 *v = new Vector3(0.0f, .5f, -7.5f);
+	_riverbb->setLimits(v);
+	if (_riverbb->is_colliding(frogbb) && !isOver)
+		_frog->setPosition(initialPos);
 
-
+	isOver = false;
 	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 
 	glutSwapBuffers();
@@ -557,13 +568,14 @@ GameManager::createRiver()
 	river->setPosition(0.0f, .5f, -7.5f);
 	river->create();
 	_game_objects->push_back(river);
+	_riverbb = river->_boundingBox;
 }
 
 void
 GameManager::createFrog()
 {
 	_frog = new Frog(_mySurf, _shader, _ml);
-	_frog->setPosition(0.0f, 2.0f, 19.0f);
+	_frog->setPosition(initialPos);
 	_frog->create();
 	_game_objects->push_back(_frog);
 }
@@ -595,7 +607,7 @@ GameManager::createRiverside()
 	_game_objects->push_back(riverside);
 
 	Riverside * riverside2 = new Riverside(_mySurf, _shader, _ml);
-	riverside2->setPosition(0.0f, 1.0f, -16.0f);
+	riverside2->setPosition(0.0f, 1.0f, -16.3f);
 	_game_objects->push_back(riverside2);
 }
 
@@ -636,7 +648,7 @@ GameManager::createTopTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-9.0f + 10.0f * i, 1.0f, -13.0f);
+		tl->setPosition(-9.0f + 10.0f * i, 1.0f, -13.f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -649,7 +661,7 @@ GameManager::createMiddleTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-11.0f + 9.0f * i, 1.0f, -7.5f);
+		tl->setPosition(-11.0f + 9.0f * i, 1.0f, -7.2f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -663,7 +675,7 @@ GameManager::createBottomTimberLog()
 	TimberLog * tl;
 	for (int i = 0; i < 3; i++){
 		tl = new TimberLog(_mySurf, _shader, _ml);
-		tl->setPosition(-8.0f + 8.0f * i, 1.0f, -5.0f);
+		tl->setPosition(-8.0f + 8.0f * i, 1.0f, -4.2f);
 		tl->create();
 		_game_objects->push_back(tl);
 		_logs->push_back(tl);
@@ -692,7 +704,7 @@ GameManager::createBottomTurtles()
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 3; j++){
 			tl = new Turtle(_mySurf, _shader, _ml);
-			tl->setPosition(-10.0f + 3.4f*j + 12.1f*i, 1.0f, -2.0f);
+			tl->setPosition(-10.0f + 3.4f*j + 12.1f*i, 1.0f, -1.6f);
 			tl->create();
 			_game_objects->push_back(tl);
 			_turtles->push_back(tl);

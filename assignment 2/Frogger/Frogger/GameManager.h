@@ -83,7 +83,9 @@ public:
 	float alpha = 0.f, alphaAux = 0.f, betaAux = 20.f, beta = 20.f;
 	float r = 5.25f, rAux = 5.25f;
 
+	// Auxiliary objects of game objects
 	Frog * _frog;
+	BoundingBox *_riverbb;
 
 	std::vector<GameObject*> * _game_objects;
 	std::vector<LightSource*> *_light_sources;
@@ -104,9 +106,11 @@ private:
 	float _frogZ;
 	bool onGlobal = true;
 	bool onLamps = false;
+	bool isOver = false;
 	GLErrors _gl_errors;
 	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, globalId, lampId;
 	GLuint pointsIds[6];
+	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
 
 	// Create Scene methods
 	void createLamps();

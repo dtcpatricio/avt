@@ -11,6 +11,10 @@ Car::Car(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	spec[0] = 0.727811f; spec[1] = 0.626959f; spec[2] = 0.626959f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
 	shininess = new float(80.0f);
+
+	_obj_length = 2.f;
+	_obj_width = 1.f;
+	_boundingBox->setParams(_obj_length, _obj_width);
 }
 
 

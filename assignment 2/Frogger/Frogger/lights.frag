@@ -31,14 +31,10 @@ void main(void)
 	vec3 e = vec3(0.0);
 	//vec3 h = vec3(0.0);
 
-	// Constants and attenuation
-	//float att = 1.0;
-	float a = .8;
+	// Constants for attenuation
+	float a = .1;
 	float b = .2;
-	float c = 0.1;
-
-	// Distance from point light to pos
-	//float d = 0.0;
+	float c = 0.3;
 
 	n = normalize(DataIn.normal);
 	e = normalize(DataIn.eye);

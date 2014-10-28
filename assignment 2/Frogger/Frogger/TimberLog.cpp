@@ -9,6 +9,10 @@ TimberLog::TimberLog(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* ca
 	spec[0] = .393548f; spec[1] = .271906f; spec[2] = .166721f; spec[3] = 1.f;
 	emissive[0] = 0.f;  emissive[1] = 0.f; emissive[2] = 0.f; emissive[3] = 1.f;
 	shininess = new float(0.2f * 128.f);
+
+	_obj_length = 5.f;
+	_obj_width = 3.f;
+	_boundingBox->setParams(_obj_length, _obj_width);
 }
 
 
@@ -20,7 +24,7 @@ void
 TimberLog::create()
 {
 	_mySurf->setObjId(id);
-	_mySurf->createCylinder(5.0f, 1.2f, 32);
+	_mySurf->createCylinder(5.0f, 1.4f, 32);
 	applyColor();
 }
 
