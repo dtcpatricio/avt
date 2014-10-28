@@ -13,6 +13,7 @@
 #include "Riverside.h"
 #include "TimberLog.h"
 #include "Turtle.h"
+#include "Lamp.h"
 
 
 // Include LightSource object
@@ -108,6 +109,7 @@ private:
 	GLuint pointsIds[6];
 
 	// Create Scene methods
+	void createLamps();
 	void createScene();
 	void createFrog();
 	void createRiver();
