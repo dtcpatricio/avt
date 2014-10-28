@@ -1,6 +1,6 @@
 #include "GameManager.h"
 
-enum LIGHT_TYPE active_light = SPOT_LIGHT;
+enum LIGHT_TYPE active_light = POINT_LIGHT;
 
 GLint tex_loc_road, tex_loc_river;
 
@@ -346,9 +346,22 @@ GameManager::renderScene()
 	std::vector<GameObject*>::iterator it_obj;
 	for (it_obj = _game_objects->begin(); it_obj != _game_objects->end(); it_obj++)
 	{
+		// Decidir qual o Texture Unit a ser considerado (-1 é nenhum)
+		float tex_needed = (*it_obj)->tex_needed();
+		loc = glGetUniformLocation(_shader->getProgramIndex(), "tex_needed");
+
+		if (tex_needed == TEX_NONE) {
+			glUniform1i(loc, -1);
+		}
+		else if (tex_needed == TEX_RIVER) {
+			glUniform1i(loc,  0);
+		}
+		else if (tex_needed == TEX_ROAD) {
+			glUniform1i(loc,  1);
+		}
+
 		(*it_obj)->draw();
 	}
-
 
 	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 }
@@ -835,7 +848,7 @@ GameManager::init()
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
-	
+
 	// final main loop
 	glutMainLoop();
 	exit(EXIT_SUCCESS);

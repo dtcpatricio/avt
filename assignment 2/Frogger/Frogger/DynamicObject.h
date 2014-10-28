@@ -16,6 +16,7 @@ public:
 	void setHead();
 	
 	virtual void create() = 0;
+	enum TEX_TYPE tex_needed() { return TEX_NONE; } // TODO: Will change in the future
 
 protected:
 	Vector3 _speed;

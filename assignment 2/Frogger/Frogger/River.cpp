@@ -31,4 +31,3 @@ River::draw()
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
 	sendToGL(id);
 }
-

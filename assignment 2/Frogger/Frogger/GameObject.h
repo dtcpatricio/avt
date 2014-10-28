@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include "vsResSurfRevLib.h"
 
+enum TEX_TYPE { TEX_NONE, TEX_ROAD, TEX_RIVER };
+
 class GameObject :
 	public Entity
 {
@@ -15,6 +17,7 @@ public:
 
 	virtual void draw() = 0;
 	virtual void create() = 0;
+	virtual enum TEX_TYPE tex_needed() = 0;
 
 protected:
 	VSResSurfRevLib * _mySurf;

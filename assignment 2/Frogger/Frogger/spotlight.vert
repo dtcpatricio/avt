@@ -7,15 +7,18 @@ uniform vec4 l_pos, l_spotDir;
 
 in vec4 in_pos;
 in vec3 normal;
+in vec2 texCoord;
 
 out Data {
 	vec3 normal;
 	vec3 eye;
 	vec3 lightDir;
+    vec2 texCoordV;
 } DataOut;
 
 void main(void)
 {
+	DataOut.texCoordV = texCoord;
 	vec4 pos = viewMatrix * model * in_pos;
 
 	DataOut.normal = normalize(m_normal * normal);

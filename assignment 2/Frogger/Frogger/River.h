@@ -10,6 +10,7 @@ public:
 
 	void create();
 	void draw();
+	enum TEX_TYPE tex_needed() { return TEX_RIVER; }
 
 private:
 	int id = 0;

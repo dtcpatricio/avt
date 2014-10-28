@@ -1,6 +1,6 @@
 #version 150 core
 
-in vec2 texCoordV;
+uniform int tex_needed;
 uniform sampler2D texmap_road, texmap_river;
 
 out vec4 outFrag;
@@ -50,12 +50,5 @@ void main(void)
 		spec = light.specular * mat.specular * pow(intSpec, mat.shininess);
 	}
 
-	vec4 matOutFrag = max(mat.ambient * light.ambient, spec + l_dif);
-	vec4 texel = texture(texmap_river, DataIn.texCoordV);
-	
-	// Teacher's way:
-	// outFrag = max(matOutFrag, 0.1*texel);
-
-	// My way:
-	outFrag = (0.5 * matOutFrag) + 0.5 * texel;
+	outFrag = max(mat.ambient * light.ambient, spec + l_dif);
 }
