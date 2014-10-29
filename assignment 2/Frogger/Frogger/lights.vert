@@ -1,4 +1,4 @@
-#version 330
+#version 150 core
 
 uniform mat4 projMatrix, viewMatrix, model;
 uniform mat3 m_normal;

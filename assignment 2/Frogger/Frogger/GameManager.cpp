@@ -316,7 +316,7 @@ GameManager::renderScene()
 
 	isOver = false;
 	glBindTexture(GL_TEXTURE_2D, 0);
-	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 
 	glutSwapBuffers();
 }
@@ -532,7 +532,51 @@ GameManager::setupShaders()
 	//_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
 
 	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "lights.vert");
+
+	GLint isCompiled = 0;
+	glGetShaderiv(_shader->getShaderIndex(_shader->VERTEX_SHADER), GL_COMPILE_STATUS, &isCompiled);
+	if (isCompiled == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(_shader->getShaderIndex(_shader->VERTEX_SHADER), GL_INFO_LOG_LENGTH, &maxLength);
+
+		//The maxLength includes the NULL character
+		std::vector<char> errorLog(maxLength);
+		glGetShaderInfoLog(_shader->getShaderIndex(_shader->VERTEX_SHADER), maxLength, &maxLength, &errorLog[0]);
+
+		//Provide the infolog in whatever manor you deem best.
+		for (size_t i = 0; i < errorLog.size(); i++)
+		{
+			std::cout << errorLog[i];
+		}
+		std::cout << std::endl;
+
+		//Exit with failure.
+		return(_shader->isProgramValid());
+	}
+
 	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "lights.frag");
+
+	glGetShaderiv(_shader->getShaderIndex(_shader->FRAGMENT_SHADER), GL_COMPILE_STATUS, &isCompiled);
+	if (isCompiled == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(_shader->getShaderIndex(_shader->FRAGMENT_SHADER), GL_INFO_LOG_LENGTH, &maxLength);
+
+		//The maxLength includes the NULL character
+		std::vector<char> errorLog(maxLength);
+		glGetShaderInfoLog(_shader->getShaderIndex(_shader->FRAGMENT_SHADER), maxLength, &maxLength, &errorLog[0]);
+
+		//Provide the infolog in whatever manor you deem best.
+		for (size_t i = 0; i < errorLog.size(); i++)
+		{
+			std::cout << errorLog[i];
+		}
+		std::cout << std::endl;
+
+		//Exit with failure.
+		return(_shader->isProgramValid());
+	}
 
 	_shader->setProgramOutput(0, "outFrag");
 	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
