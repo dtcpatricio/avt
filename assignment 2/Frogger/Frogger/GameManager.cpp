@@ -143,6 +143,7 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 	case 'n':
 		onGlobal = !onGlobal;
 		_light_sources->at(0)->setState(onGlobal);
+		_spotlight->setState(!onGlobal);
 		break;
 
 	case 'c':
@@ -343,6 +344,7 @@ GameManager::updateFrog()
 			_frog->getPosition()->getY(),
 			_frog->getPosition()->getZ() - _frog_speed);
 		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+		_spotlight->setDirection(new Vector4(0.0f, .5f, -.75f, 0.f));
 	}
 	if (frogDown)
 	{
@@ -351,6 +353,7 @@ GameManager::updateFrog()
 			_frog->getPosition()->getY(),
 			_frog->getPosition()->getZ() + _frog_speed);
 		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+		_spotlight->setDirection(new Vector4(0.0f, -.5f, -.75f, 0.f));
 	}
 	if (frogLeft)
 	{
@@ -359,6 +362,7 @@ GameManager::updateFrog()
 			_frog->getPosition()->getY(),
 			_frog->getPosition()->getZ());
 		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+		_spotlight->setDirection(new Vector4(-.5f, 0.f, -.75f, 0.f));
 	}
 	if (frogRight)
 	{
@@ -367,7 +371,11 @@ GameManager::updateFrog()
 			_frog->getPosition()->getY(),
 			_frog->getPosition()->getZ());
 		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+		_spotlight->setDirection(new Vector4(.5f, 0.f, -.75f, 0.f));
 	}
+	_spotlight->setPosition(new Vector4(_frog->getPosition()->getX(),
+		_frog->getPosition()->getY() + 4.f,
+		_frog->getPosition()->getZ(), 1.0f));
 }
 
 void 
@@ -474,12 +482,23 @@ GameManager::createLightsources()
 			lamp->setSpecular(params);
 			lamp->setExponent(100.f);
 			lamp->setCutOff(90.f);
-			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 4.0f, 19.0f - 17.75f*i, 1.f));
+			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 7.0f, 17.0f - 17.75f*i, 1.f));
 			_light_sources->push_back(lamp);
 
 			id++;
 		}
 	}
+
+	LightSource *spotlight;
+	spotlight = new LightSource((GLenum)0);
+	spotlight->setState(false);
+	spotlight->setCutOff(.425f);
+	spotlight->setDirection(new Vector4(0.0f, 1.f, -1.f, 0.0f));
+	spotlight->setPosition(new Vector4(_frog->getPosition()->getX(),
+		_frog->getPosition()->getY() + 4.f, 
+		_frog->getPosition()->getZ(), 1.0f));
+	spotlight->setExponent(100.f);
+	_spotlight = spotlight;
 }
 
 void
@@ -493,13 +512,27 @@ GameManager::updateLights(){
 
 	loc = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 	glUniform4fv(loc, 1, res);
-
 	int state;
-
 	if (onGlobal)
+	{
 		state = 1;
+	}
 	else
+	{
 		state = 0;
+		float *spot_dir = _spotlight->getDirection().Vec4ToFloat();
+		loc = glGetUniformLocation(_shader->getProgramIndex(), "li.spotDir");
+		glUniform4fv(loc, 1, spot_dir);
+		float cutOff = 90.f;
+		loc = glGetUniformLocation(_shader->getProgramIndex(), "li.cutOff");
+		glUniform1f(loc, cutOff);
+		float spot[4];
+		float *spotpos = _spotlight->getPosition()->Vec4ToFloat();
+		_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(spot, _ml->getViewMatrix(), spotpos);
+		loc = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
+		glUniform4fv(loc, 1, spot);
+	}
+		
 
 	glUniform1i(globalId, state);
 
@@ -577,14 +610,14 @@ GameManager::createScene()
 
 void
 GameManager::createLamps(){
-	for ( int i = 1; i < 7; i++)
+	/*for ( int i = 1; i < 7; i++)
 	{
 		LightSource* l = _light_sources->at(i);
 		
 		Lamp* lamp = new Lamp(_mySurf, _shader, _ml, l);
 		lamp->create();
 		_game_objects->push_back(lamp);
-	}
+	}*/
 }
 
 void
@@ -775,7 +808,7 @@ GameManager::init()
 	tex_loc1 = glGetUniformLocation(_shader->getProgramIndex(), "texmap1");
 	tex_loc2 = glGetUniformLocation(_shader->getProgramIndex(), "texmap2");
 	tex_loc3 = glGetUniformLocation(_shader->getProgramIndex(), "texmap3");
-	//lightId = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
+	//spotlightId = glGetUniformLocation(_shader->getProgramIndex(), "l");
 	
 	//Texture Object definition
 	glGenTextures(4, TextureArray);
