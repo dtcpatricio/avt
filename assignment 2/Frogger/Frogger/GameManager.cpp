@@ -524,6 +524,33 @@ GameManager::updateLights(){
 
 /////////////////////////////////////////////////////////////////////// SHADERS
 
+void checkShader(GLuint type) {
+	GLint isCompiled = 0;
+	glGetShaderiv(type, GL_COMPILE_STATUS, &isCompiled);
+	if (isCompiled == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(type, GL_INFO_LOG_LENGTH, &maxLength);
+
+		//The maxLength includes the NULL character
+		std::vector<GLchar> infoLog(maxLength);
+		glGetShaderInfoLog(type, maxLength, &maxLength, &infoLog[0]);
+
+		//We don't need the shader anymore.
+		glDeleteShader(type);
+
+		//Use the infoLog as you see fit.
+		for (size_t i = 0; i < infoLog.size(); i++)
+		{
+			std::cout << infoLog[i];
+		}
+		std::cout << std::endl;
+
+		//In this simple program, we'll just leave
+		return;
+	}
+}
+
 GLuint
 GameManager::setupShaders()
 {
@@ -532,7 +559,9 @@ GameManager::setupShaders()
 	//_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
 
 	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "lights.vert");
+	checkShader(_shader->getShaderIndex(_shader->VERTEX_SHADER));
 	_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "lights.frag");
+	checkShader(_shader->getShaderIndex(_shader->FRAGMENT_SHADER));
 
 	_shader->setProgramOutput(0, "outFrag");
 	_shader->setVertexAttribName(VSShaderLib::VERTEX_COORD_ATTRIB, "in_pos");
