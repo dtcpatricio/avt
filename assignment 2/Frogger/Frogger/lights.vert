@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 uniform mat4 projMatrix, viewMatrix, model;
 uniform mat3 m_normal;
@@ -12,16 +12,16 @@ uniform vec4 lamp4;
 uniform vec4 lamp5;
 uniform vec4 lamp6;
 
-uniform int stateGbl;
-uniform int stateL;
+uniform float stateGbl;
+uniform float stateL;
 
 in vec4 in_pos;
 in vec4 normal;
 in vec4 texCoord;
 
 out Data {
-	int stateGlobal;
-	int stateLamp;
+	float stateGlobal;
+	float stateLamp;
 	vec3 normal;
 	vec3 lightDir;
 	vec3 lamps[6];

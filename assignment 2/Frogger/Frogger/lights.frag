@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 uniform sampler2D texmap;
 uniform sampler2D texmap1;
@@ -25,8 +25,8 @@ struct LightSource {
 uniform LightSource li;
 
 in Data {
-	int stateGlobal;
-	int stateLamp;
+	float stateGlobal;
+	float stateLamp;
 	vec3 normal;
 	vec3 lightDir;
 	vec3 lamps[6];

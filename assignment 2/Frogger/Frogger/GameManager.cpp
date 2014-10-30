@@ -534,15 +534,15 @@ GameManager::updateLights(){
 	}
 		
 
-	glUniform1i(globalId, state);
+	glUniform1f(globalId, state);
 
 	if (onLamps)
-		state = 1;
+		state = 1.0f;
 	else
-		state = 0;
+		state = 0.0f;
 
 
-	glUniform1i(lampId, state);
+	glUniform1f(lampId, state);
 
 
 	for (int i = 1; i < 7; i++){
@@ -579,7 +579,7 @@ void checkShader(GLuint type) {
 		}
 		std::cout << std::endl << "[checkShader] Terminating program..." << std::endl;
 
-		//In this simple program, we'll just leave
+		//Just leave me alone
 		exit(EXIT_FAILURE);
 	}
 }
@@ -588,8 +588,6 @@ GLuint
 GameManager::setupShaders()
 {
 	_shader->init();
-	//_shader->loadShader(VSShaderLib::VERTEX_SHADER, "assign2.vert");
-	//_shader->loadShader(VSShaderLib::FRAGMENT_SHADER, "assign2.frag");
 
 	_shader->loadShader(VSShaderLib::VERTEX_SHADER, "lights.vert");
 	checkShader(_shader->getShaderIndex(_shader->VERTEX_SHADER));

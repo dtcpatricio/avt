@@ -369,7 +369,7 @@ VSResSurfRevLib::computeVAOSquare(float* p)
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[2]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VSShaderLib::NORMAL_ATTRIB);
-	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 4, GL_FLOAT, 0, 0, 0);
+	glVertexAttribPointer(VSShaderLib::NORMAL_ATTRIB, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
 	//index buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[3]);

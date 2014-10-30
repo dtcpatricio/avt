@@ -81,7 +81,7 @@ void onTimer(int value)
 void setupCallbacks()
 {
 	glutCloseFunc  (cleanup);
-	//glutIdleFunc   (MyWrapper::renderScene);
+	glutIdleFunc   (MyWrapper::renderScene);
 	glutDisplayFunc(MyWrapper::display);
 	glutReshapeFunc(MyWrapper::reshape);
 	

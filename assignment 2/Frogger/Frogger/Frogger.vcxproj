@@ -149,8 +149,6 @@
     <ClInclude Include="vsShaderLib.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assign2.frag" />
-    <None Include="assign2.vert" />
     <None Include="lights.frag" />
     <None Include="lights.vert" />
   </ItemGroup>
