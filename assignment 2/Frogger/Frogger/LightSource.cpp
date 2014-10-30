@@ -40,6 +40,12 @@ LightSource::setPosition(Vector4* v)
 	_position.set(v->getX(), v->getY(), v->getZ(), v->getW());
 }
 
+void
+LightSource::setDirection(Vector4* v)
+{
+	_direction.set(v->getX(), v->getY(), v->getZ(), v->getW());
+}
+
 bool
 LightSource::setState(bool state){
 	

@@ -29,11 +29,11 @@ void
 Lamp::create()
 {
 	_mySurf->setObjId(id[0]);
-	_mySurf->createSphere(1.f, 20);
+	_mySurf->createSphere(.4f, 20);
 	applyColor();
 
 	_mySurf->setObjId(id[1]);
-	_mySurf->createCylinder(4.0f, 1.f, 20);
+	_mySurf->createCylinder(7.0f, .3f, 20);
 	applyColor();
 
 }
@@ -43,12 +43,12 @@ Lamp::draw()
 {
 	_mySurf->setObjMaterials(id[0], _shader);
 	_calc->setIdentityMatrix(_calc->getModel(), 4);
-	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
+	_calc->translation(_position.getX(), _position.getY() - 1.5f, _position.getZ() + 1.0f);
 	sendToGL(id[0]);
 
 	_mySurf->setObjMaterials(id[1], _shader);
 	_calc->setIdentityMatrix(_calc->getModel(), 4);
-	_calc->translation(_position.getX(), 1.5f, _position.getZ());
+	_calc->translation(_position.getX(), _position.getY() - 1.5f, _position.getZ() + 1.0f);
 	sendToGL(id[1]);
 
 	

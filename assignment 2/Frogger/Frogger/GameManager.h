@@ -95,6 +95,8 @@ public:
 	std::vector<Car*> * _cars;
 	std::vector<Turtle*> * _turtles;
 
+	LightSource *_spotlight;
+
 	float speedIncr = 0.05f;
 	unsigned int FrameCount = 0;
 
@@ -114,6 +116,7 @@ private:
 	GLuint TextureArray[4];
 	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3;
 	GLint texMode_uniformId;
+	GLint spotlightId;
 	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
 
 	// Create Scene methods

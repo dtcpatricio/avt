@@ -13,7 +13,7 @@ public:
 	GLenum getNum() { return _num; };
 	void setPosition(Vector4 *pos);
 	Vector4* getPosition() { return &_position; };
-	void setDirection(Vector3 *dir);
+	void setDirection(Vector4 *dir);
 	void setCutOff(float cut_off) { _cut_off = cut_off;	};
 	void setExponent(float exp) { _exponent = exp; };
 	void setAmbient(Vector4 *amb);
@@ -22,6 +22,7 @@ public:
 	Vector4 getAmbient() { return _amb; };
 	Vector4 getDiffuse() { return _diff; };
 	Vector4 getSpecular() { return _spec; };
+	Vector4 getDirection() { return _direction; };
 	float getShininess() { return _exponent; };
 	void draw();
 
@@ -30,7 +31,7 @@ private:
 	Vector4 _diff;
 	Vector4 _spec;
 	Vector4 _position;
-	Vector3 _direction;
+	Vector4 _direction;
 	float _cut_off;
 	float _exponent;
 	GLenum _num;
