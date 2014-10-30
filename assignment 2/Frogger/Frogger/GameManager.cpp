@@ -577,7 +577,7 @@ void checkShader(GLuint type) {
 		{
 			std::cout << infoLog[i];
 		}
-		std::cout << std::endl;
+		std::cout << std::endl << "[checkShader] Terminating program..." << std::endl;
 
 		//In this simple program, we'll just leave
 		return;
