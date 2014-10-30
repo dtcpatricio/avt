@@ -580,7 +580,7 @@ void checkShader(GLuint type) {
 		std::cout << std::endl << "[checkShader] Terminating program..." << std::endl;
 
 		//In this simple program, we'll just leave
-		return;
+		exit(EXIT_FAILURE);
 	}
 }
 
