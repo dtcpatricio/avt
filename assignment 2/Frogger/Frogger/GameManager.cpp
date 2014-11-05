@@ -619,7 +619,7 @@ GameManager::destroyShaderProgram()
 void
 GameManager::createScene()
 {
-	createRiver();
+	// Opaque objects
 	createFrog();
 	createRoad();
 	createRoadside();
@@ -631,6 +631,9 @@ GameManager::createScene()
 	createBottomTimberLog();
 	createTopTurtles();
 	createBottomTurtles();
+
+	// Translucent objects
+	createRiver();
 }
 
 void
