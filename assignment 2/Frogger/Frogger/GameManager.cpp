@@ -480,7 +480,7 @@ GameManager::createLightsources()
 			lamp->setSpecular(params);
 			lamp->setExponent(100.f);
 			lamp->setCutOff(90.f);
-			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 7.0f, 17.0f - 17.75f*i, 1.f));
+			lamp->setPosition(new Vector4(-10.0f + 20.0f*j, 7.0f, 18.0f - 17.75f*i, 1.f));
 			_light_sources->push_back(lamp);
 
 			id++;
@@ -638,14 +638,14 @@ GameManager::createScene()
 
 void
 GameManager::createLamps(){
-	/*for ( int i = 1; i < 7; i++)
+	for ( int i = 1; i < 7; i++)
 	{
 		LightSource* l = _light_sources->at(i);
 		
 		Lamp* lamp = new Lamp(_mySurf, _shader, _ml, l);
 		lamp->create();
 		_game_objects->push_back(lamp);
-	}*/
+	}
 }
 
 void
