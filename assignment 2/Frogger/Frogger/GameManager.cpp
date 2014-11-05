@@ -318,8 +318,6 @@ GameManager::renderScene()
 	isOver = false;
 	glBindTexture(GL_TEXTURE_2D, 0);
 	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
-
-	glutSwapBuffers();
 }
 
 
