@@ -51,7 +51,7 @@ public:
 	void createSphere(float radius, int divisions);
 	void createTorus(float innerRadius, float outerRadius, int rings, int sides);
 	void createCube(float size);
-	void createRectangle(float lenght, float height, float width);
+	void createRectangle(float lenght, float height);
 	void createCylinder(float height, float radius, int sides);
 	void createCone(float height, float baseRadius, int sides);
 	void createPawn();
@@ -104,7 +104,7 @@ protected:
 	int objId=0;
 
 private:
-	void computeVAOSquare(float* p);
+	void computeVAOSquare(float* p, GLuint* faceindex, float* normals);
 	void computeVAO(int numP, float *p, float *points, int sides, float smoothCos);
 	float *circularProfile(float minAngle, float maxAngle, float radius, int divisions, float transX= 0.0f, float transY = 0.0f);
 	int revSmoothNormal2(float *p, float *nx, float *ny, float smoothCos, int beginEnd);

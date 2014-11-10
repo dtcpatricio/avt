@@ -655,7 +655,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-6.0f + 12.0f*j, 4.f, 1.f - 17.f*i);
+			t->setPosition(-6.0f + 12.0f*j, 0.f, 1.f - 17.f*i);
 			t->create();
 			_game_objects->push_back(t);
 		}

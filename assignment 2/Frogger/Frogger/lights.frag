@@ -1,4 +1,4 @@
-#version 150 core
+#version 330
 
 uniform sampler2D texmap;
 uniform sampler2D texmap1;
@@ -47,7 +47,7 @@ void main(void)
 
 	// Constants for attenuation
 	float a = .01;
-	float b = .03;
+	float b = .025;
 	float c = 0.055;
 
 	n = normalize(DataIn.normal);
@@ -185,9 +185,10 @@ void main(void)
 		outFrag = max(dirLight + pointLight + spotLight, mat.ambient);
 	}
 
-	float dst = length(-DataIn.eye);
+	float dst = length(DataIn.eye);
 	float fogAmount = exp( -dst*b );
 	vec3 fogColor = vec3(0.5,0.6,0.7);
 
-	outFrag.xyz =mix( outFrag.xyz, fogColor, fogAmount );
+	outFrag.xyz =mix( outFrag.xyz, fogColor, fogAmount );
+
 }

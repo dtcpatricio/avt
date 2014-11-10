@@ -20,7 +20,7 @@ void
 Tree::create()
 {
 	_mySurf->setObjId(id);
-	_mySurf->createCylinder(5.f, 1.0f, 4);
+	_mySurf->createRectangle(10.0f, 10.0f);
 	applyColor();
 	
 }
