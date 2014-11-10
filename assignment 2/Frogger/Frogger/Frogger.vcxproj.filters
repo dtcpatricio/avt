@@ -141,6 +141,12 @@
     <ClCompile Include="TGA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Tunnel.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Frogger.h">
@@ -239,6 +245,12 @@
     <ClInclude Include="TGA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tunnel.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="lights.vert">
@@ -259,6 +271,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="river.tga">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="tree.tga">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

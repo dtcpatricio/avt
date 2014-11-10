@@ -43,8 +43,8 @@ TimberLog::update(float delta_t)
 {
 	float deltaX = _position.getX() - delta_t;
 
-	if (deltaX <= -12.75f)
-		setPosition(12.75f, _position.getY(), _position.getZ());
+	if (deltaX <= -18.f)
+		setPosition(17.5f, _position.getY(), _position.getZ());
 	else
 		setPosition(deltaX , _position.getY(), _position.getZ());
 }

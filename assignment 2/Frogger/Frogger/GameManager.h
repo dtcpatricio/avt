@@ -14,6 +14,8 @@
 #include "TimberLog.h"
 #include "Turtle.h"
 #include "Lamp.h"
+#include "Tunnel.h"
+#include "Tree.h"
 
 
 // Include LightSource object
@@ -104,23 +106,29 @@ private:
 	OrthogonalCamera *_orthoCam;
 	PerspectiveCamera *_perspCam;
 	PerspectiveCamera *_tpCam;
+
 	float _frogX;
 	float _frogY;
 	float _frogZ;
+
 	bool onGlobal = true;
 	bool onLamps = false;
 	bool isOver = false;
+	float billboard = 0.0f;
+
 	GLErrors _gl_errors;
-	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId;
+	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, bbId;
 	GLfloat globalId, lampId;
 	GLuint pointsIds[6];
-	GLuint TextureArray[4];
-	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3;
+	GLuint TextureArray[5];
+	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3, tex_loc4;
 	GLint texMode_uniformId;
 	GLint spotlightId;
 	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
 
 	// Create Scene methods
+	void createTrees();
+	void createTunnels();
 	void createLamps();
 	void createScene();
 	void createFrog();

@@ -130,7 +130,7 @@ void setupGLUT(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
 
-	glutInitContextVersion(3, 3);
+	glutInitContextVersion(3, 2);
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE | GLUT_DEBUG);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 

@@ -267,11 +267,15 @@ GameManager::renderScene()
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, TextureArray[3]);
 
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[4]);
+
 	//Indicar aos tres samplers do GLSL quais os Texture Units a serem usados
 	glUniform1i(tex_loc, 0);
 	glUniform1i(tex_loc1, 1);
 	glUniform1i(tex_loc2, 2);
 	glUniform1i(tex_loc3, 3);
+	glUniform1i(tex_loc4, 4);
 
 	updateLights();
 
@@ -285,15 +289,22 @@ GameManager::renderScene()
 	std::vector<GameObject*>::iterator it_obj;
 	for (it_obj = _game_objects->begin(); it_obj != _game_objects->end(); it_obj++)
 	{
+		billboard = 0.0f;
+		glUniform1i(texMode_uniformId, 0);
 		// TEMPORARY LOCATION:
 		if (dynamic_cast<Road*>(*it_obj))
 			glUniform1i(texMode_uniformId, 1);
 		if (dynamic_cast<River*>(*it_obj))
 			glUniform1i(texMode_uniformId, 2);
+		if (dynamic_cast<Tree*>(*it_obj)){
+			glUniform1i(texMode_uniformId, 4);
+			billboard = 1.0f;
+		}
+
+		glUniform1f(bbId, billboard);
 
 		(*it_obj)->draw();
 		
-		glUniform1i(texMode_uniformId, 0);
 		// Do AABB colliding tests
 		if (dynamic_cast<DynamicObject*>(*it_obj) && !dynamic_cast<Frog*>(*it_obj))
 		{
@@ -631,9 +642,37 @@ GameManager::createScene()
 	createBottomTimberLog();
 	createTopTurtles();
 	createBottomTurtles();
+	createTunnels();
+	//Trees are billboards so last of opaque objects to be created
+	createTrees();
 
 	// Translucent objects
 	createRiver();
+}
+
+void
+GameManager::createTrees(){
+	for (int i = 0; i < 2; i++){
+		for (int j = 0; j < 2; j++){
+			Tree * t = new Tree(_mySurf, _shader, _ml);
+			t->setPosition(-6.0f + 12.0f*j, 4.f, 1.f - 17.f*i);
+			t->create();
+			_game_objects->push_back(t);
+		}
+	}
+}
+
+void
+GameManager::createTunnels(){
+
+	for (int i = 0; i < 2; i++){
+		for (int j = 0; j < 2; j++){
+			Tunnel * t = new Tunnel(_mySurf, _shader, _ml);
+			t->setPosition(-18.0f + 36.0f * i, .5f, -7.5f + 17.f*j);
+			t->create();
+			_game_objects->push_back(t);
+		}
+	}
 }
 
 void
@@ -823,6 +862,7 @@ GameManager::init()
 	normal_uniformId = glGetUniformLocation(_shader->getProgramIndex(), "m_normal");
 	globalId = glGetUniformLocation(_shader->getProgramIndex(), "stateGbl");
 	lampId = glGetUniformLocation(_shader->getProgramIndex(), "stateL");
+	bbId = glGetUniformLocation(_shader->getProgramIndex(), "billboard");
 
 	pointsIds[0] = glGetUniformLocation(_shader->getProgramIndex(), "lamp1");
 	pointsIds[1] = glGetUniformLocation(_shader->getProgramIndex(), "lamp2");
@@ -836,6 +876,7 @@ GameManager::init()
 	tex_loc1 = glGetUniformLocation(_shader->getProgramIndex(), "texmap1");
 	tex_loc2 = glGetUniformLocation(_shader->getProgramIndex(), "texmap2");
 	tex_loc3 = glGetUniformLocation(_shader->getProgramIndex(), "texmap3");
+	tex_loc4 = glGetUniformLocation(_shader->getProgramIndex(), "texmap4");
 	//spotlightId = glGetUniformLocation(_shader->getProgramIndex(), "l");
 	
 	//Texture Object definition
@@ -844,6 +885,7 @@ GameManager::init()
 	TGA_Texture(TextureArray, "road.tga", 1);
 	TGA_Texture(TextureArray, "lightwood.tga", 2);
 	TGA_Texture(TextureArray, "river.tga", 3);
+	TGA_Texture(TextureArray, "tree.tga", 4);
 
 	createScene();
 	createCameras();

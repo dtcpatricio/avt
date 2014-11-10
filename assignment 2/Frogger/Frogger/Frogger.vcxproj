@@ -105,6 +105,8 @@
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="TGA.cpp" />
     <ClCompile Include="TimberLog.cpp" />
+    <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="Tunnel.cpp" />
     <ClCompile Include="Turtle.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="Vector4.cpp" />
@@ -139,6 +141,8 @@
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="TGA.h" />
     <ClInclude Include="TimberLog.h" />
+    <ClInclude Include="Tree.h" />
+    <ClInclude Include="Tunnel.h" />
     <ClInclude Include="Turtle.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
@@ -157,6 +161,7 @@
     <Image Include="lightwood.tga" />
     <Image Include="river.tga" />
     <Image Include="stone.tga" />
+    <Image Include="tree.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

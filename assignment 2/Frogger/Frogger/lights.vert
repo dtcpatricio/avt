@@ -1,7 +1,9 @@
-#version 330 core
+#version 150 core
 
 uniform mat4 projMatrix, viewMatrix, model;
 uniform mat3 m_normal;
+
+uniform float billboard; 
 
 uniform vec4 l_pos;
 
@@ -31,7 +33,22 @@ out Data {
 
 void main(void)
 {
-	vec4 pos = viewMatrix * model * in_pos;
+	mat4 viewModel = viewMatrix * model;
+
+	if(billboard == 1.0){
+		for( int i=0; i<3; i++ ){
+			for( int j=0; j<3; j++ ) {
+				if ( i==j ){
+					viewModel[i][j] = 1.0;
+				}
+				else{
+					viewModel[i][j] = 0.0;
+				}
+			}
+		}
+	}
+
+	vec4 pos = viewModel * in_pos;
 
 	DataOut.stateGlobal = stateGbl;
 	DataOut.stateLamp = stateL;
@@ -47,5 +64,5 @@ void main(void)
 	
 	DataOut.eye = vec3(-pos);
 	DataOut.tex_coord = texCoord.st;
-	gl_Position = projMatrix * viewMatrix * model * in_pos;
+	gl_Position = projMatrix * viewModel * in_pos;
 }
