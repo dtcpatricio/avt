@@ -30,6 +30,7 @@ Tree::draw()
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);
 
 	_mySurf->setObjMaterials(id, _shader);
 	_calc->setIdentityMatrix(_calc->getModel(), 4);

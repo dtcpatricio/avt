@@ -643,11 +643,13 @@ GameManager::createScene()
 	createTopTurtles();
 	createBottomTurtles();
 	createTunnels();
+
 	//Trees are billboards so last of opaque objects to be created
 	createTrees();
 
 	// Translucent objects
 	createRiver();
+
 }
 
 void
@@ -655,7 +657,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-6.0f + 12.0f*j, 0.f, 1.f - 17.f*i);
+			t->setPosition(-10.0f + 10.0f*j, 0.f, 1.f - 17.f*i);
 			t->create();
 			_game_objects->push_back(t);
 		}

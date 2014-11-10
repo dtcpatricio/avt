@@ -42,5 +42,6 @@ River::draw()
 	_calc->rotate(45.0f, 0.0f, 1.0f, 0.0f);
 	sendToGL(id);
 
+	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 }
