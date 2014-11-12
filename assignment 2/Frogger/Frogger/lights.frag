@@ -177,6 +177,9 @@ void main(void)
 	if(texMode == 4)
 	{
 		texel = texture(texmap4, DataIn.tex_coord);
+		if(texel.a < 0.3) {
+			discard;
+		}
 		outFrag = max(dirLight + pointLight + spotLight, 0.5*texel);
 	}
 
@@ -185,10 +188,10 @@ void main(void)
 		outFrag = max(dirLight + pointLight + spotLight, mat.ambient);
 	}
 
-	float dst = length(DataIn.eye);
+	float dst = length(abs(DataIn.eye.z));
 	float fogAmount = exp( -dst*b );
-	vec3 fogColor = vec3(0.5,0.6,0.7);
+	vec4 fogColor = vec4(0.3,0.4,0.5,1.0);
 
-	outFrag.xyz =mix( outFrag.xyz, fogColor, fogAmount );
+	outFrag = mix(outFrag, fogColor, fogAmount );
 
 }

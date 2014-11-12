@@ -34,7 +34,6 @@ Tree::draw()
 	_mySurf->setObjMaterials(id, _shader);
 	_calc->setIdentityMatrix(_calc->getModel(), 4);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
-	_calc->rotate(45, 0.0f, 1.0f, 0.0f);
 	sendToGL(id);
 
 	glDisable(GL_BLEND);
