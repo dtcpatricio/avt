@@ -188,10 +188,11 @@ void main(void)
 		outFrag = max(dirLight + pointLight + spotLight, mat.ambient);
 	}
 
+	float h = 0.075;
 	float dst = length(abs(DataIn.eye.z));
-	float fogAmount = exp( -dst*b );
-	vec4 fogColor = vec4(0.3,0.4,0.5,1.0);
+	float fogAmount = exp(-dst * h);
+	vec4 fogColor = vec4(0.5,0.6,0.7,1.0);
 
-	outFrag = mix(outFrag, fogColor, fogAmount );
+	outFrag = mix(fogColor, outFrag, fogAmount);
 
 }
