@@ -295,7 +295,7 @@ GameManager::renderScene()
 		if (dynamic_cast<Road*>(*it_obj))
 			glUniform1i(texMode_uniformId, 1);
 		if (dynamic_cast<River*>(*it_obj))
-			glUniform1i(texMode_uniformId, 2);
+			glUniform1i(texMode_uniformId, 3);
 		if (dynamic_cast<Tree*>(*it_obj)){
 			glUniform1i(texMode_uniformId, 4);
 			billboard = 1.0f;

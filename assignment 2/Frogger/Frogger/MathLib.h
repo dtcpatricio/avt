@@ -34,6 +34,8 @@ public:
 	// returns a . b
 	float dotProduct(GLfloat *a, GLfloat *b);
 
+	void setIdentity3x3(float *mat);
+
 	void setIdentityMatrix(float *mat, int size);
 
 	void matrixMultiplication(GLfloat * m, GLfloat * aux);

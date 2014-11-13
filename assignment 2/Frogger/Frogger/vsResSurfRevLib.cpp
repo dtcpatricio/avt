@@ -87,43 +87,11 @@ VSResSurfRevLib::createCube(float size)
 void
 VSResSurfRevLib::createRectangle(float length, float height) {
 
-	//float p[] = {
-	//	0.0f, height, width, 1.0f, // vert 0: 0
-	//	0.0f, 0.0f, width, 1.0f, // vert 1: 1
-	//	length, 0.0f, width, 1.0f, // vert 2: 2
-	//	length, height, width, 1.0f, // vert 3: 3
-
-	//	length, height, 0.0f, 1.0f, // vert 4: 4
-	//	length, 0.0f, 0.0f, 1.0f, // vert 5: 5
-	//	0.0f, 0.0f, 0.0f, 1.0f, // vert 6: 6
-	//	0.0f, height, 0.0f, 1.0f, // vert 7: 7
-
-	//	length, height, width, 1.0f, // vert 3: 8
-	//	length, 0.0f, width, 1.0f, // vert 2: 9
-	//	length, 0.0f, 0.0f, 1.0f, // vert 5: 10
-	//	length, height, 0.0, 1.0f, // vert 4: 11
-
-	//	0.0f, height, 0.0f, 1.0f, // vert 7: 12
-	//	0.0f, height, width, 1.0f, // vert 0: 13
-	//	length, height, width, 1.0f, // vert 3: 14
-	//	length, height, 0.0f, 1.0f, // vert 4: 15
-
-	//	0.0f, height, 0.0f, 1.0f, // vert 7: 16
-	//	0.0f, 0.0f, 0.0f, 1.0f, // vert 6: 17
-	//	0.0f, 0.0f, width, 1.0f, // vert 1: 18
-	//	0.0f, height, width, 1.0f, // vert 0: 19
-
-	//	0.0f, 0.0f, width, 1.0f, // vert 1: 20
-	//	0.0f, 0.0f, 0.0f, 1.0f, // vert 6: 21
-	//	length, 0.0f, 0.0f, 1.0f, // vert 5: 22
-	//	length, 0.0f, width, 1.0f // vert 2: 23
-	//};
-
 	float p[] = {
-		0.0f, 0.0f, 0.0f, 1.0f,
-		length, 0.0f, 0.0f, 1.0f,
-		length, height, 0.0f, 1.0f,
-		0.0f, height, 0.0f, 1.0f,
+		-length / 2, 0.0f, 0.0f, 1.0f,
+		length / 2, 0.0f, 0.0f, 1.0f,
+		length / 2, height, 0.0f, 1.0f,
+		-length / 2, height, 0.0f, 1.0f,
 	};
 
 	GLuint faceIndex[] = {
