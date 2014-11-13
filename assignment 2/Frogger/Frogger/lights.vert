@@ -35,17 +35,10 @@ void main(void)
 {
 	mat4 viewModel = viewMatrix * model;
 
-	if(billboard == 1.0){
-		for( int i=0; i<3; i++ ){
-			for( int j=0; j<3; j++ ) {
-				if ( i==j ){
-					viewModel[i][j] = 1.0;
-				}
-				else{
-					viewModel[i][j] = 0.0;
-				}
-			}
-		}
+	if(billboard == 1.0) {
+		viewModel[0].xyz = vec3(1.0, 0.0, 0.0);
+		viewModel[1].xyz = vec3(0.0, 1.0, 0.0);
+		viewModel[2].xyz = vec3(0.0, 0.0, 1.0);
 	}
 
 	vec4 pos = viewModel * in_pos;

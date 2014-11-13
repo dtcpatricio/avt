@@ -328,7 +328,7 @@ GameManager::renderScene()
 
 	isOver = false;
 	glBindTexture(GL_TEXTURE_2D, 0);
-	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 }
 
 
@@ -657,7 +657,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-10.0f + 10.0f*j, 0.f, 1.f - 17.f*i);
+			t->setPosition(-10.0f + 10.0f*j, 0.f, 1.f - 17.f*(1-i)); // Draw far trees first
 			t->create();
 			_game_objects->push_back(t);
 		}
