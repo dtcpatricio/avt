@@ -44,6 +44,20 @@ float MathLib::dotProduct(GLfloat *a, GLfloat *b) {
 	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
+void MathLib::setIdentity3x3(float *mat) {
+	// fill 3x3 matrix with 0s and 1s
+	int size = 3;
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			if (i == j)
+				mat[i + 4 * j] = 1.0f;
+			else
+				mat[i + 4 * j] = 0.0f;
+		}
+	}
+}
 void MathLib::setIdentityMatrix(float *mat, int size) {
 
 	// fill matrix with 0s
