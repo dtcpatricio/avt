@@ -108,6 +108,29 @@ VSResSurfRevLib::createRectangle(float length, float height) {
 	computeVAOSquare(p, faceIndex, normals);
 }
 
+void
+VSResSurfRevLib::createRectangle(int x, int y, int width, int height){
+	float p[] = {
+		x, y, 1.0f, 1.0f,
+		x + width, y, 1.0f, 1.0f,
+		x + width, y + height, 1.0f, 1.0f,
+		x, y + height, 1.0f, 1.0f,
+	};
+
+	GLuint faceIndex[] = {
+		0, 1, 2, 0, 2, 3
+	};
+
+	float normals[] = {
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+	};
+
+	computeVAOSquare(p, faceIndex, normals);
+}
+
 void 
 VSResSurfRevLib::createCylinder(float height, float radius, int sides) {
 

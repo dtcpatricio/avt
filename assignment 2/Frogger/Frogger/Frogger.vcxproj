@@ -88,10 +88,13 @@
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="DynamicObject.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Firework.cpp" />
+    <ClCompile Include="Flare.cpp" />
     <ClCompile Include="Frog.cpp" />
     <ClCompile Include="Frogger.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="glbmp.c" />
     <ClCompile Include="GLErrors.cpp" />
     <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="LightSource.cpp" />
@@ -123,10 +126,13 @@
     <ClInclude Include="Car.h" />
     <ClInclude Include="DynamicObject.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Firework.h" />
+    <ClInclude Include="Flare.h" />
     <ClInclude Include="Frog.h" />
     <ClInclude Include="Frogger.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="glbmp.h" />
     <ClInclude Include="GLErrors.h" />
     <ClInclude Include="Lamp.h" />
     <ClInclude Include="LightSource.h" />
@@ -159,7 +165,9 @@
   <ItemGroup>
     <Image Include="checker.tga" />
     <Image Include="lightwood.tga" />
+    <Image Include="particula.bmp" />
     <Image Include="river.tga" />
+    <Image Include="sphere.tga" />
     <Image Include="stone.tga" />
     <Image Include="tree.tga" />
   </ItemGroup>

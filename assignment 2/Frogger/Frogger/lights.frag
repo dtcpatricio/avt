@@ -1,11 +1,14 @@
-#version 330
+#version 150
 
 uniform sampler2D texmap;
 uniform sampler2D texmap1;
 uniform sampler2D texmap2;
 uniform sampler2D texmap3;
 uniform sampler2D texmap4;
+uniform sampler2D texmap5;
+uniform sampler2D texmap6;
 uniform int texMode;
+uniform float life;
 
 out vec4 outFrag;
 
@@ -188,7 +191,21 @@ void main(void)
 		if(texel.a < 0.3) {
 			discard;
 		}
+		outFrag = max(dirLight + pointLight + spotLight, 0.8*texel);
+	}
+	else if(texMode == 5)
+	{
+		texel = texture(texmap5, DataIn.tex_coord);
+		if(texel.a < 0.4) {
+			discard;
+		}
 		outFrag = max(dirLight + pointLight + spotLight, 0.5*texel);
+	}
+	else if(texMode == 6)
+	{
+		texel = texture(texmap6, DataIn.tex_coord);
+		texel.a = life;
+		outFrag = max(dirLight + pointLight + spotLight, texel);
 	}
 	else
 	{
@@ -200,6 +217,6 @@ void main(void)
 	float fogAmount = exp(-dst * h);
 	vec4 fogColor = vec4(0.5,0.6,0.7,1.0);
 
-	outFrag = mix(fogColor, outFrag, fogAmount);
+	//outFrag = mix(fogColor, outFrag, fogAmount);
 
 }

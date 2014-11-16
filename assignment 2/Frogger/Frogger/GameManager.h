@@ -16,6 +16,9 @@
 #include "Lamp.h"
 #include "Tunnel.h"
 #include "Tree.h"
+#include "Flare.h"
+#include "Firework.h"
+#include "glbmp.h"
 
 
 // Include LightSource object
@@ -30,7 +33,7 @@
 
 #define WinX 640
 #define WinY 480
-
+#define MAX_PARTICULAS  1500
 
 class GameManager
 {
@@ -52,6 +55,7 @@ public:
 	void idle();
 	void update();
 	void init();
+	void iterate();
 
 	// Callbacks - timers
 	void cleanup();
@@ -73,6 +77,7 @@ public:
 	// Aux functions
 	void applySurfaceTransformations();
 	void incrementSpeed();
+	void LoadTexture(const char * bitmap_file);
 
 	//libs
 
@@ -82,6 +87,8 @@ public:
 
 	// Tracking Variables
 	int startX, startY, tracking;
+	int xFlare = 10;
+	int yFlare = 7;
 	// Coefficient constants
 	float alpha = 0.f, alphaAux = 0.f, betaAux = 20.f, beta = 20.f;
 	float r = 5.25f, rAux = 5.25f;
@@ -96,6 +103,7 @@ public:
 	std::vector<Bus*> * _bus;
 	std::vector<Car*> * _cars;
 	std::vector<Turtle*> * _turtles;
+	std::vector<Firework*> *particula;
 
 	LightSource *_spotlight;
 
@@ -117,16 +125,18 @@ private:
 	float billboard = 0.0f;
 
 	GLErrors _gl_errors;
-	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, bbId;
+	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, bbId, lifeId;
 	GLfloat globalId, lampId;
 	GLuint pointsIds[6];
-	GLuint TextureArray[5];
-	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3, tex_loc4;
+	GLuint TextureArray[7];
+	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3, tex_loc4, tex_loc5, tex_loc6;
 	GLint texMode_uniformId;
 	GLint spotlightId;
 	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
 
 	// Create Scene methods
+	void createParticles();
+	void createFlare();
 	void createTrees();
 	void createTunnels();
 	void createLamps();
@@ -163,5 +173,8 @@ private:
 
 	// frog movement speed
 	float _frog_speed = 0.1f;
+
+	// particle functions
+	void initParticles();
 };
 

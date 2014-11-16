@@ -6,6 +6,7 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {}
 
+
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
 /////////////////////////////////////////////////////////////////////// INPUT
@@ -32,13 +33,21 @@ GameManager::mouseMotion(int xx, int yy) {
 		rAux = r;
 	}
 	// right mouse button: zoom
-	/*else if (tracking == 2) {
-		alphaAux = alpha;
-		betaAux = beta;
-		rAux = r + (deltaY * 0.01f);
-		if (rAux < 0.1f)
-			rAux = 0.1f;
-	}*/
+	else if (tracking == 2) {
+
+		xFlare += startX*3 / glutGet(GLUT_WINDOW_WIDTH);
+		yFlare += startY*3 / glutGet(GLUT_WINDOW_HEIGHT);
+
+		if (xFlare >= 3)
+			xFlare = 3 - 1;
+		if (xFlare < 0)
+			xFlare = 0;
+		if (yFlare >= 3)
+			yFlare = 3 - 1;
+		if (yFlare < 0)
+			yFlare = 0;
+	}
+
 
 	_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
 
@@ -52,54 +61,28 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 		startY = yy;
 		if (button == GLUT_LEFT_BUTTON)
 			tracking = 1;
+		else if (button == GLUT_RIGHT_BUTTON) {
+			tracking = 2;
+		}
 	}
-	//	else if (button == GLUT_RIGHT_BUTTON) {
-	//		tracking = 2;
-	//		Vector3 mousePos = _ml->GetOGLPos(xx, yy);
-	//		float xcomp = mousePos.getX() - _frog->getPosition()->getX();
-	//		float zcomp = mousePos.getZ() - _frog->getPosition()->getZ();
-	//		float xabs = abs(xcomp);
-	//		float zabs = abs(zcomp);
-	//		std::cout << "X: " << xcomp << std::endl << "Z: " << zcomp << std::endl;
-	//		if (xcomp >= 0 && zcomp <= 0) {
-	//			//_scene->getFrog()->setUp(true);
-	//			if (xabs >= zabs)
-	//				//_scene->getFrog()->setRight(true);
-	//			else
-	//				//_scene->getFrog()->setLeft(true);
-	//		}
-	//		else {
-	//			//_scene->getFrog()->setDown(true);
-	//			if (xabs >= zabs)
-	//				//_scene->getFrog()->setLeft(true);
-	//			else
-	//				//_scene->getFrog()->setRight(true);
-	//		}
-	//	}
-	//}
-
+		
 	//stop tracking the mouse
 	else if (state == GLUT_UP) {
+
 		if (tracking == 1) {
 			alpha -= xx - startX;
 			beta += yy - startY;
 		}
+		else if (tracking == 2) {
+
+
+			xFlare = startX*3 / glutGet(GLUT_WINDOW_WIDTH);
+			yFlare = startY*3 / glutGet(GLUT_WINDOW_HEIGHT);
+		}
+
 		tracking = 0;
 	}
-	//	else if (tracking == 2) {
-	//		_scene->getFrog()->setUp(false);
-	//		_scene->getFrog()->setDown(false);
-	//		_scene->getFrog()->setLeft(false);
-	//		_scene->getFrog()->setRight(false);
-
-	//		float r = _scene->getCam()->getR();
-	//		r += (yy - startY) * 0.01f;
-	//		if (r < 0.1f)
-	//			r = 0.1f;
-	//		_scene->getCam()->setR(r);
-	//	}
-	//	tracking = 0;
-	//}
+	
 }
 void
 GameManager::keyPressed(unsigned char key, int xx, int yy) {
@@ -154,6 +137,9 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		}
 		break;
 
+	case 'f':
+		initParticles();
+		break;
 	case 27:
 		glutLeaveMainLoop();
 		break;
@@ -270,12 +256,20 @@ GameManager::renderScene()
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, TextureArray[4]);
 
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, TextureArray[5]);
+
+	glActiveTexture(GL_TEXTURE6);
+	LoadTexture("particula.bmp");
+
 	//Indicar aos tres samplers do GLSL quais os Texture Units a serem usados
 	glUniform1i(tex_loc, 0);
 	glUniform1i(tex_loc1, 1);
 	glUniform1i(tex_loc2, 2);
 	glUniform1i(tex_loc3, 3);
 	glUniform1i(tex_loc4, 4);
+	glUniform1i(tex_loc5, 5);
+	glUniform1i(tex_loc6, 6);
 
 	updateLights();
 
@@ -300,7 +294,17 @@ GameManager::renderScene()
 			glUniform1i(texMode_uniformId, 4);
 			billboard = 1.0f;
 		}
-
+		if (dynamic_cast<Flare*>(*it_obj))
+			glUniform1i(texMode_uniformId, 5);
+		if (dynamic_cast<Firework*>(*it_obj)){
+			if (_frog->getPosition()->getZ() > -16.3f){
+				glUniform1i(texMode_uniformId, 6);
+				billboard = 1.0f;
+				iterate();
+			}
+			else { continue; }
+		}
+		
 		glUniform1f(bbId, billboard);
 
 		(*it_obj)->draw();
@@ -646,10 +650,30 @@ GameManager::createScene()
 
 	//Trees are billboards so last of opaque objects to be created
 	createTrees();
+	createFlare();
+	createParticles();
 
 	// Translucent objects
 	createRiver();
 
+}
+void
+GameManager::createFlare(){
+	Flare* flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, 2, 0);
+	flare->randomize(1, 7, 3.f, 16777215, 16776960);
+	flare->create();
+	_game_objects->push_back(flare);
+}
+
+void
+GameManager::createParticles(){
+	for (int i = 0; i < 20; i++){
+		Firework* f = new Firework(_mySurf, _shader, _ml);
+		f->create();
+		_game_objects->push_back(f);
+		particula->push_back(f);
+	}
+	initParticles();
 }
 
 void
@@ -657,7 +681,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-10.0f + 10.0f*j, 0.f, 1.f - 17.f*i);
+			t->setPosition(-6.0f + 12.0f*j, 1.f, 1.f - 17.f*i);
 			t->create();
 			_game_objects->push_back(t);
 		}
@@ -840,6 +864,79 @@ GameManager::createBottomTurtles()
 	}
 }
 
+void
+GameManager::initParticles(){
+	GLfloat v, theta, phi;
+	int i;
+
+	for (i = 0; i<particula->size(); i++)
+	{
+		v = 0.2*frand() + 0.1;
+		phi = frand()*M_PI;
+		theta = 2.0*frand()*M_PI;
+		particula->at(i)->setPosition(0.0f, 10.0f, .0f);
+		particula->at(i)->setSpeed(v * cos(theta) * sin(phi), v * cos(phi), v * sin(theta) * sin(phi));
+		particula->at(i)->setAcel(0.01f, -0.015f, 0.0f);
+
+		/* tom amarelado que vai ser multiplicado pela textura que varia entre branco e preto */
+		particula->at(i)->setColors(new Vector3(0.882f, 0.552f, 0.211f));
+		
+		particula->at(i)->setLife(1.0f);		/* vida inicial */
+		particula->at(i)->setFade(0.0005f);	    /* step de decréscimo da vida para cada iteração */
+	}
+
+}
+
+void
+GameManager::iterate(){
+
+	int i;
+	float h;
+
+	/* Método de Euler de integração de eq. diferenciais ordinárias
+	h representa o step de tempo; dv/dt = a; dx/dt = v; e conhecem-se os valores iniciais de x e v */
+
+	h = 0.125f;
+	for (i = 0; i<particula->size(); i++)
+	{
+		Vector3* pos = particula->at(i)->getPosition();
+		Vector3* speed = new Vector3(particula->at(i)->getSpeed());
+		Vector3* newSpeed = particula->at(i)->getAcel()->operator*(h);
+		newSpeed->operator+(speed);
+		pos->operator+(speed);
+		particula->at(i)->setPosition(pos);
+		particula->at(i)->setSpeed(newSpeed);
+		float newLife = particula->at(i)->getLife() - particula->at(i)->getFade();
+		particula->at(i)->setLife(newLife);
+		glUniform1f(lifeId, newLife);
+	}
+}
+
+void
+GameManager::LoadTexture(const char * bitmap_file)
+{
+
+	glbmp_t bitmap;     //object to fill with data from glbmp
+
+	//try to load the specified file--if it fails, dip out
+	if (!glbmp_LoadBitmap(bitmap_file, 0, &bitmap))
+	{
+		fprintf(stderr, "Error loading bitmap file: %s\n", bitmap_file);
+		exit(1);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, TextureArray[6]);
+	//copy data from bitmap into texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bitmap.width, bitmap.height,
+		0, GL_RGB, GL_UNSIGNED_BYTE, bitmap.rgb_data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//free the bitmap
+	glbmp_FreeBitmap(&bitmap);
+}
+
 //////////////////////////////////////////////////////////////////////// GAME INIT LOOP
 void
 GameManager::init()
@@ -854,6 +951,7 @@ GameManager::init()
 	_bus = new std::vector<Bus*>();
 	_cars = new std::vector<Car*>();
 	_turtles = new std::vector<Turtle*>();
+	particula = new std::vector<Firework*>();
 
 	if (!setupShaders())
 		exit(1);
@@ -865,6 +963,7 @@ GameManager::init()
 	globalId = glGetUniformLocation(_shader->getProgramIndex(), "stateGbl");
 	lampId = glGetUniformLocation(_shader->getProgramIndex(), "stateL");
 	bbId = glGetUniformLocation(_shader->getProgramIndex(), "billboard");
+	lifeId = glGetUniformLocation(_shader->getProgramIndex(), "life");
 
 	pointsIds[0] = glGetUniformLocation(_shader->getProgramIndex(), "lamp1");
 	pointsIds[1] = glGetUniformLocation(_shader->getProgramIndex(), "lamp2");
@@ -879,15 +978,18 @@ GameManager::init()
 	tex_loc2 = glGetUniformLocation(_shader->getProgramIndex(), "texmap2");
 	tex_loc3 = glGetUniformLocation(_shader->getProgramIndex(), "texmap3");
 	tex_loc4 = glGetUniformLocation(_shader->getProgramIndex(), "texmap4");
+	tex_loc5 = glGetUniformLocation(_shader->getProgramIndex(), "texmap5");
+	tex_loc6 = glGetUniformLocation(_shader->getProgramIndex(), "texmap6");
 	//spotlightId = glGetUniformLocation(_shader->getProgramIndex(), "l");
 	
 	//Texture Object definition
-	glGenTextures(4, TextureArray);
+	glGenTextures(6, TextureArray);
 	TGA_Texture(TextureArray, "stone.tga", 0);
 	TGA_Texture(TextureArray, "road.tga", 1);
 	TGA_Texture(TextureArray, "lightwood.tga", 2);
 	TGA_Texture(TextureArray, "river.tga", 3);
 	TGA_Texture(TextureArray, "tree.tga", 4);
+	TGA_Texture(TextureArray, "sphere.tga", 5);
 
 	createScene();
 	createCameras();
