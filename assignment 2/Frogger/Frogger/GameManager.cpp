@@ -220,11 +220,11 @@ GameManager::destroyBufferObjects()
 void
 GameManager::renderScene()
 {
-	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	///////////////////
-
+	/*
 	glEnable(GL_STENCIL_TEST);
 	glClearStencil(0x0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
@@ -232,14 +232,12 @@ GameManager::renderScene()
 		);
 	glStencilFunc(GL_ALWAYS, 1, 1);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	*/
+	//glDisable(GL_DEPTH_TEST);
 
-
-	glDisable(GL_DEPTH_TEST);
 	//_orthoCam->computeProjectionMatrix();
 	//_orthoCam->computeVisualizationMatrix();
-	//glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
-	//glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
-
+	/*
 	Stencil * t = new Stencil(_mySurf, _shader, _ml);
 	t->setPosition(
 		_frog->getPosition()->getX(),
@@ -247,14 +245,19 @@ GameManager::renderScene()
 		_frog->getPosition()->getZ());
 	t->create();
 	t->draw();
+	*/
+	//glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
+	//glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
 
-	glEnable(GL_DEPTH_TEST);
-
+	//glEnable(GL_DEPTH_TEST);
+	/*
 	glClear(GL_DEPTH_BUFFER_BIT); // inicializa o z_buffer
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glStencilFunc(GL_EQUAL, 1, 1);
-
+	*/
 	///////////////////
+	
+	//reshape(WinX, WinY);
 
 	switch (camType)
 	{

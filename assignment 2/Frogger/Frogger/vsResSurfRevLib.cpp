@@ -119,14 +119,15 @@ VSResSurfRevLib::createRectangleUp(float length, float height) {
 	};
 
 	GLuint faceIndex[] = {
-		0, 1, 2, 0, 2, 3
+		//0, 1, 2, 0, 2, 3
+		3, 2, 0, 2, 1, 0
 	};
 
 	float normals[] = {
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f, 0.0f,
 	};
 
 	computeVAOSquare(p, faceIndex, normals);

@@ -15,6 +15,13 @@ Car::Car(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc)
 	_obj_length = 2.f;
 	_obj_width = 1.f;
 	_boundingBox->setParams(_obj_length, _obj_width);
+
+	t = new Stencil(_mySurf, _shader, _calc);
+	t->setPosition(
+		_position.getX(),
+		_position.getY(),
+		_position.getZ() - 1.0f);
+	t->create();
 }
 
 
@@ -41,6 +48,26 @@ Car::create()
 void
 Car::draw()
 {
+	glEnable(GL_STENCIL_TEST);
+	glClearStencil(0x0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |	GL_STENCIL_BUFFER_BIT);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	
+	//glDisable(GL_DEPTH_TEST);
+
+	t->setPosition(
+		_position.getX(),
+		_position.getY() + 0.5f,
+		_position.getZ() + 1.0f);
+	t->draw();
+
+	//glEnable(GL_DEPTH_TEST);
+	
+	glClear(GL_DEPTH_BUFFER_BIT); // inicializa o z_buffer
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glStencilFunc(GL_NOTEQUAL, 1, 1);
+
 	_mySurf->setObjMaterials(id[1], _shader);
 	_calc->translation(_position.getX(), _position.getY() + 0.3f, _position.getZ());
 	_calc->scale(1.f, 1.0f, 1.f);

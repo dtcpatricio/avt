@@ -1,5 +1,6 @@
 #pragma once
 #include "DynamicObject.h"
+#include "Stencil.h"
 
 class Car :
 	public DynamicObject
@@ -14,5 +15,6 @@ public:
 
 private:
 	int id[2];
+	Stencil * t;
 };
 
