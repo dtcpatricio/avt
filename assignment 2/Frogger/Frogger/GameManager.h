@@ -18,6 +18,8 @@
 #include "Tree.h"
 #include "Flare.h"
 #include "Firework.h"
+#include "Stencil.h"
+
 #include "glbmp.h"
 
 

@@ -147,6 +147,18 @@
     <ClCompile Include="Tree.cpp">
       <Filter>Source Files\objects\static</Filter>
     </ClCompile>
+    <ClCompile Include="Firework.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Flare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="glbmp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stencil.cpp">
+      <Filter>Source Files\objects\static</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Frogger.h">
@@ -251,6 +263,18 @@
     <ClInclude Include="Tree.h">
       <Filter>Header Files\objects\static</Filter>
     </ClInclude>
+    <ClInclude Include="Firework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Flare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="glbmp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stencil.h">
+      <Filter>Header Files\objects\static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="lights.vert">
@@ -276,5 +300,9 @@
     <Image Include="tree.tga">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="particula.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="sphere.tga" />
   </ItemGroup>
 </Project>

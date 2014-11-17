@@ -223,6 +223,39 @@ GameManager::renderScene()
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	///////////////////
+
+	glEnable(GL_STENCIL_TEST);
+	glClearStencil(0x0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+		GL_STENCIL_BUFFER_BIT
+		);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+
+	glDisable(GL_DEPTH_TEST);
+	//_orthoCam->computeProjectionMatrix();
+	//_orthoCam->computeVisualizationMatrix();
+	//glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
+	//glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
+
+	Stencil * t = new Stencil(_mySurf, _shader, _ml);
+	t->setPosition(
+		_frog->getPosition()->getX(),
+		_frog->getPosition()->getY() - 2.0f,
+		_frog->getPosition()->getZ());
+	t->create();
+	t->draw();
+
+	glEnable(GL_DEPTH_TEST);
+
+	glClear(GL_DEPTH_BUFFER_BIT); // inicializa o z_buffer
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glStencilFunc(GL_EQUAL, 1, 1);
+
+	///////////////////
+
 	switch (camType)
 	{
 	case ORTHOGONAL:
@@ -332,7 +365,7 @@ GameManager::renderScene()
 
 	isOver = false;
 	glBindTexture(GL_TEXTURE_2D, 0);
-	_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
+	//_gl_errors.checkOpenGLError("ERROR: Could not draw scene.");
 }
 
 
@@ -655,8 +688,8 @@ GameManager::createScene()
 
 	// Translucent objects
 	createRiver();
-
 }
+
 void
 GameManager::createFlare(){
 	Flare* flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, 2, 0);
@@ -681,7 +714,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-6.0f + 12.0f*j, 1.f, 1.f - 17.f*i);
+			t->setPosition(-6.0f + 12.0f*j, 1.f, 1.f - 17.f*(1 - i)); // Draw far trees first
 			t->create();
 			_game_objects->push_back(t);
 		}

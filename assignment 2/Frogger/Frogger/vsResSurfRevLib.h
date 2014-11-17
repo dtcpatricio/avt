@@ -52,6 +52,7 @@ public:
 	void createTorus(float innerRadius, float outerRadius, int rings, int sides);
 	void createCube(float size);
 	void createRectangle(float lenght, float height);
+	void createRectangleUp(float lenght, float height);
 	void createRectangle(int x, int y, int width, int height);
 	void createCylinder(float height, float radius, int sides);
 	void createCone(float height, float baseRadius, int sides);

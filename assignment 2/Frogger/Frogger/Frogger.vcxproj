@@ -106,6 +106,7 @@
     <ClCompile Include="Road.cpp" />
     <ClCompile Include="Roadside.cpp" />
     <ClCompile Include="StaticObject.cpp" />
+    <ClCompile Include="Stencil.cpp" />
     <ClCompile Include="TGA.cpp" />
     <ClCompile Include="TimberLog.cpp" />
     <ClCompile Include="Tree.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Roadside.h" />
     <ClInclude Include="MathLib.h" />
     <ClInclude Include="StaticObject.h" />
+    <ClInclude Include="Stencil.h" />
     <ClInclude Include="TGA.h" />
     <ClInclude Include="TimberLog.h" />
     <ClInclude Include="Tree.h" />
