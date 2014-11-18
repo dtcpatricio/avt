@@ -6,6 +6,12 @@ GameManager::GameManager()
 GameManager::~GameManager()
 {}
 
+struct MyWrapper {
+	static void iterate(int value) {
+		manager->iterate(value);
+	}
+	static GameManager *manager;
+};
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -193,6 +199,12 @@ GameManager::reshape(int w, int h) {
 			_tpCam->computeProjectionMatrix();
 			break;
 	}
+
+	_game_objects->pop_back();
+	/*_flare->setLX();
+	_flare->setLY();
+	_flare->setCX();
+	_flare->setCY();*/
 		
 }
 
@@ -294,13 +306,20 @@ GameManager::renderScene()
 			glUniform1i(texMode_uniformId, 4);
 			billboard = 1.0f;
 		}
-		if (dynamic_cast<Flare*>(*it_obj))
+		if (dynamic_cast<Flare*>(*it_obj)){
 			glUniform1i(texMode_uniformId, 5);
+			/*GLfloat* aux = _ml->getProjMatrix();
+			_ml->setIdentityMatrix(_ml->getProjMatrix(), 4);
+			_ml->ortho(0, WinX, 0, WinY, -1, 1);
+			glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
+			(*it_obj)->draw();
+			_ml->setIdentityMatrix(_ml->getProjMatrix(), 4);
+			continue;*/
+		}
 		if (dynamic_cast<Firework*>(*it_obj)){
-			if (_frog->getPosition()->getZ() > -16.3f){
+			if (_frog->getPosition()->getZ() < -16.3f){
 				glUniform1i(texMode_uniformId, 6);
 				billboard = 1.0f;
-				iterate();
 			}
 			else { continue; }
 		}
@@ -650,24 +669,26 @@ GameManager::createScene()
 
 	//Trees are billboards so last of opaque objects to be created
 	createTrees();
-	createFlare();
 	createParticles();
 
 	// Translucent objects
 	createRiver();
+	createFlare();
 
 }
+
 void
 GameManager::createFlare(){
-	Flare* flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, 2, 0);
-	flare->randomize(1, 7, 3.f, 16777215, 16776960);
-	flare->create();
-	_game_objects->push_back(flare);
+	_flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, WinX/2, WinY/2);
+	_flare->randomize(1, 7, 0.3f, 16777215, 16776960);
+	_flare->create();
+	_game_objects->push_back(_flare);
+
 }
 
 void
 GameManager::createParticles(){
-	for (int i = 0; i < 20; i++){
+	for (int i = 0; i < 200; i++){
 		Firework* f = new Firework(_mySurf, _shader, _ml);
 		f->create();
 		_game_objects->push_back(f);
@@ -871,24 +892,24 @@ GameManager::initParticles(){
 
 	for (i = 0; i<particula->size(); i++)
 	{
-		v = 0.2*frand() + 0.1;
+		v = 0.8*frand() + 0.2;
 		phi = frand()*M_PI;
 		theta = 2.0*frand()*M_PI;
 		particula->at(i)->setPosition(0.0f, 10.0f, .0f);
 		particula->at(i)->setSpeed(v * cos(theta) * sin(phi), v * cos(phi), v * sin(theta) * sin(phi));
-		particula->at(i)->setAcel(0.01f, -0.015f, 0.0f);
+		particula->at(i)->setAcel(0.1f, -0.15f, 0.0f);
 
 		/* tom amarelado que vai ser multiplicado pela textura que varia entre branco e preto */
 		particula->at(i)->setColors(new Vector3(0.882f, 0.552f, 0.211f));
 		
 		particula->at(i)->setLife(1.0f);		/* vida inicial */
-		particula->at(i)->setFade(0.0005f);	    /* step de decréscimo da vida para cada iteração */
+		particula->at(i)->setFade(0.03f);	    /* step de decréscimo da vida para cada iteração */
 	}
 
 }
 
 void
-GameManager::iterate(){
+GameManager::iterate(int value){
 
 	int i;
 	float h;
@@ -897,19 +918,24 @@ GameManager::iterate(){
 	h representa o step de tempo; dv/dt = a; dx/dt = v; e conhecem-se os valores iniciais de x e v */
 
 	h = 0.125f;
-	for (i = 0; i<particula->size(); i++)
-	{
-		Vector3* pos = particula->at(i)->getPosition();
-		Vector3* speed = new Vector3(particula->at(i)->getSpeed());
-		Vector3* newSpeed = particula->at(i)->getAcel()->operator*(h);
-		newSpeed->operator+(speed);
-		pos->operator+(speed);
-		particula->at(i)->setPosition(pos);
-		particula->at(i)->setSpeed(newSpeed);
-		float newLife = particula->at(i)->getLife() - particula->at(i)->getFade();
-		particula->at(i)->setLife(newLife);
-		glUniform1f(lifeId, newLife);
+	if (_frog->getPosition()->getZ() < -16.3f){
+
+		for (i = 0; i < particula->size(); i++)
+		{
+			Vector3* pos = particula->at(i)->getPosition();
+			Vector3* speed = new Vector3(particula->at(i)->getSpeed());
+			Vector3* newSpeed = particula->at(i)->getAcel()->operator*(h);
+			newSpeed->operator+(speed);
+			pos->operator+(speed);
+			particula->at(i)->setPosition(pos);
+			particula->at(i)->setSpeed(newSpeed);
+			float newLife = particula->at(i)->getLife() - particula->at(i)->getFade();
+			particula->at(i)->setLife(newLife);
+			glUniform1f(lifeId, newLife);
+		}
 	}
+
+	glutTimerFunc(33, MyWrapper::iterate, 1);
 }
 
 void

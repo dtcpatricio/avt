@@ -28,7 +28,9 @@ public:
 	void create();
 	void draw();
 	void setLX(int lx){ _lx = lx;}
+	void setLY(int ly){ _ly = ly; }
 	void setCX(int cx){ _cx = cx; }
+	void setCY(int cy){ _cy = cy; }
 
 private:
 	int id = 17;

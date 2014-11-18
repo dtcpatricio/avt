@@ -29,6 +29,9 @@ struct MyWrapper {
 	static void mouseButtons(int button, int state, int xx, int yy) {
 		manager->mouseButtons(button, state, xx, yy);
 	}
+	static void iterate(int value){
+		manager->iterate(value);
+	}
 	static GameManager *manager;
 };
 
@@ -86,6 +89,7 @@ void setupCallbacks()
 	
 	glutTimerFunc  (0, onTimer, 0);
 	glutTimerFunc  (0, refresh, 0);
+	glutTimerFunc(0, MyWrapper::iterate, 0);
 
 	// Mouse and Keyboard
 	glutKeyboardFunc  (MyWrapper::keyPressed);

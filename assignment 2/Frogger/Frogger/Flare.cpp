@@ -1,7 +1,11 @@
 #include "Flare.h"
 
-#define WinX 2
-#define WinY 2
+#define WinX 640
+#define WinY 480
+
+#define HEIGHTFROMWIDTH(w)  ((320*(w)*WinY)/(240*WinX))
+
+#define isqrt(x)        (int)((double)(x))
 
 Flare::Flare(VSResSurfRevLib * mySurf, VSShaderLib * shader, MathLib* calc, int lx, int ly,
 		int cx, int cy)
@@ -64,8 +68,8 @@ Flare::create(){
 	int idAux = id;
 
 	// Compute how far off-center the flare source is.
-	maxflaredist = sqrt(_cx*_cx + _cy*_cy);
-	flaredist = sqrt((_lx - _cx)*(_lx - _cx) +
+	maxflaredist = isqrt(_cx*_cx + _cy*_cy);
+	flaredist = isqrt((_lx - _cx)*(_lx - _cx) +
 		(_ly - _cy)*(_ly - _cy));
 	flaredist = abs(maxflaredist - flaredist);
 	flaremaxsize = (int)(WinX * _fMaxSize);
@@ -105,7 +109,7 @@ Flare::create(){
 		{
 			unsigned int    argb = (alpha << 24) | (element->argb & 0x00ffffff);
 			_mySurf->setObjId(idAux);
-			_mySurf->createRectangle(px - width / 2, py - height / 2, width/2, height/2);
+			_mySurf->createRectangle(px - width / 2, py - height / 2, width, height);
 			applyColor();
 			idAux++;
 		}

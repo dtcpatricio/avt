@@ -28,7 +28,7 @@ void
 Firework::draw()
 {
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	_mySurf->setObjMaterials(id, _shader);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());

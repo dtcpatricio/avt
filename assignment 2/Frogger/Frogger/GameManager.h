@@ -55,7 +55,7 @@ public:
 	void idle();
 	void update();
 	void init();
-	void iterate();
+	void iterate(int value);
 
 	// Callbacks - timers
 	void cleanup();
@@ -88,7 +88,7 @@ public:
 	// Tracking Variables
 	int startX, startY, tracking;
 	int xFlare = 10;
-	int yFlare = 7;
+	int yFlare = 10;
 	// Coefficient constants
 	float alpha = 0.f, alphaAux = 0.f, betaAux = 20.f, beta = 20.f;
 	float r = 5.25f, rAux = 5.25f;
@@ -96,6 +96,7 @@ public:
 	// Auxiliary objects of game objects
 	Frog * _frog;
 	BoundingBox *_riverbb;
+	Flare* _flare;
 
 	std::vector<GameObject*> * _game_objects;
 	std::vector<LightSource*> *_light_sources;
