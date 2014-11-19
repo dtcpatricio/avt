@@ -232,11 +232,8 @@ GameManager::destroyBufferObjects()
 void
 GameManager::renderScene()
 {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
-
+	
 	switch (camType)
 	{
 	case ORTHOGONAL:
@@ -380,8 +377,7 @@ GameManager::renderScene()
 					isOver = true;
 		}
 	}
-
-
+	
 	// Finally, check if the frog is on the water
 	Vector3 *v = new Vector3(0.0f, .5f, -7.5f);
 	_riverbb->setLimits(v);
@@ -746,7 +742,7 @@ GameManager::createTrees(){
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 2; j++){
 			Tree * t = new Tree(_mySurf, _shader, _ml);
-			t->setPosition(-6.0f + 12.0f*j, 1.f, 1.f - 17.f*i);
+			t->setPosition(-5.0f + 10.0f*j, 0.f, 1.f - 17.f*(1 - i)); // Draw far trees first
 			t->create();
 			_game_objects->push_back(t);
 		}
