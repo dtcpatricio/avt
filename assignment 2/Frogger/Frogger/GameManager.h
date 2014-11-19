@@ -126,14 +126,16 @@ private:
 	float billboard = 0.0f;
 
 	GLErrors _gl_errors;
-	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, bbId, lifeId;
+	GLuint viewMatrixId, projId, modelId, lightId, normal_uniformId, bbId, lifeId, projFlareId;
 	GLfloat globalId, lampId;
 	GLuint pointsIds[6];
 	GLuint TextureArray[7];
 	GLint tex_loc, tex_loc1, tex_loc2, tex_loc3, tex_loc4, tex_loc5, tex_loc6;
 	GLint texMode_uniformId;
-	GLint spotlightId;
+	GLint spotlightId, flareBoolId;
 	Vector3 *initialPos = new Vector3(0.0f, 2.0f, 19.0f);
+
+	GLfloat * flareProjMatrix;
 
 	// Create Scene methods
 	void createParticles();

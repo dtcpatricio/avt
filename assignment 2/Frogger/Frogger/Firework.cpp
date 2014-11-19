@@ -29,11 +29,13 @@ Firework::draw()
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glDepthMask(GL_FALSE);
 
 	_mySurf->setObjMaterials(id, _shader);
 	_calc->translation(_position.getX(), _position.getY(), _position.getZ());
 	sendToGL(id);
 
 	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 }
 

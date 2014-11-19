@@ -469,6 +469,11 @@ GLfloat * MathLib::getViewMatrix() { return viewMatrix; }
 GLfloat * MathLib::getProjMatrix() { return projMatrix; }
 GLfloat * MathLib::getModel()      { return model; }
 
+void MathLib::setProjMatrix(GLfloat * m) {
+	for (int i = 0; i < 16; i++)
+		projMatrix[i] = m[i];
+}
+
 // computes the derived normal matrix
 GLfloat*
 MathLib::computeNormalMatrix3x3() {

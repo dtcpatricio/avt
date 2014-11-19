@@ -1,9 +1,11 @@
-#version 150
+#version 330
 
-uniform mat4 projMatrix, viewMatrix, model;
+uniform mat4 projMatrix, viewMatrix, model, projFlare;
 uniform mat3 m_normal;
 
 uniform float billboard; 
+
+uniform float flareBool;
 
 uniform vec4 l_pos;
 
@@ -29,10 +31,16 @@ out Data {
 	vec3 lamps[6];
 	vec3 eye;
 	vec2 tex_coord;
+	int color;
 } DataOut;
 
 void main(void)
 {
+	mat4 projectionM = projMatrix;
+	if(flareBool == 1.0) {
+		projectionM = projFlare;
+
+	}
 	mat4 viewModel = viewMatrix * model;
 
 	if(billboard == 1.0){
@@ -64,5 +72,5 @@ void main(void)
 	
 	DataOut.eye = vec3(-pos);
 	DataOut.tex_coord = texCoord.st;
-	gl_Position = projMatrix * viewModel * in_pos;
+	gl_Position = projectionM * viewModel * in_pos;
 }

@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 uniform sampler2D texmap;
 uniform sampler2D texmap1;
@@ -86,9 +86,27 @@ void main(void)
 				texelDir = intensity_dir*texel + spec_dir;
 				dirLight = texelDir;
 			}
-			if(texMode == 3)
+			else if(texMode == 3)
 			{
 				texel = texture(texmap3, DataIn.tex_coord);
+				texelDir = intensity_dir*texel + spec_dir;
+				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
+			}
+			else if(texMode == 4)
+			{
+				texel = texture(texmap4, DataIn.tex_coord);
+				texelDir = intensity_dir*texel + spec_dir;
+				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
+			}
+			else if(texMode == 5)
+			{
+				texel = texture(texmap5, DataIn.tex_coord);
+				texelDir = intensity_dir*texel + spec_dir;
+				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
+			}
+			else if(texMode == 6)
+			{
+				texel = texture(texmap6, DataIn.tex_coord);
 				texelDir = intensity_dir*texel + spec_dir;
 				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
 			}
@@ -116,6 +134,30 @@ void main(void)
 					texelDir = intensity_spot*texel + spec_dir;
 					spotLight = texelDir;
 				}
+				else if(texMode == 3)
+				{
+					texel = texture(texmap3, DataIn.tex_coord);
+					texelDir = intensity_spot*texel + spec_dir;
+					spotLight = texelDir;
+				}
+				else if(texMode == 4)
+				{
+					texel = texture(texmap4, DataIn.tex_coord);
+					texelDir = intensity_spot*texel + spec_dir;
+					spotLight = texelDir;
+				}
+				else if(texMode == 5)
+				{
+					texel = texture(texmap5, DataIn.tex_coord);
+					texelDir = intensity_spot*texel + spec_dir;
+					spotLight = texelDir;
+				}
+				else if(texMode == 6)
+				{
+					texel = texture(texmap6, DataIn.tex_coord);
+					texelDir = intensity_spot*texel + spec_dir;
+					spotLight = texelDir;
+				}
 				else
 				{
 					spotLight = intensity_spot * mat.diffuse + spec_dir;
@@ -126,7 +168,7 @@ void main(void)
 
 	///////////////////////////////////////
 	// Point Light
-	
+
 	vec3 l_pt = vec3(0.0);
 	vec3 h_pt = vec3(0.0);
 	vec4 spec_pt = vec4(0.0);
@@ -158,9 +200,27 @@ void main(void)
 					texelLight = intensity_pt*texel + spec_pt;
 					pointLight += texelLight / (a + bd + c * pow(d,2));
 				}
-				if(texMode == 3)
+				else if(texMode == 3)
 				{
 					texel = texture(texmap3, DataIn.tex_coord);
+					texelLight = intensity_pt*texel + spec_pt;
+					pointLight += texelLight / (a + bd + c * pow(d,2));
+				}
+				else if(texMode == 4)
+				{
+					texel = texture(texmap4, DataIn.tex_coord);
+					texelLight = intensity_pt*texel + spec_pt;
+					pointLight += texelLight / (a + bd + c * pow(d,2));
+				}
+				else if(texMode == 5)
+				{
+					texel = texture(texmap5, DataIn.tex_coord);
+					texelLight = intensity_pt*texel + spec_pt;
+					pointLight += texelLight / (a + bd + c * pow(d,2));
+				}
+				else if(texMode == 6)
+				{
+					texel = texture(texmap6, DataIn.tex_coord);
 					texelLight = intensity_pt*texel + spec_pt;
 					pointLight += texelLight / (a + bd + c * pow(d,2));
 				}
@@ -180,8 +240,7 @@ void main(void)
 	else if(texMode == 3)
 	{
 		texel = texture(texmap3, DataIn.tex_coord);
-		//vec4 lightContrib = vec4(dirLight.rgb + pointLight.rgb + spotLight.rgb, mat.diffuse.a);
-		vec4 lightContrib = vec4(dirLight.rgb, mat.diffuse.a);
+		vec4 lightContrib = vec4(dirLight.rgb + pointLight.rgb + spotLight.rgb, mat.diffuse.a);
 		outFrag = max(lightContrib, vec4(texel.rgb, mat.diffuse.a));
 	}
 

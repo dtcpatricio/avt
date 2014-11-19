@@ -72,6 +72,7 @@ public:
 	GLfloat * MathLib::getModel();
 	GLfloat * MathLib::getViewMatrix();
 	GLfloat * MathLib::getProjMatrix();
+	void MathLib::setProjMatrix(GLfloat * m);
 	GLfloat * MathLib::computeNormalMatrix3x3();
 
 protected:

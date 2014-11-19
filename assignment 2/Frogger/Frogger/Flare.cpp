@@ -1,7 +1,7 @@
 #include "Flare.h"
 
-#define WinX 640
-#define WinY 480
+#define WinX  glutGet(GLUT_WINDOW_WIDTH)
+#define WinY  glutGet(GLUT_WINDOW_HEIGHT)
 
 #define HEIGHTFROMWIDTH(w)  ((320*(w)*WinY)/(240*WinX))
 
@@ -67,6 +67,8 @@ Flare::create(){
 	FLARE_ELEMENT_DEF    *element;
 	int idAux = id;
 
+	aux = 0;
+
 	// Compute how far off-center the flare source is.
 	maxflaredist = isqrt(_cx*_cx + _cy*_cy);
 	flaredist = isqrt((_lx - _cx)*(_lx - _cx) +
@@ -102,15 +104,14 @@ Flare::create(){
 
 		// Flare elements are square (round) so height is just
 		// width scaled by aspect ratio.
-		height = ((320 * (width)*WinX) / (240 * WinY));
+		height = ((320 * (width)*WinY) / (240 * WinX));
 		alpha = (flaredist*(element->argb >> 24)) / maxflaredist;
 
 		if (width > 1)
 		{
-			unsigned int    argb = (alpha << 24) | (element->argb & 0x00ffffff);
+			//unsigned int    argb = (alpha << 24) | (element->argb & 0x00ffffff);
 			_mySurf->setObjId(idAux);
 			_mySurf->createRectangle(px - width / 2, py - height / 2, width, height);
-			applyColor();
 			idAux++;
 		}
 		else{ aux++; }
@@ -120,13 +121,21 @@ Flare::create(){
 void
 Flare::draw()
 {
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glDepthMask(GL_FALSE);
 	int idAux = id;
-	for (int i = 0; i < _nPieces - aux; i++)
+	int pieces = _nPieces;
+	for (int i = 0; i < pieces - aux; i++)
 	{
 		_mySurf->setObjMaterials(idAux, _shader);
-		_calc->translation(_position.getX(), _position.getY() + 10.0f, _position.getZ());
 		sendToGL(idAux);
 		idAux++;
 	}
-	
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }

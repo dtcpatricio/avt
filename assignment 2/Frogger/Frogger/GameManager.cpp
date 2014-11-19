@@ -38,20 +38,25 @@ GameManager::mouseMotion(int xx, int yy) {
 			betaAux = -85.0f;
 		rAux = r;
 	}
-	// right mouse button: zoom
+	// right mouse button: move the flare light pos
 	else if (tracking == 2) {
 
-		xFlare += startX*3 / glutGet(GLUT_WINDOW_WIDTH);
-		yFlare += startY*3 / glutGet(GLUT_WINDOW_HEIGHT);
+		xFlare += xx - startX;
+		yFlare += yy - startY;
 
-		if (xFlare >= 3)
-			xFlare = 3 - 1;
+		if (xFlare >= glutGet(GLUT_WINDOW_WIDTH))
+			xFlare = glutGet(GLUT_WINDOW_WIDTH) -1;
 		if (xFlare < 0)
 			xFlare = 0;
-		if (yFlare >= 3)
-			yFlare = 3 - 1;
+		if (yFlare >= glutGet(GLUT_WINDOW_HEIGHT))
+			yFlare = glutGet(GLUT_WINDOW_HEIGHT) - 1;
 		if (yFlare < 0)
 			yFlare = 0;
+
+		_flare->setLX(xFlare);
+		_flare->setLY(yFlare);
+		_flare->create();
+
 	}
 
 
@@ -78,12 +83,6 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 		if (tracking == 1) {
 			alpha -= xx - startX;
 			beta += yy - startY;
-		}
-		else if (tracking == 2) {
-
-
-			xFlare = startX*3 / glutGet(GLUT_WINDOW_WIDTH);
-			yFlare = startY*3 / glutGet(GLUT_WINDOW_HEIGHT);
 		}
 
 		tracking = 0;
@@ -199,13 +198,6 @@ GameManager::reshape(int w, int h) {
 			_tpCam->computeProjectionMatrix();
 			break;
 	}
-
-	_game_objects->pop_back();
-	/*_flare->setLX();
-	_flare->setLY();
-	_flare->setCX();
-	_flare->setCY();*/
-		
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS - TIMER
@@ -296,6 +288,7 @@ GameManager::renderScene()
 	for (it_obj = _game_objects->begin(); it_obj != _game_objects->end(); it_obj++)
 	{
 		billboard = 0.0f;
+		glUniform1f(flareBoolId, 0.0f);
 		glUniform1i(texMode_uniformId, 0);
 		// TEMPORARY LOCATION:
 		if (dynamic_cast<Road*>(*it_obj))
@@ -307,21 +300,25 @@ GameManager::renderScene()
 			billboard = 1.0f;
 		}
 		if (dynamic_cast<Flare*>(*it_obj)){
-			glUniform1i(texMode_uniformId, 5);
-			/*GLfloat* aux = _ml->getProjMatrix();
+			billboard = 1.0f;
 			_ml->setIdentityMatrix(_ml->getProjMatrix(), 4);
-			_ml->ortho(0, WinX, 0, WinY, -1, 1);
-			glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
+			_ml->ortho(0, WinX, 0, WinY, -100, 100);
+			glUniform1i(texMode_uniformId, 5);
+			glUniform1f(flareBoolId, 1.0f);
+			glUniformMatrix4fv(projFlareId, 1, false, _ml->getProjMatrix());
+			glUniform1f(bbId, billboard);
 			(*it_obj)->draw();
 			_ml->setIdentityMatrix(_ml->getProjMatrix(), 4);
-			continue;*/
+			reshape(WinX, WinY);
+			continue;
 		}
 		if (dynamic_cast<Firework*>(*it_obj)){
 			if (_frog->getPosition()->getZ() < -16.3f){
 				glUniform1i(texMode_uniformId, 6);
 				billboard = 1.0f;
 			}
-			else { continue; }
+			else {
+				continue; }
 		}
 		
 		glUniform1f(bbId, billboard);
@@ -679,11 +676,12 @@ GameManager::createScene()
 
 void
 GameManager::createFlare(){
-	_flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, WinX/2, WinY/2);
-	_flare->randomize(1, 7, 0.3f, 16777215, 16776960);
+	int SCREENwidth = glutGet(GLUT_WINDOW_WIDTH);
+	int SCREENheight = glutGet(GLUT_WINDOW_HEIGHT);
+	_flare = new Flare(_mySurf, _shader, _ml, xFlare, yFlare, SCREENwidth / 2, SCREENheight / 2);
+	_flare->randomize(1, 7, 3.f, 16777215, 16776960);
 	_flare->create();
 	_game_objects->push_back(_flare);
-
 }
 
 void
@@ -989,6 +987,8 @@ GameManager::init()
 	globalId = glGetUniformLocation(_shader->getProgramIndex(), "stateGbl");
 	lampId = glGetUniformLocation(_shader->getProgramIndex(), "stateL");
 	bbId = glGetUniformLocation(_shader->getProgramIndex(), "billboard");
+	projFlareId = glGetUniformLocation(_shader->getProgramIndex(), "projFlare");
+	flareBoolId = glGetUniformLocation(_shader->getProgramIndex(), "flareBool");
 	lifeId = glGetUniformLocation(_shader->getProgramIndex(), "life");
 
 	pointsIds[0] = glGetUniformLocation(_shader->getProgramIndex(), "lamp1");
@@ -1006,10 +1006,9 @@ GameManager::init()
 	tex_loc4 = glGetUniformLocation(_shader->getProgramIndex(), "texmap4");
 	tex_loc5 = glGetUniformLocation(_shader->getProgramIndex(), "texmap5");
 	tex_loc6 = glGetUniformLocation(_shader->getProgramIndex(), "texmap6");
-	//spotlightId = glGetUniformLocation(_shader->getProgramIndex(), "l");
 	
 	//Texture Object definition
-	glGenTextures(6, TextureArray);
+	glGenTextures(7, TextureArray);
 	TGA_Texture(TextureArray, "stone.tga", 0);
 	TGA_Texture(TextureArray, "road.tga", 1);
 	TGA_Texture(TextureArray, "lightwood.tga", 2);

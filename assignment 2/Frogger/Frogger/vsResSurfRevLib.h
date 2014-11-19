@@ -101,7 +101,7 @@ protected:
 		struct Material mat;
 	};
 
-	struct MyMesh mMyMesh[1532];
+	struct MyMesh mMyMesh[25];
 	int objId=0;
 
 private:

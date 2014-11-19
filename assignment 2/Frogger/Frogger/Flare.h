@@ -1,5 +1,7 @@
 #pragma once
 #include "StaticObject.h"
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #define FLARE_MAXELEMENTSPERFLARE         15
 
