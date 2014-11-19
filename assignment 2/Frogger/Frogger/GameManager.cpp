@@ -18,12 +18,12 @@ struct MyWrapper {
 /////////////////////////////////////////////////////////////////////// INPUT
 void
 GameManager::mouseWheel(int wheel, int direction, int x, int y) {
-	
+
 }
 
 void
 GameManager::mouseMotion(int xx, int yy) {
-	
+
 	int deltaX = -xx + startX;
 	int deltaY = yy - startY;
 
@@ -45,7 +45,7 @@ GameManager::mouseMotion(int xx, int yy) {
 		yFlare += yy - startY;
 
 		if (xFlare >= glutGet(GLUT_WINDOW_WIDTH))
-			xFlare = glutGet(GLUT_WINDOW_WIDTH) -1;
+			xFlare = glutGet(GLUT_WINDOW_WIDTH) - 1;
 		if (xFlare < 0)
 			xFlare = 0;
 		if (yFlare >= glutGet(GLUT_WINDOW_HEIGHT))
@@ -76,7 +76,7 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 			tracking = 2;
 		}
 	}
-		
+
 	//stop tracking the mouse
 	else if (state == GLUT_UP) {
 
@@ -87,7 +87,7 @@ GameManager::mouseButtons(int button, int state, int xx, int yy)
 
 		tracking = 0;
 	}
-	
+
 }
 void
 GameManager::keyPressed(unsigned char key, int xx, int yy) {
@@ -136,10 +136,14 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 
 	case 'c':
 		onLamps = !onLamps;
-		for ( int i = 1; i < 7; i++)
+		for (int i = 1; i < 7; i++)
 		{
 			_light_sources->at(i)->setState(onLamps);
 		}
+		break;
+
+	case 's':
+		stencilOn = !stencilOn;
 		break;
 
 	case 'f':
@@ -185,18 +189,18 @@ GameManager::display()
 }
 
 void
-GameManager::reshape(int w, int h) {	
-		
+GameManager::reshape(int w, int h) {
+
 	switch (camType){
-		case ORTHOGONAL: 
-			_orthoCam->computeProjectionMatrix();
-			break;
-		case PERSPECTIVETOP	: 
-			_perspCam->computeProjectionMatrix();
-			break;
-		case PERSPECTIVE3RD: 
-			_tpCam->computeProjectionMatrix();
-			break;
+	case ORTHOGONAL:
+		_orthoCam->computeProjectionMatrix();
+		break;
+	case PERSPECTIVETOP:
+		_perspCam->computeProjectionMatrix();
+		break;
+	case PERSPECTIVE3RD:
+		_tpCam->computeProjectionMatrix();
+		break;
 	}
 }
 
@@ -224,8 +228,10 @@ GameManager::destroyBufferObjects()
 void
 GameManager::renderScene()
 {
-	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+
 
 	switch (camType)
 	{
@@ -240,9 +246,9 @@ GameManager::renderScene()
 		_tpCam->computeVisualizationMatrix();
 		break;
 	}
-		
+
 	glUseProgram(_shader->getProgramIndex());
-	
+
 	//Associar os Texture Units aos Objects Texture
 	//stone.tga loaded in TU0; checker.tga loaded in TU1;  lightwood.tga loaded in TU2
 	glActiveTexture(GL_TEXTURE0);
@@ -279,6 +285,33 @@ GameManager::renderScene()
 
 	glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
+
+	if (stencilOn) {
+		// Stencil test
+		glEnable(GL_STENCIL_TEST);
+		glClearStencil(0x0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+			GL_STENCIL_BUFFER_BIT
+			);
+		glStencilFunc(GL_NEVER, 0x1, 0x1);
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		glDisable(GL_DEPTH_TEST);
+
+		Stencil * t = new Stencil(_mySurf, _shader, _ml);
+		t->setPosition(
+			_frog->getPosition()->getX(),
+			_frog->getPosition()->getY(),
+			_frog->getPosition()->getZ());
+		t->create();
+		t->draw();
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_DEPTH_BUFFER_BIT); // inicializa o z_buffer
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilFunc(GL_EQUAL, 1, 1);
+	}
+	else {
+		glDisable(GL_STENCIL_TEST);
+	}
 
 	incrementSpeed();
 	updateDynamicObj();
@@ -318,13 +351,14 @@ GameManager::renderScene()
 				billboard = 1.0f;
 			}
 			else {
-				continue; }
+				continue;
+			}
 		}
-		
+
 		glUniform1f(bbId, billboard);
 
 		(*it_obj)->draw();
-		
+
 		// Do AABB colliding tests
 		if (dynamic_cast<DynamicObject*>(*it_obj) && !dynamic_cast<Frog*>(*it_obj))
 		{
@@ -334,12 +368,14 @@ GameManager::renderScene()
 			if (dynamic_cast<Car*>(*it_obj) || dynamic_cast<Bus*>(*it_obj))
 				if (b1->is_colliding(frogbb))
 					_frog->setPosition(initialPos);
-				
+
 			if (dynamic_cast<TimberLog*>(*it_obj) || dynamic_cast<Turtle*>(*it_obj))
 				if (b1->is_colliding(frogbb))
 					isOver = true;
 		}
 	}
+
+
 	// Finally, check if the frog is on the water
 	Vector3 *v = new Vector3(0.0f, .5f, -7.5f);
 	_riverbb->setLimits(v);
@@ -407,12 +443,12 @@ GameManager::updateFrog()
 		_frog->getPosition()->getZ(), 1.0f));
 }
 
-void 
+void
 GameManager::updateLogs()
 {
 	std::vector<TimberLog*>::iterator it_obj;
 	for (it_obj = _logs->begin(); it_obj != _logs->end(); it_obj++)
-	{	
+	{
 		(*it_obj)->update(speedIncr);
 	}
 }
@@ -461,7 +497,7 @@ GameManager::incrementSpeed(){
 
 void
 GameManager::createCameras(){
-	
+
 	float winx = WinX;
 	float winy = WinY;
 	float ratio = (1.0f *winx) / winy;
@@ -482,7 +518,7 @@ GameManager::createCameras(){
 	_tpCam->updateEye(r, alpha, beta, _frog->getPosition());
 	_tpCam->updateUp();
 	_tpCam->updateAt(_frog->getPosition());
-	
+
 
 
 }
@@ -524,7 +560,7 @@ GameManager::createLightsources()
 	spotlight->setCutOff(.425f);
 	spotlight->setDirection(new Vector4(0.0f, 1.f, -1.f, 0.0f));
 	spotlight->setPosition(new Vector4(_frog->getPosition()->getX(),
-		_frog->getPosition()->getY() + 4.f, 
+		_frog->getPosition()->getY() + 4.f,
 		_frog->getPosition()->getZ(), 1.0f));
 	spotlight->setExponent(100.f);
 	_spotlight = spotlight;
@@ -561,7 +597,7 @@ GameManager::updateLights(){
 		loc = glGetUniformLocation(_shader->getProgramIndex(), "l_pos");
 		glUniform4fv(loc, 1, spot);
 	}
-		
+
 
 	glUniform1f(globalId, state);
 
@@ -579,7 +615,7 @@ GameManager::updateLights(){
 		lpos = l->getPosition()->Vec4ToFloat();
 		_ml->MultiplyMatrixByVector4by4OpenGL_FLOAT(res, _ml->getViewMatrix(), lpos);
 
-		glUniform4fv(pointsIds[i-1], 1, res);
+		glUniform4fv(pointsIds[i - 1], 1, res);
 	}
 
 }
@@ -632,7 +668,7 @@ GameManager::setupShaders()
 	return(_shader->isProgramValid());
 }
 
-void 
+void
 GameManager::destroyShaderProgram()
 {
 	glUseProgram(0);
@@ -722,10 +758,10 @@ GameManager::createTunnels(){
 
 void
 GameManager::createLamps(){
-	for ( int i = 1; i < 7; i++)
+	for (int i = 1; i < 7; i++)
 	{
 		LightSource* l = _light_sources->at(i);
-		
+
 		Lamp* lamp = new Lamp(_mySurf, _shader, _ml, l);
 		lamp->create();
 		_game_objects->push_back(lamp);
@@ -804,13 +840,13 @@ GameManager::createCar()
 	for (int i = 0; i < 2; i++){
 		for (int j = 0; j < 4; j++){
 			car = new Car(_mySurf, _shader, _ml);
-			car->setPosition(-11.0f + 6.0f*j - 2*i, 2.0f, 9.5f + 2.0f*i);
+			car->setPosition(-11.0f + 6.0f*j - 2 * i, 2.0f, 9.5f + 2.0f*i);
 			car->create();
 			_game_objects->push_back(car);
 			_cars->push_back(car);
 		}
 	}
-	
+
 }
 
 void
@@ -888,7 +924,7 @@ GameManager::initParticles(){
 	GLfloat v, theta, phi;
 	int i;
 
-	for (i = 0; i<particula->size(); i++)
+	for (i = 0; i < particula->size(); i++)
 	{
 		v = 0.8*frand() + 0.2;
 		phi = frand()*M_PI;
@@ -899,7 +935,7 @@ GameManager::initParticles(){
 
 		/* tom amarelado que vai ser multiplicado pela textura que varia entre branco e preto */
 		particula->at(i)->setColors(new Vector3(0.882f, 0.552f, 0.211f));
-		
+
 		particula->at(i)->setLife(1.0f);		/* vida inicial */
 		particula->at(i)->setFade(0.03f);	    /* step de decréscimo da vida para cada iteração */
 	}
@@ -1006,7 +1042,7 @@ GameManager::init()
 	tex_loc4 = glGetUniformLocation(_shader->getProgramIndex(), "texmap4");
 	tex_loc5 = glGetUniformLocation(_shader->getProgramIndex(), "texmap5");
 	tex_loc6 = glGetUniformLocation(_shader->getProgramIndex(), "texmap6");
-	
+
 	//Texture Object definition
 	glGenTextures(7, TextureArray);
 	TGA_Texture(TextureArray, "stone.tga", 0);

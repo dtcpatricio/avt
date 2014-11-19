@@ -19,6 +19,7 @@
 #include "Flare.h"
 #include "Firework.h"
 #include "glbmp.h"
+#include "Stencil.h"
 
 
 // Include LightSource object
@@ -123,6 +124,7 @@ private:
 	bool onGlobal = true;
 	bool onLamps = false;
 	bool isOver = false;
+	bool stencilOn = false;
 	float billboard = 0.0f;
 
 	GLErrors _gl_errors;

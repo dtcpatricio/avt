@@ -51,6 +51,7 @@ public:
 	void createSphere(float radius, int divisions);
 	void createTorus(float innerRadius, float outerRadius, int rings, int sides);
 	void createCube(float size);
+	void createRectangleUp(float lenght, float height);
 	void createRectangle(float lenght, float height);
 	void createRectangle(int x, int y, int width, int height);
 	void createCylinder(float height, float radius, int sides);
@@ -101,7 +102,7 @@ protected:
 		struct Material mat;
 	};
 
-	struct MyMesh mMyMesh[25];
+	struct MyMesh mMyMesh[26];
 	int objId=0;
 
 private:
