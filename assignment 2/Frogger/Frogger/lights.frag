@@ -1,12 +1,7 @@
 #version 330
 
-uniform sampler2D texmap;
-uniform sampler2D texmap1;
-uniform sampler2D texmap2;
-uniform sampler2D texmap3;
-uniform sampler2D texmap4;
-uniform sampler2D texmap5;
-uniform sampler2D texmap6;
+uniform sampler2D texmap, texmap1, texmap2, texmap3,
+                          texmap4, texmap5, texmap6;
 uniform int texMode;
 uniform float life;
 
@@ -37,6 +32,33 @@ in Data {
 	vec3 eye;
 	vec2 tex_coord;
 } DataIn;
+
+vec4 extract_texel(int mode) {
+	vec4 texel = vec4(0.0);
+	
+	if(mode == 1)
+	{
+		texel = texture(texmap1, DataIn.tex_coord);
+	}
+	else if(mode == 3)
+	{
+		texel = texture(texmap3, DataIn.tex_coord);
+	}
+	else if(mode == 4)
+	{
+		texel = texture(texmap4, DataIn.tex_coord);
+	}
+	else if(mode == 5)
+	{
+		texel = texture(texmap5, DataIn.tex_coord);
+	}
+	else if(mode == 6)
+	{
+		texel = texture(texmap6, DataIn.tex_coord);
+	}
+
+	return texel;
+}
 
 void main(void)
 {
@@ -80,33 +102,8 @@ void main(void)
 			intSpec_dir = max(dot(h_dir,n), 0.0);
 			spec_dir = mat.specular * pow(intSpec_dir, mat.shininess);
 
-			if(texMode == 1)
-			{
-				texel = texture(texmap1, DataIn.tex_coord);
-				texelDir = intensity_dir*texel + spec_dir;
-				dirLight = texelDir;
-			}
-			else if(texMode == 3)
-			{
-				texel = texture(texmap3, DataIn.tex_coord);
-				texelDir = intensity_dir*texel + spec_dir;
-				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
-			}
-			else if(texMode == 4)
-			{
-				texel = texture(texmap4, DataIn.tex_coord);
-				texelDir = intensity_dir*texel + spec_dir;
-				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
-			}
-			else if(texMode == 5)
-			{
-				texel = texture(texmap5, DataIn.tex_coord);
-				texelDir = intensity_dir*texel + spec_dir;
-				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
-			}
-			else if(texMode == 6)
-			{
-				texel = texture(texmap6, DataIn.tex_coord);
+			if (texMode > 0) {
+				texel = extract_texel(texMode);
 				texelDir = intensity_dir*texel + spec_dir;
 				dirLight = vec4(texelDir.rgb, mat.diffuse.a);
 			}
@@ -128,33 +125,8 @@ void main(void)
 				float intSpecSpot = max(dot(h, n), 0.0);
 				spec_dir = mat.specular * pow(intSpecSpot, mat.shininess);
 
-				if(texMode == 1)
-				{
-					texel = texture(texmap1, DataIn.tex_coord);
-					texelDir = intensity_spot*texel + spec_dir;
-					spotLight = texelDir;
-				}
-				else if(texMode == 3)
-				{
-					texel = texture(texmap3, DataIn.tex_coord);
-					texelDir = intensity_spot*texel + spec_dir;
-					spotLight = texelDir;
-				}
-				else if(texMode == 4)
-				{
-					texel = texture(texmap4, DataIn.tex_coord);
-					texelDir = intensity_spot*texel + spec_dir;
-					spotLight = texelDir;
-				}
-				else if(texMode == 5)
-				{
-					texel = texture(texmap5, DataIn.tex_coord);
-					texelDir = intensity_spot*texel + spec_dir;
-					spotLight = texelDir;
-				}
-				else if(texMode == 6)
-				{
-					texel = texture(texmap6, DataIn.tex_coord);
+				if (texMode > 0) {
+					texel = extract_texel(texMode);
 					texelDir = intensity_spot*texel + spec_dir;
 					spotLight = texelDir;
 				}
@@ -194,33 +166,8 @@ void main(void)
 				spec_pt = mat.specular * pow(intSpec_pt, mat.shininess);
 				
 				float bd = b * d;
-				if(texMode == 1)
-				{
-					texel = texture(texmap1, DataIn.tex_coord);
-					texelLight = intensity_pt*texel + spec_pt;
-					pointLight += texelLight / (a + bd + c * pow(d,2));
-				}
-				else if(texMode == 3)
-				{
-					texel = texture(texmap3, DataIn.tex_coord);
-					texelLight = intensity_pt*texel + spec_pt;
-					pointLight += texelLight / (a + bd + c * pow(d,2));
-				}
-				else if(texMode == 4)
-				{
-					texel = texture(texmap4, DataIn.tex_coord);
-					texelLight = intensity_pt*texel + spec_pt;
-					pointLight += texelLight / (a + bd + c * pow(d,2));
-				}
-				else if(texMode == 5)
-				{
-					texel = texture(texmap5, DataIn.tex_coord);
-					texelLight = intensity_pt*texel + spec_pt;
-					pointLight += texelLight / (a + bd + c * pow(d,2));
-				}
-				else if(texMode == 6)
-				{
-					texel = texture(texmap6, DataIn.tex_coord);
+				if (texMode > 0) {
+					texel = extract_texel(texMode);
 					texelLight = intensity_pt*texel + spec_pt;
 					pointLight += texelLight / (a + bd + c * pow(d,2));
 				}
@@ -276,6 +223,5 @@ void main(void)
 	float fogAmount = exp(-dst * h);
 	vec4 fogColor = vec4(0.5,0.6,0.7,1.0);
 
-	//outFrag = mix(fogColor, outFrag, fogAmount);
-
+	outFrag = mix(fogColor, outFrag, fogAmount);
 }

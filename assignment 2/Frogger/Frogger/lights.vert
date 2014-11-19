@@ -9,12 +9,7 @@ uniform float flareBool;
 
 uniform vec4 l_pos;
 
-uniform vec4 lamp1;
-uniform vec4 lamp2;
-uniform vec4 lamp3;
-uniform vec4 lamp4;
-uniform vec4 lamp5;
-uniform vec4 lamp6;
+uniform vec4 lamp1, lamp2, lamp3, lamp4, lamp5, lamp6;
 
 uniform float stateGbl;
 uniform float stateL;

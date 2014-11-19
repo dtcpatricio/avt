@@ -502,8 +502,8 @@ GameManager::incrementSpeed(){
 /////////////////////////////////////////////////////////////////////// Lights and Camera
 
 void
-GameManager::createCameras(){
-
+GameManager::createCameras()
+{
 	float winx = WinX;
 	float winy = WinY;
 	float ratio = (1.0f *winx) / winy;
@@ -524,9 +524,6 @@ GameManager::createCameras(){
 	_tpCam->updateEye(r, alpha, beta, _frog->getPosition());
 	_tpCam->updateUp();
 	_tpCam->updateAt(_frog->getPosition());
-
-
-
 }
 
 void
