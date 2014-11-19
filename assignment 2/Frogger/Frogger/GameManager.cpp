@@ -146,6 +146,10 @@ GameManager::keyPressed(unsigned char key, int xx, int yy) {
 		stencilOn = !stencilOn;
 		break;
 
+	case 'r':
+		lives = 5;
+		break;
+
 	case 'f':
 		initParticles();
 		break;
@@ -366,8 +370,10 @@ GameManager::renderScene()
 			b1->setLimits((*it_obj)->getPosition());
 			frogbb->setLimits(_frog->getPosition());
 			if (dynamic_cast<Car*>(*it_obj) || dynamic_cast<Bus*>(*it_obj))
-				if (b1->is_colliding(frogbb))
-					_frog->setPosition(initialPos);
+				if (b1->is_colliding(frogbb)) {
+				_frog->setPosition(initialPos);
+				lives--;
+				}
 
 			if (dynamic_cast<TimberLog*>(*it_obj) || dynamic_cast<Turtle*>(*it_obj))
 				if (b1->is_colliding(frogbb))
@@ -379,8 +385,10 @@ GameManager::renderScene()
 	// Finally, check if the frog is on the water
 	Vector3 *v = new Vector3(0.0f, .5f, -7.5f);
 	_riverbb->setLimits(v);
-	if (_riverbb->is_colliding(frogbb) && !isOver)
+	if (_riverbb->is_colliding(frogbb) && !isOver) {
 		_frog->setPosition(initialPos);
+		lives--;
+	}
 
 	isOver = false;
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -402,41 +410,43 @@ GameManager::updateDynamicObj(){
 void
 GameManager::updateFrog()
 {
-	if (frogUp)
-	{
-		_frog->setPosition(
-			_frog->getPosition()->getX(),
-			_frog->getPosition()->getY(),
-			_frog->getPosition()->getZ() - _frog_speed);
-		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
-		_spotlight->setDirection(new Vector4(0.0f, .5f, -.75f, 0.f));
-	}
-	if (frogDown)
-	{
-		_frog->setPosition(
-			_frog->getPosition()->getX(),
-			_frog->getPosition()->getY(),
-			_frog->getPosition()->getZ() + _frog_speed);
-		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
-		_spotlight->setDirection(new Vector4(0.0f, -.5f, -.75f, 0.f));
-	}
-	if (frogLeft)
-	{
-		_frog->setPosition(
-			_frog->getPosition()->getX() - _frog_speed,
-			_frog->getPosition()->getY(),
-			_frog->getPosition()->getZ());
-		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
-		_spotlight->setDirection(new Vector4(-.5f, 0.f, -.75f, 0.f));
-	}
-	if (frogRight)
-	{
-		_frog->setPosition(
-			_frog->getPosition()->getX() + _frog_speed,
-			_frog->getPosition()->getY(),
-			_frog->getPosition()->getZ());
-		_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
-		_spotlight->setDirection(new Vector4(.5f, 0.f, -.75f, 0.f));
+	if (lives > 0) {
+		if (frogUp)
+		{
+			_frog->setPosition(
+				_frog->getPosition()->getX(),
+				_frog->getPosition()->getY(),
+				_frog->getPosition()->getZ() - _frog_speed);
+			_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+			_spotlight->setDirection(new Vector4(0.0f, .5f, -.75f, 0.f));
+		}
+		if (frogDown)
+		{
+			_frog->setPosition(
+				_frog->getPosition()->getX(),
+				_frog->getPosition()->getY(),
+				_frog->getPosition()->getZ() + _frog_speed);
+			_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+			_spotlight->setDirection(new Vector4(0.0f, -.5f, -.75f, 0.f));
+		}
+		if (frogLeft)
+		{
+			_frog->setPosition(
+				_frog->getPosition()->getX() - _frog_speed,
+				_frog->getPosition()->getY(),
+				_frog->getPosition()->getZ());
+			_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+			_spotlight->setDirection(new Vector4(-.5f, 0.f, -.75f, 0.f));
+		}
+		if (frogRight)
+		{
+			_frog->setPosition(
+				_frog->getPosition()->getX() + _frog_speed,
+				_frog->getPosition()->getY(),
+				_frog->getPosition()->getZ());
+			_tpCam->updateEye(rAux, alphaAux, betaAux, _frog->getPosition());
+			_spotlight->setDirection(new Vector4(.5f, 0.f, -.75f, 0.f));
+		}
 	}
 	_spotlight->setPosition(new Vector4(_frog->getPosition()->getX(),
 		_frog->getPosition()->getY() + 4.f,

@@ -109,6 +109,8 @@ public:
 
 	LightSource *_spotlight;
 
+	int lives = 5;
+
 	float speedIncr = 0.05f;
 	unsigned int FrameCount = 0;
 
@@ -178,6 +180,8 @@ private:
 
 	// frog movement speed
 	float _frog_speed = 0.1f;
+
+	
 
 	// particle functions
 	void initParticles();

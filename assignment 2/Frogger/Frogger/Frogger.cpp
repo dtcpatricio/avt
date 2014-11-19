@@ -2,7 +2,7 @@
 
 #include "Frogger.h"
 
-#define CAPTION "Frogger (Assignment 1)"
+#define CAPTION "Frogger (Assignment 3)"
 
 struct MyWrapper {
 	static void display(void) {
@@ -71,7 +71,11 @@ refresh(int value)
 void onTimer(int value)
 {
 	std::ostringstream oss;
-	oss << CAPTION << ": " << MyWrapper::manager->FrameCount << " FPS @ (" << WinX << "x" << WinY << ")";
+	if (MyWrapper::manager->lives <= 0)
+		oss << CAPTION << ": " << MyWrapper::manager->FrameCount << " FPS @ GAMEOVER!! " << std::endl;
+	else
+		oss << CAPTION << ": " << MyWrapper::manager->FrameCount << " FPS @ Lives available: " << MyWrapper::manager->lives << std::endl;
+	
 	std::string s = oss.str();
 	glutSetWindow(WindowHandle);
 	glutSetWindowTitle(s.c_str());
