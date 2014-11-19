@@ -237,15 +237,15 @@ GameManager::renderScene()
 
 	//_orthoCam->computeProjectionMatrix();
 	//_orthoCam->computeVisualizationMatrix();
-	/*
+	
 	Stencil * t = new Stencil(_mySurf, _shader, _ml);
 	t->setPosition(
-		_frog->getPosition()->getX(),
-		_frog->getPosition()->getY() - 2.0f,
-		_frog->getPosition()->getZ());
+		0,
+		20,
+		0);
 	t->create();
 	t->draw();
-	*/
+	
 	//glUniformMatrix4fv(viewMatrixId, 1, false, _ml->getViewMatrix());
 	//glUniformMatrix4fv(projId, 1, false, _ml->getProjMatrix());
 

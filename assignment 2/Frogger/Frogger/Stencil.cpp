@@ -20,7 +20,7 @@ void
 Stencil::create()
 {
 	_mySurf->setObjId(id);
-	_mySurf->createRectangle(.9f, .3f);
+	_mySurf->createRectangleUp(4.f, 4.f);
 	applyColor();
 }
 

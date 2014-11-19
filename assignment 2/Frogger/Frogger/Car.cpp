@@ -48,6 +48,7 @@ Car::create()
 void
 Car::draw()
 {
+	/*
 	glEnable(GL_STENCIL_TEST);
 	glClearStencil(0x0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |	GL_STENCIL_BUFFER_BIT);
@@ -67,7 +68,7 @@ Car::draw()
 	glClear(GL_DEPTH_BUFFER_BIT); // inicializa o z_buffer
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glStencilFunc(GL_NOTEQUAL, 1, 1);
-
+	*/
 	_mySurf->setObjMaterials(id[1], _shader);
 	_calc->translation(_position.getX(), _position.getY() + 0.3f, _position.getZ());
 	_calc->scale(1.f, 1.0f, 1.f);
