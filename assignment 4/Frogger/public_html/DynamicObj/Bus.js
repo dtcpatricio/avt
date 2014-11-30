@@ -60,3 +60,19 @@ function updateBus() {
     }
 }
 
+function busBoundBox(obj){
+ 
+    var xMin = obj.position.x - 0.45;
+    var xMax = obj.position.x + 0.45;
+    var yMin = obj.position.y - 0.35;
+    var yMax = obj.position.y + 0.35;
+    var min = new THREE.Vector2(xMin, yMin);
+    var max = new THREE.Vector2(xMax, yMax);
+    
+    return new THREE.Box2(min, max);
+}
+
+function allBus(){
+    return bus;
+}
+

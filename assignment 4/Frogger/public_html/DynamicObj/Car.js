@@ -35,6 +35,7 @@ function Cars() {
             this.car.position.z = 1.3;
             scene.add(this.car);
             car.push(this.car);
+            
             for (k = 0; k < 2; k++) {
                 for (l = 0; l < 2; l++) {
                     this.wheel = new THREE.Mesh(TorusGeometry, materialTorus);
@@ -57,4 +58,23 @@ function updateCars() {
         else
             car[i].position.x = 6.0;
     }
+    
+}
+
+function carBoundBox(obj){
+ 
+    var xMin = obj.position.x - 0.35;
+    var xMax = obj.position.x + 0.35;
+    var yMin = obj.position.y - 0.25;
+    var yMax = obj.position.y + 0.25;
+    var min = new THREE.Vector2(xMin, yMin);
+    var max = new THREE.Vector2(xMax, yMax);
+    
+    return new THREE.Box2(min, max);
+}
+
+function allCars(){
+    
+    return car;
+    
 }

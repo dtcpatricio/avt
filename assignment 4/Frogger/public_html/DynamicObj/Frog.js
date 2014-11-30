@@ -5,44 +5,104 @@
  */
 
 
-var frog;
+var frog = [];
 var left = false;
 var right = false;
 var up = false;
 var down = false;
+var delta = 0.03;
 
 function Frog() {
 
-    var uniforms = {
+    uniforms = {
         ambient: {type: "c", value: new THREE.Color(0x052D05)},
         diffuse: {type: "c", value: new THREE.Color(0x139913)},
         spec: {type: "c", value: new THREE.Color(0xA1B7A1)},
         shininess: {type: "f", value: 20}
     };
 
-    var geometry = new THREE.SphereGeometry(0.25, 32, 32);
+    var geometry = new THREE.SphereGeometry(0.1, 32, 32);
+    var bodyGeometry = new THREE.BoxGeometry(0.25, 0.25, 0.25);
     var material = new THREE.ShaderMaterial({vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms});
 
+    this.body = new THREE.Mesh(bodyGeometry, material);
 
-    frog = new THREE.Mesh(geometry, material);
-    frog.position.y = -5;
-    frog.position.z = 1.25;
-    scene.add(frog);
+    this.body.position.y = -5;
+    this.body.position.z = 1.25;
+    frog.push(this.body);
+    scene.add(this.body);
+
+    this.head = new THREE.Mesh(geometry, material);
+
+    this.head.position.x = this.body.position.x;
+    this.head.position.y = this.body.position.y;
+    this.head.position.z = this.body.position.z + 0.2;
+    frog.push(this.head);
+    scene.add(this.head);
+
+}
+
+function frogBoundBox() {
+
+   var xMin = frog[0].position.x - 0.125;
+   var xMax = frog[0].position.x + 0.125;
+   var yMin = frog[0].position.y - 0.125;
+   var yMax = frog[0].position.y + 0.125;
+   var min = new THREE.Vector2(xMin, yMin);
+   var max = new THREE.Vector2(xMax, yMax);
+    
+   return new THREE.Box2(min, max);
 }
 
 function updateFrog() {
-    var delta = 0.03;
+
     if (left) {
-        frog.position.x -= delta;
+        if (frog[0].position.x - delta > -4.75) {
+            frog[0].position.x -= delta;
+            frog[1].position.x -= delta;
+        }
     }
     if (right) {
-        frog.position.x += delta;
+        if (frog[0].position.x + delta < 4.75) {
+            frog[0].position.x += delta;
+            frog[1].position.x += delta;
+        }
     }
     if (up) {
-        frog.position.y += delta;
+        if (frog[0].position.y + delta < 5.25) {
+            frog[0].position.y += delta;
+            frog[1].position.y += delta;
+        }
     }
     if (down) {
-        frog.position.y -= delta;
+        if (frog[0].position.y - delta > -5.25) {
+            frog[0].position.y -= delta;
+            frog[1].position.y -= delta;
+        }
     }
 
 }
+
+function frogPosition() {
+    return frog[0].position;
+}
+
+function initialPosition() {
+    frog[0].position.x = 0.0;
+    frog[0].position.y = -5;
+    frog[1].position.x = 0.0;
+    frog[1].position.y = -5;
+}
+
+function setPosition(value) {
+    if (frog[0].position.x - delta > -4.75){
+        frog[0].position.x -= value;
+        frog[1].position.x -= value;
+    }
+}
+
+/*function is_colliding(obj){
+ if(!(frogBB.min.x < cars[i].max.x || cars[i].min.x < frogBB.max.x || frogBB.min.y < cars[i].max.y || cars[i].min.y < frogBB.max.y)) 
+ return true;
+ }*/
+

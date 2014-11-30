@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+var river;
+
 function River() {
 
     var uniforms = {
@@ -16,7 +18,7 @@ function River() {
     var geometry = new THREE.BoxGeometry(10, 4, 2);
     var material = new THREE.ShaderMaterial({vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms});
 
-    this.river = new THREE.Mesh(geometry, material);
-    this.river.position.y = 2.5;
-    scene.add(this.river);
+    river = new THREE.Mesh(geometry, material);
+    river.position.y = 2.5;
+    scene.add(river);
 }
