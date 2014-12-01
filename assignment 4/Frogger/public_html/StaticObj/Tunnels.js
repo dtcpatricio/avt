@@ -9,7 +9,8 @@ function Tunnels() {
         ambient: {type: "c", value: new THREE.Color(0x333333)},
         diffuse: {type: "c", value: new THREE.Color(0x838383)},
         spec: {type: "c", value: new THREE.Color(0x838383)},
-        shininess: {type: "f", value: 32}
+        shininess: {type: "f", value: 32},
+        texMode: {type: "f", value: 0.0}
     };
 
     //var geometry = new THREE.BoxGeometry(3, 4, 2);

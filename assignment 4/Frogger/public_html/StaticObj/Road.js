@@ -5,11 +5,17 @@
  */
 
 function Road() {
+    
+    var roadImage = THREE.ImageUtils.loadTexture('road_texture.png');
+    roadImage.magFilter = THREE.NearestFilter;
+    
     var uniforms = {
         ambient: {type: "c", value: new THREE.Color(0x050505)},
         diffuse: {type: "c", value: new THREE.Color(0x030303)},
         spec: {type: "c", value: new THREE.Color(666666)},
-        shininess: {type: "f", value: 32}
+        shininess: {type: "f", value: 32},
+        texMode: {type: "f", value: 1.0},
+        texture1: { type: "t", value: roadImage}
     };
 
     var geometry = new THREE.BoxGeometry(10, 4, 2);

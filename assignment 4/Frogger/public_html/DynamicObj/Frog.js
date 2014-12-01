@@ -18,7 +18,8 @@ function Frog() {
         ambient: {type: "c", value: new THREE.Color(0x052D05)},
         diffuse: {type: "c", value: new THREE.Color(0x139913)},
         spec: {type: "c", value: new THREE.Color(0xA1B7A1)},
-        shininess: {type: "f", value: 20}
+        shininess: {type: "f", value: 20},
+        texMode: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.SphereGeometry(0.1, 32, 32);

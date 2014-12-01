@@ -11,7 +11,8 @@ function TimberLog() {
         ambient: {type: "c", value: new THREE.Color(0x33210D)},
         diffuse: {type: "c", value: new THREE.Color(0xB26E1A)},
         spec: {type: "c", value: new THREE.Color(0x66452B)},
-        shininess: {type: "f", value: 20}
+        shininess: {type: "f", value: 20},
+        texMode: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.CylinderGeometry(0.4, 0.4, 1.5, 32);

@@ -11,7 +11,8 @@ function Bus() {
         ambient: {type: "c", value: new THREE.Color(0x543808)},
         diffuse: {type: "c", value: new THREE.Color(0xC7991C)},
         spec: {type: "c", value: new THREE.Color(0xFCF0CC)},
-        shininess: {type: "f", value: 20}
+        shininess: {type: "f", value: 20},
+        texMode: {type: "f", value: 0.0}
     };
 
     var uniformsTorus = {

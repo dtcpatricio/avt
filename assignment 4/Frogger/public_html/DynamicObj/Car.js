@@ -11,7 +11,8 @@ function Cars() {
         ambient: {type: "c", value: new THREE.Color(0x2E0303)},
         diffuse: {type: "c", value: new THREE.Color(0x990A0A)},
         spec: {type: "c", value: new THREE.Color(0xBAA0A0)},
-        shininess: {type: "f", value: 20}
+        shininess: {type: "f", value: 20},
+        texMode: {type: "f", value: 0.0}
     };
 
     var uniformsTorus = {
