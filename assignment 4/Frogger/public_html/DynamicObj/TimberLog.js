@@ -12,7 +12,12 @@ function TimberLog() {
         diffuse: {type: "c", value: new THREE.Color(0xB26E1A)},
         spec: {type: "c", value: new THREE.Color(0x66452B)},
         shininess: {type: "f", value: 20},
-        texMode: {type: "f", value: 0.0}
+        billboard: {type: "f", value: 0.0},
+        spotDir: {type: "v3", value: sDir},
+        spotPos: {type: "v3", value: sPos},
+        night: {type: "v3", value: nightMode},
+        texMode: {type: "f", value: 0.0},
+        life: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.CylinderGeometry(0.4, 0.4, 1.5, 32);

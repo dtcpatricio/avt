@@ -14,8 +14,13 @@ function Road() {
         diffuse: {type: "c", value: new THREE.Color(0x030303)},
         spec: {type: "c", value: new THREE.Color(666666)},
         shininess: {type: "f", value: 32},
+        billboard: {type: "f", value: 0.0},
+        spotDir: {type: "v3", value: sDir},
+        spotPos: {type: "v3", value: sPos},
+        night: {type: "v3", value: nightMode},
         texMode: {type: "f", value: 1.0},
-        texture1: { type: "t", value: roadImage}
+        texture1: { type: "t", value: roadImage},
+        life: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.BoxGeometry(10, 4, 2);

@@ -19,7 +19,12 @@ function Frog() {
         diffuse: {type: "c", value: new THREE.Color(0x139913)},
         spec: {type: "c", value: new THREE.Color(0xA1B7A1)},
         shininess: {type: "f", value: 20},
-        texMode: {type: "f", value: 0.0}
+        billboard: {type: "f", value: 0.0},
+        night: {type: "v3", value: nightMode},
+        spotDir: {type: "v3", value: sDir},
+        spotPos: {type: "v3", value: sPos},
+        texMode: {type: "f", value: 0.0},
+        life: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.SphereGeometry(0.1, 32, 32);
@@ -61,27 +66,30 @@ function updateFrog() {
         if (frog[0].position.x - delta > -4.75) {
             frog[0].position.x -= delta;
             frog[1].position.x -= delta;
+            sPos.x += delta;
         }
     }
     if (right) {
         if (frog[0].position.x + delta < 4.75) {
             frog[0].position.x += delta;
             frog[1].position.x += delta;
+            sPos.x -= delta;
         }
     }
     if (up) {
         if (frog[0].position.y + delta < 5.25) {
             frog[0].position.y += delta;
             frog[1].position.y += delta;
+            sPos.y -= delta;
         }
     }
     if (down) {
         if (frog[0].position.y - delta > -5.25) {
             frog[0].position.y -= delta;
             frog[1].position.y -= delta;
+            sPos.y += delta;
         }
     }
-
 }
 
 function frogPosition() {
@@ -93,17 +101,16 @@ function initialPosition() {
     frog[0].position.y = -5;
     frog[1].position.x = 0.0;
     frog[1].position.y = -5;
+    sPos.x = 0.0;
+    sPos.y = 7;
 }
 
 function setPosition(value) {
     if (frog[0].position.x - delta > -4.75){
         frog[0].position.x -= value;
         frog[1].position.x -= value;
+        sPos.x += value;
     }
 }
 
-/*function is_colliding(obj){
- if(!(frogBB.min.x < cars[i].max.x || cars[i].min.x < frogBB.max.x || frogBB.min.y < cars[i].max.y || cars[i].min.y < frogBB.max.y)) 
- return true;
- }*/
 

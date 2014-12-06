@@ -12,7 +12,12 @@ function Turtles() {
         diffuse: {type: "c", value: new THREE.Color(0xC7991C)},
         spec: {type: "c", value: new THREE.Color(0xFCF0CC)},
         shininess: {type: "f", value: 20},
-        texMode: {type: "f", value: 0.0}
+        billboard: {type: "f", value: 0.0},
+        spotDir: {type: "v3", value: sDir},
+        spotPos: {type: "v3", value: sPos},
+        night: {type: "v3", value: nightMode},
+        texMode: {type: "f", value: 0.0},
+        life: {type: "f", value: 0.0}
     };
 
     var uniformsHead = {

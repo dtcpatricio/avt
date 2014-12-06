@@ -11,7 +11,12 @@ function RiverSides() {
         diffuse: {type: "c", value: new THREE.Color(0x198219)},
         spec: {type: "c", value: new THREE.Color(0x739673)},
         shininess: {type: "f", value: 32},
-        texMode: {type: "f", value: 0.0}
+        billboard: {type: "f", value: 0.0},
+        spotDir: {type: "v3", value: sDir},
+        spotPos: {type: "v3", value: sPos},
+        night: {type: "v3", value: nightMode},
+        texMode: {type: "f", value: 0.0},
+        life: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.BoxGeometry(10, 1, 2);
