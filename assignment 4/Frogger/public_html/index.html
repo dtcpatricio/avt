@@ -17,6 +17,7 @@
         <script src="DynamicObj/Turtle.js"></script>
         <script src="StaticObj/Tunnels.js"></script>
         <script src="StaticObj/Tree.js"></script>
+        <script src="DynamicObj/Particle.js"></script>
 
         <!-- Shaders -->
         <script type="x-shader/x-vertex" id="vertexShader">
@@ -24,17 +25,18 @@
             varying vec3 vNormal;
             varying vec3 eye;
             varying vec2 vUv;
-            
+
             uniform vec3 night;
             varying vec3 nightV;
-            
+
             uniform vec3 spotDir;
             varying vec3 spotDirV;
             uniform vec3 spotPos;
             varying vec3 spotPosV;
-            
+
             uniform float billboard;
             uniform float life;
+            varying float lifeP;
 
             void main() {
 
@@ -42,24 +44,25 @@
             vUv = uv;
             nightV = night;
             spotDirV = spotDir;
-            
+            lifeP = life;
+
             mat4 viewModel = modelViewMatrix;
-            
+
             vec4 eyeAux = -(modelMatrix * vec4( position, 1.0 ));
             eye = eyeAux.xyz;
             spotPosV = spotPos - eyeAux.xyz;
-            
+
             if(billboard == 1.0){
-		viewModel[0].xyz = vec3(1.0, 0.0, 0.0);
-                viewModel[1].xyz = vec3(0.0, 1.0, 0.0);
-                viewModel[2].xyz = vec3(0.0, 0.0, 1.0);
-                
-                gl_Position = projectionMatrix * viewModel * vec4( position, 1.0 );
+            viewModel[0].xyz = vec3(1.0, 0.0, 0.0);
+            viewModel[1].xyz = vec3(0.0, 1.0, 0.0);
+            viewModel[2].xyz = vec3(0.0, 0.0, 1.0);
+
+            gl_Position = projectionMatrix * viewModel * vec4( position, 1.0 );
             }
             else{
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
-     
+
             }
 
         </script>
@@ -73,6 +76,7 @@
             uniform float shininess;
             varying vec3 night;
             uniform float texMode;
+            varying float lifeP;
             uniform sampler2D texture1;
 
             varying vec2 vUv;
@@ -144,11 +148,16 @@
                 
                   
                 if(texMode == 1.0){
+                   
                     if(texel.a < 0.3)
                         discard;
+                     if(lifeP > 0.0){
+                        texel.a = lifeP;
+                    }
                     
                     gl_FragColor = max(sumDir + sumSpot, texel * 0.5);
                 }
+                
                 else{
                     vec3 color = max(ambient, sumDir.rgb + sumSpot.rgb);
                     gl_FragColor= vec4(color, 1.0);
@@ -165,8 +174,13 @@ var scene = new THREE.Scene();
 var camera;
 var camType = 1;
 var nightMode = new THREE.Vector3(1.0, 0.0, 0.0);
+
 var sDir = new THREE.Vector3(0.0, 1.0, 0.0);
 var sPos = new THREE.Vector3(0.0, 7.5, 1.25);
+
+var didLeft = 0.0;
+var didRight = 0.0;
+var didDown = 0.0;
 
 // Shader Association
 var vertexShader = document.getElementById('vertexShader').textContent;
@@ -207,8 +221,6 @@ function onDocumentKeyDown(event) {
             left = true;
             sDir.x = -1.0;
             sDir.y = 0.5;
-            /*var mytext = "Hello again";
-             document.write(mytext);*/
             break;
         case 38 : // up arrow 
             up = true;
@@ -223,7 +235,7 @@ function onDocumentKeyDown(event) {
         case 40 : //down arrow
             down = true;
             sDir.x = 0.0;
-            sDir.y = - 1.0;
+            sDir.y = -1.0;
             break;
         case 49 : //1 button ortogonal camera 
             camType = 1;
@@ -234,12 +246,15 @@ function onDocumentKeyDown(event) {
         case 51 : //3 button 3rd person camera
             camType = 3;
             break;
+        case 76:
+            initParticles();
+            break;
         case 78 :
-            if (nightMode.x === 1.0){
+            if (nightMode.x === 1.0) {
                 nightMode.x = 0.0;
                 nightMode.z = 1.0;
             }
-            else{
+            else {
                 nightMode.x = 1.0;
                 nightMode.z = 0.0;
             }
@@ -270,30 +285,31 @@ function onDocumentKeyUp(event) {
     }
 }
 
-var mouseDown = false;
-var lastMouseX = null;
-var lastMouseY = null;
-
-function handleMouseDown(event) {
-    mouseDown = true;
-    lastMouseX = event.clientX;
-    lastMouseY = event.clientY;
-}
-
-function handleMouseUp(event) {
-    mouseDown = false;
-}
-
-function handleMouseMove(event) {
-    if (!mouseDown) return;
-    var newX = event.clientX;
-    var newY = event.clientY;
-    var deltaX = newX - lastMouseX;
-    var deltaY = newY - lastMouseY;
-    lastMouseX = newX;
-    lastMouseY = newY;
-
-}
+/*var mouseDown = false;
+ var lastMouseX = null;
+ var lastMouseY = null;
+ 
+ function handleMouseDown(event) {
+ mouseDown = true;
+ lastMouseX = event.clientX;
+ lastMouseY = event.clientY;
+ }
+ 
+ function handleMouseUp(event) {
+ mouseDown = false;
+ }
+ 
+ function handleMouseMove(event) {
+ if (!mouseDown) return;
+ var newX = event.clientX;
+ var newY = event.clientY;
+ var deltaX = newX - lastMouseX;
+ var deltaY = newY - lastMouseY;
+ lastMouseX = newX;
+ lastMouseY = newY;
+ 
+ }
+ */
 
 function collision() {
 
@@ -367,13 +383,16 @@ function collision() {
             var tunnels = new Tunnels();
 
             var frogger = new Frog();
-            
+
             var cars = new Cars();
             var buses = new Bus();
             var logs = new TimberLog();
             var tortoises = new Turtles();
             var tree = new Tree();
+            var firework = new Particle();
             var river = new River();
+
+            var timer = setInterval("iterate()", 50);
 
             // Render Scene
             var render = function () {

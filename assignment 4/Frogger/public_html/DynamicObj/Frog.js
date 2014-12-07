@@ -63,28 +63,28 @@ function frogBoundBox() {
 function updateFrog() {
 
     if (left) {
-        if (frog[0].position.x - delta > -4.75) {
+        if (frog[0].position.x - delta > -4.87) {
             frog[0].position.x -= delta;
             frog[1].position.x -= delta;
             sPos.x += delta;
         }
     }
     if (right) {
-        if (frog[0].position.x + delta < 4.75) {
+        if (frog[0].position.x + delta < 4.87) {
             frog[0].position.x += delta;
             frog[1].position.x += delta;
             sPos.x -= delta;
         }
     }
     if (up) {
-        if (frog[0].position.y + delta < 5.25) {
+        if (frog[0].position.y + delta < 5.3) {
             frog[0].position.y += delta;
             frog[1].position.y += delta;
             sPos.y -= delta;
         }
     }
     if (down) {
-        if (frog[0].position.y - delta > -5.25) {
+        if (frog[0].position.y - delta > -5.5) {
             frog[0].position.y -= delta;
             frog[1].position.y -= delta;
             sPos.y += delta;
@@ -102,7 +102,7 @@ function initialPosition() {
     frog[1].position.x = 0.0;
     frog[1].position.y = -5;
     sPos.x = 0.0;
-    sPos.y = 7;
+    sPos.y = 7.5;
 }
 
 function setPosition(value) {
