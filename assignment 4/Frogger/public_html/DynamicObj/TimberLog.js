@@ -16,8 +16,7 @@ function TimberLog() {
         spotDir: {type: "v3", value: sDir},
         spotPos: {type: "v3", value: sPos},
         night: {type: "v3", value: nightMode},
-        texMode: {type: "f", value: 0.0},
-        life: {type: "f", value: 0.0}
+        texMode: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.CylinderGeometry(0.4, 0.4, 1.5, 32);

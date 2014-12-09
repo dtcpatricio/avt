@@ -23,8 +23,7 @@ function Frog() {
         night: {type: "v3", value: nightMode},
         spotDir: {type: "v3", value: sDir},
         spotPos: {type: "v3", value: sPos},
-        texMode: {type: "f", value: 0.0},
-        life: {type: "f", value: 0.0}
+        texMode: {type: "f", value: 0.0}
     };
 
     var geometry = new THREE.SphereGeometry(0.1, 32, 32);

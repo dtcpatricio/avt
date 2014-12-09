@@ -19,8 +19,7 @@ function Tree() {
         spotPos: {type: "v3", value: sPos},
         night: {type: "v3", value: nightMode},
         texMode: {type: "f", value: 1.0},
-        texture1: {type: "t", value: treeImage},
-        life: {type: "f", value: 0.0}
+        texture1: {type: "t", value: treeImage}
     };
 
     var rectGeom = new THREE.BoxGeometry(2, 2, 0.00000000000000001);

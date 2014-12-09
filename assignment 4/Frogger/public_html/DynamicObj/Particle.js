@@ -8,7 +8,7 @@
 var fireworks = [];
 var speed = [];
 var acel = new THREE.Vector3(0.1, 0.0, -0.15);
-var lifeF = 1.0;
+var lifeF = new THREE.Vector3(1.0, 0.0, 0.0);
 var fade = 0.0005;
 var M_PI = 3.14;
 var init = 0.0;
@@ -31,13 +31,15 @@ function Particle() {
         night: {type: "v3", value: nightMode},
         texMode: {type: "f", value: 1.0},
         texture1: {type: "t", value: particleImage},
-        life: {type: "f", value: lifeF}
+        life: {type: "v3", value: lifeF}
     };
 
     var rectGeom = new THREE.BoxGeometry(0.25, 0.25, 0.00000000000000001);
     var material = new THREE.ShaderMaterial({vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms});
-    material.transparent = true;
     material.depthTest = false;
+    material.transparent = true;
+    material.blending = THREE[ "AdditiveBlending" ];
+    
     for (i = 0; i < 40; i++) {
 
         this.particle = new THREE.Mesh(rectGeom, material);
@@ -71,7 +73,7 @@ function initParticles() {
         fireworks[i].position.x = 0.0;
         fireworks[i].position.y = 0.0;
         fireworks[i].position.z = 7.0;
-        lifeF = 1.0;
+        lifeF.x = 1.0;
         /* tom amarelado que vai ser multiplicado pela textura que varia entre branco e preto */
         //fireworks[i].setColors(new THREE.Vector3(0.882, 0.552, 0.211));
     }
@@ -93,7 +95,7 @@ function iterate() {
         }
         
         for (i = 0; i < fireworks.length; i++) {
-            if (lifeF > 0.0) {
+            if (lifeF.x > 0.0) {
                 fireworks[i].position.x += speed[i].x;
                 fireworks[i].position.y += speed[i].y;
                 fireworks[i].position.z += speed[i].z;
@@ -102,7 +104,7 @@ function iterate() {
                 speed[i].y += acel.y * h;
                 speed[i].z += acel.z * h;
 
-                lifeF -= fade;
+                lifeF.x -= fade;
 
             }
             else{

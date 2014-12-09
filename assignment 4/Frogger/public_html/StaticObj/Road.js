@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+
 function Road() {
     
     var roadImage = THREE.ImageUtils.loadTexture('road_texture.png');
@@ -20,7 +21,10 @@ function Road() {
         night: {type: "v3", value: nightMode},
         texMode: {type: "f", value: 1.0},
         texture1: { type: "t", value: roadImage},
-        life: {type: "f", value: 0.0}
+        fog: { type: "v3", value: fogVal},
+        life: {type: "v3", value: l},
+        lens: {type: "f", value: 0.0},
+        pointLights : {type: "v3v", value: points}
     };
 
     var geometry = new THREE.BoxGeometry(10, 4, 2);

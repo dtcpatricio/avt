@@ -20,8 +20,7 @@ function River() {
         spotPos: {type: "v3", value: sPos},
         night: {type: "v3", value: nightMode}, 
         texMode: {type: "f", value: 1.0}, 
-        texture1: { type: "t", value: riverImage},
-        life: {type: "f", value: 0.0}
+        texture1: { type: "t", value: riverImage}
     };
 
     var geometry = new THREE.BoxGeometry(10, 4, 2);
