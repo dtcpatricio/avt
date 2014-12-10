@@ -24,6 +24,7 @@ function Road() {
         fog: { type: "v3", value: fogVal},
         life: {type: "v3", value: l},
         lens: {type: "f", value: 0.0},
+        lensProj: {type: "m4", value: proj},
         pointLights : {type: "v3v", value: points}
     };
 

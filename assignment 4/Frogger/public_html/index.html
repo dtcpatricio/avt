@@ -20,6 +20,7 @@
         <script src="DynamicObj/Particle.js"></script>
         <script src="Misc/MouseEvents.js"></script>
         <script src="DynamicObj/Flare.js"></script>
+        <script src="StaticObj/Stencil.js"></script>
         
         <!-- Shaders -->
         <script type="x-shader/x-vertex" id="vertexShader">
@@ -274,15 +275,19 @@ function updateCamera() {
         camera = new THREE.OrthographicCamera(window.innerWidth / -100, window.innerWidth / 100,
                 window.innerHeight / 100, window.innerHeight / -100, -500, 1000);
         camera.position.z = 9.0;
+        camera.updateProjectionMatrix();
     }
     else if (camType === 2) {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.z = 9.0;
+        camera.updateProjectionMatrix();   
     }
     else {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(frog[0].position.x, frog[0].position.y - 1, frog[0].position.z + 1);
+        camera.position.set(frog[0].position.x, frog[0].position.y - 1.0, frog[0].position.z + 1.0);
+        camera.up.set(0.0, 0.0, 1.0);
         camera.lookAt(frog[1].position);
+        camera.updateProjectionMatrix();
     }
 
 }
@@ -460,7 +465,8 @@ function collision() {
             var firework = new Particle();
             var river = new River();
 
-            var lensFlare = createFlare();
+            randomize(7, 10);
+            var flare = new Flare(15, 15);
 
             var timer = setInterval("iterate()", 50);
 

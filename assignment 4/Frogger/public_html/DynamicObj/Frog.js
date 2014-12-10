@@ -83,11 +83,11 @@ function updateFrog() {
         }
     }
     if (down) {
-        if (frog[0].position.y - delta > -5.5) {
+        //if (frog[0].position.y - delta > -5.5) {
             frog[0].position.y -= delta;
             frog[1].position.y -= delta;
             sPos.y += delta;
-        }
+        //}
     }
 }
 

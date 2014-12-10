@@ -28,9 +28,10 @@ function River() {
     material.depthTest = false;
     material.transparent = true;
     material.blending = THREE[ "AdditiveBlending" ];
-
+    
     this.river = new THREE.Mesh(geometry, material);
     this.river.position.y = 2.5;
+    this.river.renderDepth = 1.0;
     scene.add(this.river);
     
     material.depthTest = true;
