@@ -21,6 +21,7 @@
         <script src="Misc/MouseEvents.js"></script>
         <script src="DynamicObj/Flare.js"></script>
         <script src="StaticObj/Stencil.js"></script>
+        <script src="Misc/Stereo.js"></script>
         
         <!-- Shaders -->
         <script type="x-shader/x-vertex" id="vertexShader">
@@ -268,6 +269,10 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+var effect = new THREE.StereoEffect( renderer );
+effect.setSize( window.innerWidth, window.innerHeight );
+
+var currentRenderer = renderer;
 ///////////////////////////////////////////////////////////////////////////////// Camera Functions
 
 function updateCamera() {
@@ -360,6 +365,23 @@ function onDocumentKeyDown(event) {
             }
             break;
 
+        case 83:
+            if (currentRenderer === renderer) {
+                currentRenderer = effect;
+
+                // Update separation
+                
+                // Same focal length (0.1) for both PerspectiveCameras
+                if (camType == 2 || camType == 3) {
+                    effect.separation = (1/30) * 0.1;
+                } else {
+                    // TODO: Fix ortho camera
+                    effect.separation = (1/30) * 500;
+                }
+            } else {
+                currentRenderer = renderer;
+                currentRenderer.setSize(window.innerWidth, window.innerHeight);
+            }
     }
     document.addEventListener('keyup', onDocumentKeyUp, false);
 }
@@ -483,7 +505,7 @@ function collision() {
                 collision();
 
                 requestAnimationFrame(render);
-                renderer.render(scene, camera);
+                currentRenderer.render(scene, camera);
             };
 
             render();
