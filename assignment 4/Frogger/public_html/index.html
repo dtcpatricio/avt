@@ -269,7 +269,7 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var effect = new THREE.StereoEffect( renderer );
+var effect = new THREE.StereoEffect( renderer, window.innerWidth / window.innerHeight );
 effect.setSize( window.innerWidth, window.innerHeight );
 
 var currentRenderer = renderer;
@@ -278,7 +278,7 @@ var currentRenderer = renderer;
 function updateCamera() {
     if (camType === 1) {
         camera = new THREE.OrthographicCamera(window.innerWidth / -100, window.innerWidth / 100,
-                window.innerHeight / 100, window.innerHeight / -100, -500, 1000);
+                window.innerHeight / 100, window.innerHeight / -100, -5, 10);
         camera.position.z = 9.0;
         camera.updateProjectionMatrix();
     }
@@ -376,7 +376,7 @@ function onDocumentKeyDown(event) {
                     effect.separation = (1/30) * 0.1;
                 } else {
                     // TODO: Fix ortho camera
-                    effect.separation = (1/30) * 500;
+                    effect.separation = (1/30);
                 }
             } else {
                 currentRenderer = renderer;

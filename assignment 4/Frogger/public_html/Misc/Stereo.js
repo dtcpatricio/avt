@@ -4,12 +4,12 @@
  * @authod arodic / http://aleksandarrodic.com/
  */
 
-THREE.StereoEffect = function ( renderer ) {
+THREE.StereoEffect = function ( renderer, aspect ) {
 
 	// API
 
 	this.separation = 3;
-
+    
 	// internals
 
 	var _width, _height;
@@ -20,6 +20,8 @@ THREE.StereoEffect = function ( renderer ) {
 
 	var _cameraL = new THREE.PerspectiveCamera();
 	var _cameraR = new THREE.PerspectiveCamera();
+
+    var _aspect = aspect;
 
 	// initialization
 
@@ -44,8 +46,9 @@ THREE.StereoEffect = function ( renderer ) {
 
 		// left
 
+        _cameraL = camera;
 		_cameraL.fov = camera.fov;
-		_cameraL.aspect = 0.5 * camera.aspect;
+		_cameraL.aspect = 0.5 * _aspect;
 		_cameraL.near = camera.near;
 		_cameraL.far = camera.far;
 		_cameraL.updateProjectionMatrix();
