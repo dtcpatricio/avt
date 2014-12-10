@@ -47,6 +47,7 @@ function Particle() {
         this.particle.position.y = 0.0;
         this.particle.position.z = -10.0;
         this.particle.rotation.x += 90;
+        this.particle.renderDepth = 1.5;
 
         fireworks.push(this.particle);
         speed.push(speedP);

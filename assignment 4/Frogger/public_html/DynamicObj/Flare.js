@@ -10,7 +10,7 @@ var _nPieces = 0.0;
 var WinX = window.innerWidth;
 var WinY = window.innerHeight;
 
-var cam = new THREE.OrthographicCamera(0, WinX, 0, WinY, -20, 20);
+var cam = new THREE.OrthographicCamera(0, WinX, 0, WinY, -500, 500);
 var proj = cam.projectionMatrix;
 
 // Could be a problem
@@ -47,7 +47,7 @@ function randomize(nPieces, fMaxSize) {
 
 function Flare(_lx, _ly) {
 
-    var flareImage = THREE.ImageUtils.loadTexture('flare.png');
+    var flareImage = THREE.ImageUtils.loadTexture('particle.png');
     flareImage.magFilter = THREE.NearestFilter;
 
     var uniforms = {
@@ -120,7 +120,7 @@ function Flare(_lx, _ly) {
             this.flare.frustumCulled = false;
             this.flare.position.x = px;
             this.flare.position.y = py;
-            this.flare.position.z = 20.0;
+            this.flare.position.z = 200.0;
             this.flare.renderDepth = 0.0;
             scene.add(this.flare);
         }
