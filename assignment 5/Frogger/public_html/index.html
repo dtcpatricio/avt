@@ -4,8 +4,11 @@
         <style> body { margin: 0; } canvas { width: 100%; height: 100% } </style> 
     </head> 
 
-    <body> 
-        <script src="three.js"></script> 
+    <body>
+        <div id="frogger"></div>
+        
+        <script src="threejs/three.js"></script> 
+        <script src="threejs/OrbitControls.js"></script>
         <script src="DynamicObj/Bus.js"></script>
         <script src="DynamicObj/Car.js"></script>
         <script src="DynamicObj/Frog.js"></script>
@@ -242,8 +245,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////// Main Variables
 var scene = new THREE.Scene();
-var camera;
-var camType = 1;
+var camera, controls, element;
+var camType = 3;
 
 var nightMode = new THREE.Vector3(1.0, 0.0, 0.0);
 var l = new THREE.Vector4(-1.0, 0.0, 0.0);
@@ -266,6 +269,7 @@ var vertexShader = document.getElementById('vertexShader').textContent;
 var fragmentShader = document.getElementById('fragmentShader').textContent;
 
 var renderer = new THREE.WebGLRenderer();
+      
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -289,9 +293,14 @@ function updateCamera() {
     }
     else {
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(frog[0].position.x, frog[0].position.y - .3, frog[0].position.z + 1.75);
+        camera.position.set(frog[0].position.x, frog[0].position.y - .3, 1.75);
         camera.up.set(0.0, 0.0, 1.0);
         camera.lookAt(frog[1].position);
+        controls = new THREE.OrbitControls(camera);
+        controls.noPan = true;
+        controls.target.x = frog[1].position.x;
+        controls.target.y = frog[1].position.y;
+        controls.target.z = frog[1].position.z;
         camera.updateProjectionMatrix();
     }
 
@@ -300,9 +309,9 @@ function updateCamera() {
 ///////////////////////////////////////////////////////////////// Keyboard Callbacks
 
 document.addEventListener('keydown', onDocumentKeyDown, false);
-document.addEventListener('mousemove', handleMouseMove, false);
-document.addEventListener('mousedown', handleMouseDown, false);
-document.addEventListener('mouseup', handleMouseUp, false);
+//document.addEventListener('mousemove', handleMouseMove, false);
+//document.addEventListener('mousedown', handleMouseDown, false);
+//document.addEventListener('mouseup', handleMouseUp, false);
 
 function onDocumentKeyDown(event) {
     event = event || window.event;
@@ -330,12 +339,15 @@ function onDocumentKeyDown(event) {
             break;
         case 49 : //1 button ortogonal camera 
             camType = 1;
+            updateCamera();
             break;
         case 50 : //2 button perspective camera
             camType = 2;
+            updateCamera();
             break;
         case 51 : //3 button 3rd person camera
             camType = 3;
+            updateCamera();
             break;
         case 52 : //4 button move script
             autoMove = !autoMove;
@@ -478,6 +490,11 @@ function collision() {
 
 }
 
+function updateScreen() {
+    camera.updateProjectionMatrix();
+    controls.update();
+}
+
         </script>
 
         <script>
@@ -503,10 +520,12 @@ function collision() {
             var flare = new Flare(15, 15);
 
             var timer = setInterval("iterate()", 50);
-
+            
+            updateCamera();
+                 
             // Render Scene
             var render = function () {
-                updateCamera();
+                //updateCamera();
 
                 updateFrog();
                 updateBus();
@@ -517,6 +536,9 @@ function collision() {
                 collision();
 
                 requestAnimationFrame(render);
+                
+                updateScreen();
+                
                 currentRenderer.render(scene, camera);
             };
 
