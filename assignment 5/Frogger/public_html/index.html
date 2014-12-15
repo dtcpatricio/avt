@@ -297,7 +297,7 @@ function updateCamera() {
         camera.up.set(0.0, 0.0, 1.0);
         camera.lookAt(frog[1].position);
         controls = new THREE.OrbitControls(camera);
-        controls.noPan = true;
+        controls.noPan = false;
         controls.target.x = frog[1].position.x;
         controls.target.y = frog[1].position.y;
         controls.target.z = frog[1].position.z;
