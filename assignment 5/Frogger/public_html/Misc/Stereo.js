@@ -20,9 +20,6 @@ THREE.StereoEffect = function (renderer, aspect) {
     var _quaternion = new THREE.Quaternion();
     var _scale = new THREE.Vector3();
 
-    var _cameraL = new THREE.PerspectiveCamera();
-    var _cameraR = new THREE.PerspectiveCamera();
-
     var _aspect = aspect;
 
     // initialization
@@ -38,7 +35,37 @@ THREE.StereoEffect = function (renderer, aspect) {
 
     };
 
+    function createCamera(target, target_separation) {
+
+        if (camera instanceof THREE.OrthographicCamera) {
+            target.left   = camera.left / 2; 
+            target.right  = camera.right / 2;
+            target.top    = camera.top;
+            target.bottom = camera.bottom;
+        } else {
+            target.fov    = camera.fov;
+            target.aspect = 0.5 * _aspect;
+        }
+        target.near = camera.near;
+        target.far  = camera.far;
+        target.updateProjectionMatrix();
+
+        target.position.copy(_position);
+        target.quaternion.copy(_quaternion);
+        if (translation)
+            target.translateX(target_separation);
+    }
+
     this.render = function (scene, camera) {
+
+        var _cameraL, _cameraR;
+        if (camera instanceof THREE.OrthographicCamera) {
+            _cameraL = new THREE.OrthographicCamera();
+            _cameraR = new THREE.OrthographicCamera();
+        } else {
+            _cameraL = new THREE.PerspectiveCamera();
+            _cameraR = new THREE.PerspectiveCamera();
+        }
 
         scene.updateMatrixWorld();
 
@@ -47,32 +74,8 @@ THREE.StereoEffect = function (renderer, aspect) {
 
         camera.matrixWorld.decompose(_position, _quaternion, _scale);
 
-        // left
-
-        _cameraL = camera;
-        _cameraL.fov = camera.fov;
-        _cameraL.aspect = 0.5 * _aspect;
-        _cameraL.near = camera.near;
-        _cameraL.far = camera.far;
-        _cameraL.updateProjectionMatrix();
-
-        _cameraL.position.copy(_position);
-        _cameraL.quaternion.copy(_quaternion);
-        if (translation)
-            _cameraL.translateX( - this.separation );
-
-        // right
-
-        _cameraR.near = camera.near;
-        _cameraR.far = camera.far;
-        _cameraR.projectionMatrix = _cameraL.projectionMatrix;
-
-        _cameraR.position.copy(_position);
-        _cameraR.quaternion.copy(_quaternion);
-        if (translation)
-            _cameraR.translateX( this.separation );
-
-        //
+        createCamera(_cameraL, - this.separation);
+        createCamera(_cameraR, this.separation);
 
         renderer.setViewport(0, 0, _width * 2, _height);
         renderer.clear();
@@ -82,7 +85,7 @@ THREE.StereoEffect = function (renderer, aspect) {
 
         renderer.setViewport(_width, 0, _width, _height);
         renderer.render(scene, _cameraR);
+
         translation = false;
     };
-
 };
