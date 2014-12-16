@@ -245,8 +245,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////// Main Variables
 var scene = new THREE.Scene();
-var camera, controls, element;
+
+var camera, camera1, camera2, camera3;
 var camType = 3;
+var controls, element;
 
 var nightMode = new THREE.Vector3(1.0, 0.0, 0.0);
 var l = new THREE.Vector4(-1.0, 0.0, 0.0);
@@ -279,20 +281,28 @@ effect.setSize( window.innerWidth, window.innerHeight );
 var currentRenderer = renderer;
 ///////////////////////////////////////////////////////////////////////////////// Camera Functions
 
+function initCameras() {
+    camera1 = new THREE.OrthographicCamera(
+                window.innerWidth / -100, window.innerWidth / 100,
+                window.innerHeight / 100, window.innerHeight / -100,
+                -5, 10);
+    camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera3 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+}
+
 function updateCamera() {
     if (camType === 1) {
-        camera = new THREE.OrthographicCamera(window.innerWidth / -100, window.innerWidth / 100,
-                window.innerHeight / 100, window.innerHeight / -100, -5, 10);
+        camera = camera1;
         camera.position.z = 9.0;
         camera.updateProjectionMatrix();
     }
     else if (camType === 2) {
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = camera2;
         camera.position.z = 9.0;
         camera.updateProjectionMatrix();   
     }
     else {
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera = camera3;
         camera.position.set(frog[0].position.x, frog[0].position.y - .3, 1.75);
         camera.up.set(0.0, 0.0, 1.0);
         camera.lookAt(frog[1].position);
@@ -498,6 +508,8 @@ function updateScreen() {
         </script>
 
         <script>
+
+            initCameras();
 
             // Create Objects
             var road = new Road();

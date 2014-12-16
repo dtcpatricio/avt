@@ -6,8 +6,6 @@
 
 THREE.StereoEffect = function (renderer, aspect) {
 
-    var translation = true;
-
     // API
 
     this.separation = 3;
@@ -16,6 +14,8 @@ THREE.StereoEffect = function (renderer, aspect) {
 
     var _width, _height;
 
+    var _cameraL, _cameraR;
+    
     var _position = new THREE.Vector3();
     var _quaternion = new THREE.Quaternion();
     var _scale = new THREE.Vector3();
@@ -52,20 +52,13 @@ THREE.StereoEffect = function (renderer, aspect) {
 
         target.position.copy(_position);
         target.quaternion.copy(_quaternion);
-        if (translation)
-            target.translateX(target_separation);
+        target.translateX(target_separation);
     }
 
     this.render = function (scene, camera) {
 
-        var _cameraL, _cameraR;
-        if (camera instanceof THREE.OrthographicCamera) {
-            _cameraL = new THREE.OrthographicCamera();
-            _cameraR = new THREE.OrthographicCamera();
-        } else {
-            _cameraL = new THREE.PerspectiveCamera();
-            _cameraR = new THREE.PerspectiveCamera();
-        }
+        _cameraL = camera.clone();
+        _cameraR = camera.clone();
 
         scene.updateMatrixWorld();
 
@@ -86,6 +79,8 @@ THREE.StereoEffect = function (renderer, aspect) {
         renderer.setViewport(_width, 0, _width, _height);
         renderer.render(scene, _cameraR);
 
-        translation = false;
+        // Undo previous translations
+        _cameraL.translateX(this.separation);
+        _cameraR.translateX(-this.separation);
     };
 };
