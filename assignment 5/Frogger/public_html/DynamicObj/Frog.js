@@ -8,10 +8,10 @@
 var frog = [];
 var left = false;
 var right = false;
-var up = false;
+var up = true;
 var down = false;
-var delta = 0.03;
-var autoMove = false;
+var delta = 0.01;
+var autoMove = true;
 
 function Frog() {
 
